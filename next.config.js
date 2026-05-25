@@ -1,0 +1,33 @@
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  transpilePackages: [
+    "@jbrowse/react-linear-genome-view",
+    "@jbrowse/core",
+    "@jbrowse/plugin-alignments",
+    "@jbrowse/plugin-sequence",
+    "@jbrowse/plugin-linear-genome-view",
+    "@jbrowse/plugin-data-management",
+    "@jbrowse/plugin-config",
+    "@jbrowse/plugin-menus",
+    "@jbrowse/plugin-circular-genome-view",
+    "@jbrowse/plugin-gff3",
+    "@jbrowse/plugin-gtf",
+    "@jbrowse/plugin-variants",
+    "@jbrowse/plugin-wiggle",
+    "@jbrowse/plugin-svg",
+    "@jbrowse/plugin-bed",
+    "@jbrowse/plugin-legacy-jbrowse",
+    "@jbrowse/plugin-grid-bookmark",
+    "@jbrowse/plugin-jobs-management",
+    "@jbrowse/plugin-filtering",
+    "@jbrowse/plugin-dotplot-view",
+    "@jbrowse/plugin-linear-comparative-view",
+    "@jbrowse/plugin-breakpoint-split-view",
+    "@jbrowse/plugin-arc",
+    "@jbrowse/plugin-sv-inspector",
+    "@jbrowse/plugin-comparative-adapters",
+    "@jbrowse/plugin-annotations",
+    "rxjs",
+  ],
+};
+module.exports = nextConfig;
