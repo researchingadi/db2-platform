@@ -1,35 +1,32 @@
-/* ── Fontsource ──────────────────────────────────────────────────────────── */
 @import "@fontsource/space-grotesk/400.css";
 @import "@fontsource/space-grotesk/500.css";
 @import "@fontsource/space-grotesk/600.css";
 @import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/playfair-display/600.css";
+@import "@fontsource/playfair-display/700.css";
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
 
-/* ── Tailwind ────────────────────────────────────────────────────────────── */
 @import "tailwindcss";
 
-/* ── Design tokens ───────────────────────────────────────────────────────── */
 :root {
-  --db-bg:         #04060f;
-  --db-surface:    #090d1a;
-  --db-surface-2:  #0e1426;
-  --db-border:     #1a2240;
-  --db-border-dim: #0f1630;
-  --db-cyan:       #22d3ee;
-  --db-cyan-dim:   rgba(34, 211, 238, 0.15);
-  --db-violet:     #818cf8;
-  --db-violet-dim: rgba(129, 140, 248, 0.15);
-  --db-emerald:    #10b981;
-  --db-emerald-dim:rgba(16, 185, 129, 0.12);
-  --db-text:       #e2e8f0;
-  --db-muted:      #64748b;
-  --db-muted-2:    #94a3b8;
-  --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
+  --db-black: #030303;
+  --db-charcoal: #080808;
+  --db-panel: rgba(15, 15, 15, 0.72);
+  --db-panel-2: rgba(255, 255, 255, 0.045);
+  --db-line: rgba(244, 241, 232, 0.13);
+  --db-line-strong: rgba(244, 241, 232, 0.22);
+  --db-cream: #f4f1e8;
+  --db-stone: #b8b2a4;
+  --db-muted: #756f64;
+  --db-cyan: #00f0ff;
+  --db-green: #49ffb6;
+  --db-violet: #8d7cff;
+  --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
-/* ── Base ─────────────────────────────────────────────────────────────────── */
 *,
 *::before,
 *::after {
@@ -38,118 +35,257 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--db-black);
 }
 
 body {
-  background: var(--db-bg);
-  color: var(--db-text);
+  margin: 0;
+  background: var(--db-black);
+  color: var(--db-cream);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Tailwind theme tokens ───────────────────────────────────────────────── */
-@theme inline {
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
-  --color-db-bg:       var(--db-bg);
-  --color-db-surface:  var(--db-surface);
-  --color-db-border:   var(--db-border);
-  --color-db-cyan:     var(--db-cyan);
-  --color-db-violet:   var(--db-violet);
-  --color-db-emerald:  var(--db-emerald);
-  --color-db-text:     var(--db-text);
-  --color-db-muted:    var(--db-muted);
+::selection {
+  background: rgba(0, 240, 255, 0.22);
+  color: var(--db-cream);
 }
 
-/* ── Keyframe animations ─────────────────────────────────────────────────── */
-@keyframes float {
-  0%, 100% { transform: translateY(0px);  }
-  50%       { transform: translateY(-8px); }
+a {
+  color: inherit;
 }
 
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.4; }
-  50%       { opacity: 0.9; }
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }
 
-@keyframes spin-slow {
-  from { transform: rotate(0deg);   }
-  to   { transform: rotate(360deg); }
+.db-grain {
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.06) 0 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04) 0 1px, transparent 1px);
+  background-size: 42px 42px, 73px 73px;
+  mix-blend-mode: screen;
 }
 
-@keyframes gradient-shift {
-  0%   { background-position: 0%   50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0%   50%; }
+.db-scanlines {
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.035),
+    rgba(255,255,255,0.035) 1px,
+    transparent 1px,
+    transparent 5px
+  );
+  opacity: 0.18;
 }
 
-@keyframes slide-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to   { opacity: 1; transform: translateY(0);    }
+.db-grid {
+  background-image:
+    linear-gradient(rgba(244,241,232,0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(244,241,232,0.055) 1px, transparent 1px);
+  background-size: 72px 72px;
 }
 
-@keyframes fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+.db-eyebrow {
+  margin: 0 0 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--db-cyan);
 }
 
-/* ── Utility classes ─────────────────────────────────────────────────────── */
-.font-sans { font-family: var(--font-sans); }
-.font-mono { font-family: var(--font-mono); }
-
-.text-gradient-cyan {
-  background: linear-gradient(135deg, var(--db-cyan), var(--db-violet));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.db-section-title {
+  margin: 0;
+  max-width: 980px;
+  font-size: clamp(3rem, 7vw, 7.4rem);
+  line-height: 0.9;
+  letter-spacing: -0.075em;
+  color: var(--db-cream);
 }
 
-.text-gradient-violet {
-  background: linear-gradient(135deg, var(--db-violet), var(--db-cyan));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+.db-section-copy {
+  max-width: 62ch;
+  color: var(--db-stone);
+  line-height: 1.8;
+  font-size: clamp(0.95rem, 1.35vw, 1.1rem);
 }
 
-.glass {
-  background: rgba(9, 13, 26, 0.7);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--db-border);
+.db-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  border: 1px solid var(--db-line);
+  background: rgba(255,255,255,0.035);
+  border-radius: 999px;
+  padding: 0.52rem 0.78rem;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--db-stone);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  backdrop-filter: blur(18px);
 }
 
-.glass-light {
-  background: rgba(14, 20, 38, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--db-border-dim);
+.db-dot {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: var(--db-green);
+  box-shadow: 0 0 18px rgba(73, 255, 182, 0.75);
 }
 
-.glow-cyan {
-  box-shadow: 0 0 20px rgba(34, 211, 238, 0.25),
-              0 0 60px rgba(34, 211, 238, 0.10);
+.db-glass {
+  border: 1px solid var(--db-line);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.055), rgba(255,255,255,0.018)),
+    rgba(8,8,8,0.74);
+  backdrop-filter: blur(22px);
 }
 
-.glow-violet {
-  box-shadow: 0 0 20px rgba(129, 140, 248, 0.25),
-              0 0 60px rgba(129, 140, 248, 0.10);
+.db-magnetic-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: var(--db-cream);
 }
 
-.border-glow-cyan {
-  border-color: rgba(34, 211, 238, 0.5);
-  box-shadow: 0 0 16px rgba(34, 211, 238, 0.2),
-              inset 0 0 16px rgba(34, 211, 238, 0.04);
+.db-magnetic-link::after {
+  content: "";
+  height: 1px;
+  width: 3.2rem;
+  background: currentColor;
+  opacity: 0.55;
+  transform-origin: left;
+  transition: transform 300ms ease, opacity 300ms ease;
 }
 
-.border-glow-violet {
-  border-color: rgba(129, 140, 248, 0.5);
-  box-shadow: 0 0 16px rgba(129, 140, 248, 0.2),
-              inset 0 0 16px rgba(129, 140, 248, 0.04);
+.db-magnetic-link:hover::after {
+  transform: scaleX(1.45);
+  opacity: 1;
 }
 
-/* scrollbar */
-::-webkit-scrollbar       { width: 6px; }
-::-webkit-scrollbar-track { background: var(--db-bg); }
-::-webkit-scrollbar-thumb { background: var(--db-border); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--db-muted); }
+.db-noise-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.db-noise-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image:
+    radial-gradient(circle at 30% 20%, rgba(0,240,255,0.14), transparent 24%),
+    radial-gradient(circle at 80% 0%, rgba(141,124,255,0.12), transparent 28%);
+}
+
+.db-noise-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: linear-gradient(120deg, transparent, rgba(255,255,255,0.07), transparent);
+  transform: translateX(-120%);
+  transition: transform 900ms cubic-bezier(.22,.61,.36,1);
+}
+
+.db-noise-card:hover::after {
+  transform: translateX(120%);
+}
+
+.db-scroll-text {
+  font-size: clamp(3.6rem, 10vw, 12rem);
+  line-height: 0.82;
+  letter-spacing: -0.085em;
+}
+
+.db-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  letter-spacing: -0.05em;
+}
+
+.db-outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244,241,232,0.35);
+}
+
+.db-track-line {
+  height: 7px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--db-cyan), var(--db-green), transparent);
+  box-shadow: 0 0 22px rgba(0,240,255,0.32);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--db-black);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(244,241,232,0.18);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(244,241,232,0.32);
+}
+@media (max-width: 1100px) {
+  .module-grid,
+  .browser-preview-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .hero-meta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 720px) {
+  .hero-meta-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .db-scroll-text {
+    font-size: clamp(3.3rem, 17vw, 6rem);
+  }
+
+  .db-section-title {
+    font-size: clamp(2.7rem, 13vw, 4.8rem);
+  }
+
+  .db-glass[style*="grid-template-columns: 80px"] {
+    grid-template-columns: 1fr !important;
+  }
+}

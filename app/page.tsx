@@ -1,719 +1,347 @@
 "use client";
 
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import dynamic from "next/dynamic";
 import Link from "next/link";
-import { useRef, useState } from "react";
 import PageShell from "@/components/site/PageShell";
+import CinematicHero from "@/components/site/CinematicHero";
 
-const HeroShader = dynamic(() => import("@/components/site/HeroShader"), { ssr: false });
-
-/* ── Data ─────────────────────────────────────────────────────────────────── */
-const FEATURES = [
+const modules = [
   {
-    icon: "🧬",
     title: "Genome Browser",
-    description:
-      "Visualize the Otau_3.2 chromosome-level assembly with NCBI annotation tracks in JBrowse 2. Navigate all 12 chromosomes and 28,456 predicted gene models with precision.",
+    label: "Live",
+    copy: "JBrowse 2 interface embedded as a stable browser console for exploring the Otau_3.2 assembly.",
     href: "/genome-browser",
-    soon: false,
   },
   {
-    icon: "🔬",
-    title: "Gene Annotations",
-    description:
-      "Search and filter all 28,456 predicted gene models by chromosome, genomic position, and annotation source. Deep-link from browser to gene detail pages.",
-    href: "/genes",
-    soon: true,
-  },
-  {
-    icon: "📊",
-    title: "RNA-seq Datasets",
-    description:
-      "Explore transcriptomics data across developmental stages and tissues of Onthophagus taurus. Raw reads, aligned BAMs, and expression matrices.",
+    title: "Annotations",
+    label: "GFF3 / GTF",
+    copy: "NCBI and custom annotation layers structured for genes, transcripts, and feature-level discovery.",
     href: "/resources",
-    soon: false,
   },
   {
-    icon: "📄",
+    title: "RNA-seq",
+    label: "Planned",
+    copy: "Expression data organized around biological features including horns, legs, and development.",
+    href: "/resources",
+  },
+  {
     title: "Publications",
-    description:
-      "Browse genomics research, assembly references, and Davidson Lab publications related to dung beetle genomics and developmental plasticity.",
+    label: "Directory",
+    copy: "A research-facing publication layer connecting DB² data to the surrounding biology literature.",
     href: "/publications",
-    soon: false,
-  },
-  {
-    icon: "👥",
-    title: "People",
-    description:
-      "Meet the researchers and developers behind the DB² platform, Davidson Lab, and the broader Onthophagus taurus research community.",
-    href: "/people",
-    soon: false,
-  },
-  {
-    icon: "⚡",
-    title: "BLAST Search",
-    description:
-      "Align nucleotide or protein sequences against the Otau_3.2 assembly and predicted proteome with integrated genome-browser visualization.",
-    href: "/blast",
-    soon: true,
   },
 ];
 
-const STATS = [
-  { value: "12",     label: "Chromosomes"      },
-  { value: "295Mb",  label: "Genome Size"       },
-  { value: "28,456", label: "Gene Models"       },
-  { value: "2",      label: "Annotation Tracks" },
+const layers = [
+  ["01", "Chromosome-level assembly", "Otau_3.2 reference files hosted for browser access and download."],
+  ["02", "Annotation tracks", "NCBI and custom lab annotations kept as separable scientific layers."],
+  ["03", "Transcriptomics", "RNA-seq resources will connect gene expression to biological features."],
+  ["04", "Future comparative tools", "BLAST and comparative genomics can be added without redesigning the platform."],
 ];
 
-/* ── Hover-expand feature row ─────────────────────────────────────────────── */
-function FeatureRow({
-  icon, title, description, href, soon, index,
-}: {
-  icon: string; title: string; description: string; href: string; soon: boolean; index: number;
-}) {
-  const [hovered, setHovered] = useState(false);
-
-  const inner = (
-    <div
-      style={{
-        padding: "1.4rem 0",
-        borderBottom: "1px solid rgba(26,34,64,0.5)",
-        cursor: soon ? "default" : "pointer",
-      }}
-    >
-      {/* Main row */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
-          {/* Index */}
-          <span style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.7rem",
-            color: "rgba(26,34,64,0.9)",
-            letterSpacing: "0.06em",
-            minWidth: "22px",
-            flexShrink: 0,
-          }}>
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          {/* Icon */}
-          <span style={{ fontSize: "1rem", opacity: soon ? 0.35 : 1, flexShrink: 0 }}>
-            {icon}
-          </span>
-          {/* Title */}
-          <motion.span
-            animate={{ color: hovered && !soon ? "#22d3ee" : "#e2e8f0" }}
-            transition={{ duration: 0.18 }}
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontWeight: 500,
-              fontSize: "clamp(1rem, 2vw, 1.2rem)",
-              letterSpacing: "-0.02em",
-              opacity: soon ? 0.45 : 1,
-            }}
-          >
-            {title}
-          </motion.span>
-          {/* Soon badge */}
-          {soon && (
-            <span style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.58rem",
-              color: "#334155",
-              border: "1px solid rgba(26,34,64,0.9)",
-              padding: "2px 8px",
-              borderRadius: "3px",
-              letterSpacing: "0.14em",
-              textTransform: "uppercase" as const,
-              flexShrink: 0,
-            }}>
-              Soon
-            </span>
-          )}
-        </div>
-        {/* Arrow */}
-        {!soon && (
-          <motion.span
-            animate={{ x: hovered ? 7 : 0, color: hovered ? "#22d3ee" : "#1e293b" }}
-            transition={{ duration: 0.2 }}
-            style={{ fontSize: "1.1rem", flexShrink: 0 }}
-          >
-            →
-          </motion.span>
-        )}
-      </div>
-
-      {/* Expandable description */}
-      <AnimatePresence>
-        {hovered && !soon && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.28, ease: [0.25, 0.4, 0.25, 1] }}
-            style={{ overflow: "hidden" }}
-          >
-            <p style={{
-              margin: "0.75rem 0 0",
-              /* indent aligns with title — 22px index + 1.5rem gap + 1rem icon + 1.5rem gap */
-              paddingLeft: "calc(22px + 3rem + 1rem + 0.5rem)",
-              fontFamily: "var(--font-sans)",
-              fontSize: "0.88rem",
-              color: "#64748b",
-              lineHeight: 1.75,
-            }}>
-              {description}
-            </p>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-
-  if (soon) {
-    return <div onMouseEnter={() => setHovered(true)} onMouseLeave={() => setHovered(false)}>{inner}</div>;
-  }
-  return (
-    <Link
-      href={href}
-      style={{ textDecoration: "none", display: "block" }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      {inner}
-    </Link>
-  );
-}
-
-/* ── Section heading with big index number ────────────────────────────────── */
-function SectionHead({
-  num, eyebrow, title, eyebrowColor = "#22d3ee",
-}: {
-  num: string; eyebrow: string; title: React.ReactNode; eyebrowColor?: string;
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1] }}
-      style={{ display: "flex", alignItems: "baseline", gap: "2rem", marginBottom: "4rem" }}
-    >
-      <span style={{
-        fontFamily: "var(--font-mono)",
-        fontSize: "clamp(3.5rem, 7vw, 6.5rem)",
-        fontWeight: 400,
-        color: "rgba(26,34,64,0.55)",
-        lineHeight: 1,
-        flexShrink: 0,
-        userSelect: "none" as const,
-      }}>
-        {num}
-      </span>
-      <div>
-        <p style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: "0.62rem",
-          color: eyebrowColor,
-          letterSpacing: "0.22em",
-          textTransform: "uppercase" as const,
-          margin: "0 0 10px",
-        }}>
-          {eyebrow}
-        </p>
-        <h2 style={{
-          fontFamily: "var(--font-sans)",
-          fontWeight: 700,
-          fontSize: "clamp(1.7rem, 3.5vw, 2.8rem)",
-          color: "#e2e8f0",
-          letterSpacing: "-0.035em",
-          margin: 0,
-          lineHeight: 1.1,
-        }}>
-          {title}
-        </h2>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ── Page ─────────────────────────────────────────────────────────────────── */
 export default function HomePage() {
-  const browserRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: browserRef, offset: ["start end", "end start"] });
-  const rotateX = useTransform(scrollYProgress, [0, 0.45], [20, 0]);
-  const scale   = useTransform(scrollYProgress, [0, 0.45], [0.91, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.18], [0.4, 1]);
-
   return (
     <PageShell padTop={false}>
+      <CinematicHero />
 
-      {/* ══════════════════════════════════════════════════════ HERO */}
-      <section style={{
-        position: "relative",
-        minHeight: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-end",
-        overflow: "hidden",
-        padding: "80px 1.5rem 5rem",
-      }}>
-        {/* Three.js shader background */}
-        <HeroShader />
-
-        {/* Bottom fade */}
-        <div style={{
-          position: "absolute", inset: 0, pointerEvents: "none",
-          background: "linear-gradient(to bottom, rgba(4,6,15,0.15) 0%, rgba(4,6,15,0.0) 35%, rgba(4,6,15,0.88) 100%)",
-        }} />
-
-        {/* Subtle grid */}
-        <div style={{
-          position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.025,
-          backgroundImage:
-            "linear-gradient(rgba(34,211,238,1) 1px, transparent 1px), linear-gradient(90deg, rgba(34,211,238,1) 1px, transparent 1px)",
-          backgroundSize: "80px 80px",
-        }} />
-
-        {/* Hero content — editorial, bottom-anchored */}
-        <div style={{ position: "relative", zIndex: 1, maxWidth: "1280px", width: "100%", margin: "0 auto" }}>
-
-          {/* Eyebrow */}
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.68rem",
-              color: "#22d3ee",
-              letterSpacing: "0.22em",
-              textTransform: "uppercase",
-              marginBottom: "1.5rem",
-              display: "flex",
-              alignItems: "center",
-              gap: "14px",
-              margin: "0 0 1.5rem",
-            }}
-          >
-            <span style={{ width: "28px", height: "1px", background: "#22d3ee", display: "inline-block", flexShrink: 0 }} />
-            Onthophagus taurus · Genome Resource · Davidson Lab
-          </motion.p>
-
-          {/* Main headline — massive editorial type */}
-          <motion.h1
-            initial={{ opacity: 0, y: 36 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.65, duration: 0.9, ease: [0.25, 0.4, 0.25, 1] }}
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontWeight: 700,
-              fontSize: "clamp(3.2rem, 9vw, 8.5rem)",
-              lineHeight: 0.94,
-              letterSpacing: "-0.04em",
-              color: "#e2e8f0",
-              margin: "0 0 2.5rem",
-            }}
-          >
-            The Dung Beetle<br />
-            <span style={{
-              background: "linear-gradient(130deg, #22d3ee 15%, #818cf8 85%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-            }}>
-              Genome
-            </span>{" "}
-            Database.
-          </motion.h1>
-
-          {/* Bottom row: tagline + CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.7, ease: [0.25, 0.4, 0.25, 1] }}
-            style={{
-              display: "flex",
-              alignItems: "flex-end",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: "2rem",
-            }}
-          >
-            <p style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "clamp(0.875rem, 1.4vw, 1rem)",
-              color: "#64748b",
-              maxWidth: "44ch",
-              lineHeight: 1.75,
-              margin: 0,
-            }}>
-              A modern genomics platform integrating chromosome-level assemblies,
-              NCBI annotations, and RNA-seq datasets for{" "}
-              <em style={{ color: "#94a3b8", fontStyle: "italic" }}>O. taurus</em> research.
-            </p>
-
-            <div style={{ display: "flex", gap: "10px", alignItems: "center", flexShrink: 0 }}>
-              <Link href="/genome-browser" style={{ textDecoration: "none" }}>
-                <motion.button
-                  whileHover={{ scale: 1.05, boxShadow: "0 0 36px rgba(34,211,238,0.42)" }}
-                  whileTap={{ scale: 0.97 }}
-                  style={{
-                    padding: "13px 30px",
-                    borderRadius: "10px",
-                    background: "linear-gradient(135deg, #22d3ee, #818cf8)",
-                    border: "none",
-                    color: "#04060f",
-                    fontFamily: "var(--font-sans)",
-                    fontWeight: 700,
-                    fontSize: "0.88rem",
-                    cursor: "pointer",
-                    letterSpacing: "-0.01em",
-                  }}
-                >
-                  Open Browser →
-                </motion.button>
-              </Link>
-              <Link href="/downloads" style={{ textDecoration: "none" }}>
-                <motion.button
-                  whileHover={{ color: "#22d3ee", borderColor: "rgba(34,211,238,0.4)" }}
-                  whileTap={{ scale: 0.97 }}
-                  style={{
-                    padding: "13px 24px",
-                    borderRadius: "10px",
-                    background: "transparent",
-                    border: "1px solid rgba(26,34,64,0.9)",
-                    color: "#64748b",
-                    fontFamily: "var(--font-sans)",
-                    fontWeight: 500,
-                    fontSize: "0.88rem",
-                    cursor: "pointer",
-                    transition: "color 0.2s, border-color 0.2s",
-                  }}
-                >
-                  Download Data
-                </motion.button>
-              </Link>
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Vertical scroll indicator */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2.2 }}
-          style={{
-            position: "absolute",
-            right: "2rem",
-            bottom: "2.5rem",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "10px",
-            zIndex: 1,
-          }}
-        >
-          <div style={{ width: "1px", height: "56px", overflow: "hidden", background: "rgba(26,34,64,0.6)", position: "relative" }}>
-            <motion.div
-              animate={{ y: ["-100%", "200%"] }}
-              transition={{ duration: 1.7, repeat: Infinity, ease: "linear" }}
-              style={{ width: "100%", height: "45%", background: "#22d3ee" }}
-            />
-          </div>
-          <span style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.55rem",
-            color: "#334155",
-            letterSpacing: "0.18em",
-            writingMode: "vertical-rl" as const,
-            textTransform: "uppercase" as const,
-          }}>
-            Scroll
-          </span>
-        </motion.div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════ STATS */}
-      <section style={{
-        borderTop: "1px solid rgba(26,34,64,0.5)",
-        borderBottom: "1px solid rgba(26,34,64,0.5)",
-      }}>
-        <div style={{
-          maxWidth: "1280px",
-          margin: "0 auto",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))",
-        }}>
-          {STATS.map((s, i) => (
-            <motion.div
-              key={s.label}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.08 }}
-              style={{
-                padding: "3rem 2rem",
-                textAlign: "center",
-                borderRight: i < STATS.length - 1 ? "1px solid rgba(26,34,64,0.5)" : "none",
-              }}
-            >
-              <div style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "clamp(1.8rem, 3.5vw, 3rem)",
-                fontWeight: 400,
-                color: "#22d3ee",
-                lineHeight: 1,
-                marginBottom: "0.6rem",
-              }}>
-                {s.value}
-              </div>
-              <div style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "0.7rem",
-                color: "#475569",
-                textTransform: "uppercase" as const,
-                letterSpacing: "0.14em",
-              }}>
-                {s.label}
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════ [01] PLATFORM */}
-      <section style={{ padding: "7rem 1.5rem", maxWidth: "1280px", margin: "0 auto", width: "100%" }}>
-
-        <SectionHead
-          num="01"
-          eyebrow="Platform"
-          eyebrowColor="#22d3ee"
-          title={<>Everything you need<br />to explore the genome.</>}
-        />
-
-        {/* Feature accordion */}
-        <div style={{ borderTop: "1px solid rgba(26,34,64,0.5)" }}>
-          {FEATURES.map((f, i) => (
-            <FeatureRow key={f.title} {...f} index={i} />
-          ))}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════ [02] ASSEMBLY */}
       <section
-        ref={browserRef}
         style={{
-          padding: "7rem 1.5rem",
-          maxWidth: "1280px",
-          margin: "0 auto",
-          width: "100%",
-          perspective: "1200px",
-          borderTop: "1px solid rgba(26,34,64,0.4)",
+          padding: "7rem 1.25rem",
+          borderTop: "1px solid rgba(244,241,232,0.12)",
+          borderBottom: "1px solid rgba(244,241,232,0.12)",
         }}
       >
-        <SectionHead
-          num="02"
-          eyebrow="Assembly"
-          eyebrowColor="#818cf8"
-          title={<>IU_Otau_3.0<br />Reference Assembly</>}
-        />
+        <div style={{ maxWidth: "1540px", margin: "0 auto" }}>
+          <p className="db-eyebrow">Project identity</p>
+          <h2 className="db-section-title">
+            A genome database with the rhythm of a digital studio.
+          </h2>
+          <p className="db-section-copy" style={{ marginTop: "1.6rem" }}>
+            DB² is being built as a scientific data platform, but the interface
+            should not feel like a static repository. The goal is to make dung
+            beetle genome data feel explorable, spatial, and alive while keeping
+            the underlying resources credible and useful.
+          </p>
+        </div>
+      </section>
 
-        {/* 3D perspective card on scroll */}
-        <motion.div style={{ rotateX, scale, opacity, transformStyle: "preserve-3d" }}>
-          <div style={{
-            borderRadius: "16px",
-            background: "rgba(9,13,26,0.92)",
-            border: "1px solid rgba(34,211,238,0.12)",
-            boxShadow: "0 0 60px rgba(34,211,238,0.05), 0 40px 80px rgba(0,0,0,0.7)",
-            overflow: "hidden",
-          }}>
-            {/* Window chrome */}
-            <div style={{
-              display: "flex", alignItems: "center", gap: "8px",
-              padding: "13px 20px",
-              borderBottom: "1px solid rgba(26,34,64,0.6)",
-              background: "rgba(4,6,15,0.6)",
-            }}>
-              {["#ff5f57", "#ffbd2e", "#28ca42"].map((c) => (
-                <div key={c} style={{ width: "11px", height: "11px", borderRadius: "50%", background: c }} />
-              ))}
-              <div style={{
-                marginLeft: "10px", flex: 1,
-                background: "rgba(14,20,38,0.8)",
-                borderRadius: "5px", padding: "4px 12px",
-                fontFamily: "var(--font-mono)", fontSize: "0.68rem", color: "#334155",
-              }}>
-                db2-platform.io/genome-browser — Otau_3.2
+      <section style={{ padding: "7rem 1.25rem" }}>
+        <div style={{ maxWidth: "1540px", margin: "0 auto" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: "2rem",
+              alignItems: "end",
+              marginBottom: "2rem",
+              flexWrap: "wrap",
+            }}
+          >
+            <div>
+              <p className="db-eyebrow">Platform modules</p>
+              <h2 className="db-section-title" style={{ fontSize: "clamp(2.6rem, 5vw, 5.8rem)" }}>
+                Built as layers,
+                <br />
+                not pages.
+              </h2>
+            </div>
+            <Link href="/resources" className="db-magnetic-link">
+              Explore resources
+            </Link>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+              gap: "0.9rem",
+            }}
+            className="module-grid"
+          >
+            {modules.map((item) => (
+              <Link key={item.title} href={item.href} style={{ textDecoration: "none" }}>
+                <article
+                  className="db-glass db-noise-card"
+                  style={{
+                    minHeight: "360px",
+                    borderRadius: "26px",
+                    padding: "1.35rem",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        gap: "1rem",
+                        alignItems: "center",
+                        fontFamily: "var(--font-mono)",
+                        fontSize: "0.64rem",
+                        color: "var(--db-muted)",
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase",
+                      }}
+                    >
+                      <span>{item.label}</span>
+                      <span>↗</span>
+                    </div>
+
+                    <h3
+                      style={{
+                        margin: "4.5rem 0 1rem",
+                        fontSize: "clamp(1.55rem, 2.2vw, 2.4rem)",
+                        letterSpacing: "-0.055em",
+                        lineHeight: 0.95,
+                        color: "var(--db-cream)",
+                      }}
+                    >
+                      {item.title}
+                    </h3>
+
+                    <p
+                      style={{
+                        margin: 0,
+                        color: "var(--db-stone)",
+                        lineHeight: 1.75,
+                        fontSize: "0.92rem",
+                      }}
+                    >
+                      {item.copy}
+                    </p>
+                  </div>
+
+                  <div className="db-track-line" />
+                </article>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section
+        style={{
+          padding: "8rem 1.25rem",
+          borderTop: "1px solid rgba(244,241,232,0.12)",
+          borderBottom: "1px solid rgba(244,241,232,0.12)",
+          background:
+            "radial-gradient(circle at 80% 20%, rgba(0,240,255,0.08), transparent 32%), var(--db-black)",
+        }}
+      >
+        <div style={{ maxWidth: "1540px", margin: "0 auto" }}>
+          <p className="db-eyebrow">Genome console</p>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "0.75fr 1.25fr",
+              gap: "2rem",
+              alignItems: "center",
+            }}
+            className="browser-preview-grid"
+          >
+            <div>
+              <h2 className="db-section-title" style={{ fontSize: "clamp(2.7rem, 5.5vw, 6.5rem)" }}>
+                The browser stays stable.
+                <br />
+                The interface becomes cinematic.
+              </h2>
+              <p className="db-section-copy" style={{ marginTop: "1.4rem" }}>
+                The working JBrowse instance remains isolated in an iframe, so the
+                scientific browser is stable while the surrounding DB² platform can
+                evolve into a premium experience.
+              </p>
+              <div style={{ marginTop: "2rem" }}>
+                <Link href="/genome-browser" className="db-magnetic-link">
+                  Open browser
+                </Link>
               </div>
             </div>
 
-            {/* Metadata tiles */}
-            <div style={{
-              padding: "2rem",
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))",
-              gap: "10px",
-            }}>
-              {[
-                { label: "Assembly Name", value: "IU_Otau_3.0",    accent: "#22d3ee" },
-                { label: "Accession",     value: "GCF_036711975.1", accent: "#818cf8" },
-                { label: "Chromosomes",   value: "12",              accent: "#22d3ee" },
-                { label: "Genome Size",   value: "~295 Mb",         accent: "#10b981" },
-                { label: "Source",        value: "NCBI RefSeq",     accent: "#818cf8" },
-                { label: "Browser",       value: "JBrowse 2",       accent: "#10b981" },
-              ].map((m) => (
-                <div key={m.label} style={{
-                  padding: "1rem 1.2rem",
-                  borderRadius: "8px",
-                  background: "rgba(14,20,38,0.7)",
-                  border: "1px solid rgba(26,34,64,0.4)",
-                }}>
-                  <div style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.58rem",
-                    color: "#334155",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase" as const,
-                    marginBottom: "5px",
-                  }}>
-                    {m.label}
-                  </div>
-                  <div style={{
-                    fontFamily: "var(--font-mono)",
-                    fontWeight: 500,
-                    fontSize: "0.88rem",
-                    color: m.accent,
-                  }}>
-                    {m.value}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <div
+              className="db-glass"
+              style={{
+                borderRadius: "30px",
+                overflow: "hidden",
+                minHeight: "520px",
+                position: "relative",
+              }}
+            >
+              <div className="db-grid" style={{ position: "absolute", inset: 0, opacity: 0.28 }} />
+              <div className="db-grain" style={{ position: "absolute", inset: 0 }} />
 
-            {/* CTA strip */}
-            <div style={{
-              padding: "1rem 2rem 1.5rem",
-              borderTop: "1px solid rgba(26,34,64,0.4)",
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-              flexWrap: "wrap", gap: "12px",
-            }}>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.68rem", color: "#334155" }}>
-                2 annotation tracks · NCBI GFF3 · GTF
-              </span>
-              <Link href="/genome-browser" style={{ textDecoration: "none" }}>
-                <motion.button
-                  whileHover={{ scale: 1.04, boxShadow: "0 0 22px rgba(34,211,238,0.28)" }}
-                  whileTap={{ scale: 0.97 }}
+              <div style={{ position: "relative", padding: "1rem", height: "100%" }}>
+                <div
                   style={{
-                    padding: "10px 22px",
-                    borderRadius: "8px",
-                    background: "rgba(34,211,238,0.07)",
-                    border: "1px solid rgba(34,211,238,0.28)",
-                    color: "#22d3ee",
-                    fontFamily: "var(--font-sans)",
-                    fontWeight: 600,
-                    fontSize: "0.8rem",
-                    cursor: "pointer",
+                    height: "48px",
+                    borderBottom: "1px solid rgba(244,241,232,0.12)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.45rem",
+                    fontFamily: "var(--font-mono)",
+                    color: "var(--db-muted)",
+                    fontSize: "0.68rem",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
                   }}
                 >
-                  Open in Browser →
-                </motion.button>
-              </Link>
+                  <span className="db-dot" />
+                  JBrowse 2 · Otau_3.2 · Active
+                </div>
+
+                <div style={{ padding: "2rem 0", display: "grid", gap: "0.8rem" }}>
+                  {Array.from({ length: 15 }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="db-track-line"
+                      style={{
+                        width: `${45 + ((i * 17) % 50)}%`,
+                        opacity: 0.2 + (i % 5) * 0.13,
+                        marginLeft: `${(i * 7) % 22}%`,
+                      }}
+                    />
+                  ))}
+                </div>
+
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "1rem",
+                    right: "1rem",
+                    bottom: "1rem",
+                    borderTop: "1px solid rgba(244,241,232,0.12)",
+                    paddingTop: "1rem",
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                    gap: "0.75rem",
+                  }}
+                >
+                  {["12 chromosomes", "28,456 genes", "Cloudflare R2"].map((x) => (
+                    <div key={x} className="db-pill" style={{ justifyContent: "center" }}>
+                      {x}
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════════ [03] GET STARTED */}
-      <section style={{
-        borderTop: "1px solid rgba(26,34,64,0.4)",
-        padding: "8rem 1.5rem 9rem",
-        maxWidth: "1280px",
-        margin: "0 auto",
-        width: "100%",
-      }}>
-        <SectionHead
-          num="03"
-          eyebrow="Get Started"
-          eyebrowColor="#10b981"
-          title={<>Built by the Davidson Lab.<br />Open to the community.</>}
-        />
+      <section style={{ padding: "8rem 1.25rem" }}>
+        <div style={{ maxWidth: "1540px", margin: "0 auto" }}>
+          <p className="db-eyebrow">Scientific layers</p>
+          <h2 className="db-section-title" style={{ marginBottom: "2rem" }}>
+            Data infrastructure,
+            <br />
+            organized for discovery.
+          </h2>
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "0.95rem",
-            color: "#64748b",
-            lineHeight: 1.75,
-            maxWidth: "50ch",
-            margin: "0 0 3rem",
-            paddingLeft: "calc(clamp(3.5rem, 7vw, 6.5rem) + 2rem)",
-          }}
-        >
-          DB² is a freely available scientific resource for the dung beetle genomics
-          community. New tools, data, and visualizations are added continuously.
-        </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          style={{
-            display: "flex",
-            gap: "12px",
-            flexWrap: "wrap",
-            paddingLeft: "calc(clamp(3.5rem, 7vw, 6.5rem) + 2rem)",
-          }}
-        >
-          <Link href="/people" style={{ textDecoration: "none" }}>
-            <motion.button
-              whileHover={{ scale: 1.05, boxShadow: "0 0 28px rgba(34,211,238,0.36)" }}
-              whileTap={{ scale: 0.97 }}
-              style={{
-                padding: "14px 32px",
-                borderRadius: "10px",
-                background: "linear-gradient(135deg, #22d3ee, #818cf8)",
-                border: "none",
-                color: "#04060f",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 700,
-                fontSize: "0.9rem",
-                cursor: "pointer",
-              }}
-            >
-              Meet the Team →
-            </motion.button>
-          </Link>
-          <Link href="/downloads" style={{ textDecoration: "none" }}>
-            <motion.button
-              whileHover={{ color: "#22d3ee", borderColor: "rgba(34,211,238,0.4)" }}
-              whileTap={{ scale: 0.97 }}
-              style={{
-                padding: "14px 28px",
-                borderRadius: "10px",
-                background: "transparent",
-                border: "1px solid rgba(26,34,64,0.9)",
-                color: "#64748b",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 500,
-                fontSize: "0.9rem",
-                cursor: "pointer",
-                transition: "color 0.2s, border-color 0.2s",
-              }}
-            >
-              Download Data
-            </motion.button>
-          </Link>
-        </motion.div>
+          <div style={{ display: "grid", gap: "0.85rem" }}>
+            {layers.map(([num, title, copy]) => (
+              <div
+                key={num}
+                className="db-glass"
+                style={{
+                  borderRadius: "24px",
+                  padding: "1.5rem",
+                  display: "grid",
+                  gridTemplateColumns: "80px 0.8fr 1.2fr",
+                  gap: "1.5rem",
+                  alignItems: "center",
+                }}
+              >
+                <span
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    color: "var(--db-cyan)",
+                    fontSize: "0.76rem",
+                    letterSpacing: "0.16em",
+                  }}
+                >
+                  {num}
+                </span>
+                <h3
+                  style={{
+                    margin: 0,
+                    color: "var(--db-cream)",
+                    fontSize: "clamp(1.3rem, 2.4vw, 2.2rem)",
+                    letterSpacing: "-0.045em",
+                  }}
+                >
+                  {title}
+                </h3>
+                <p style={{ margin: 0, color: "var(--db-stone)", lineHeight: 1.7 }}>
+                  {copy}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
+      <section
+        style={{
+          padding: "8rem 1.25rem 9rem",
+          borderTop: "1px solid rgba(244,241,232,0.12)",
+          textAlign: "center",
+        }}
+      >
+        <div style={{ maxWidth: "980px", margin: "0 auto" }}>
+          <p className="db-eyebrow">Open research interface</p>
+          <h2 className="db-section-title">
+            Built for the dung beetle genomics community.
+          </h2>
+          <p className="db-section-copy" style={{ margin: "1.5rem auto 2rem" }}>
+            DB² is early, but the goal is clear: a visually compelling,
+            scientifically credible platform for genome browsing, transcriptomic
+            resources, publications, and future comparative tools.
+          </p>
+          <Link href="/genome-browser" className="db-magnetic-link">
+            Enter DB²
+          </Link>
+        </div>
+      </section>
     </PageShell>
   );
 }

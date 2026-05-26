@@ -1,54 +1,48 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const NAV_LINKS = [
-  { href: "/",               label: "Home"      },
-  { href: "/genome-browser", label: "Browser"   },
-  { href: "/resources",      label: "Resources" },
-  { href: "/publications",   label: "Papers"    },
-  { href: "/people",         label: "People"    },
-  { href: "/downloads",      label: "Downloads" },
+const links = [
+  { href: "/", label: "Index" },
+  { href: "/genome-browser", label: "Genome Browser" },
+  { href: "/resources", label: "Resources" },
+  { href: "/downloads", label: "Downloads" },
+  { href: "/publications", label: "Publications" },
+  { href: "/people", label: "People" },
 ];
 
-/* ── Per-character roll animation ─────────────────────────────────────────── */
-function RollText({ text }: { text: string }) {
+function RollText({ label }: { label: string }) {
   return (
-    <span style={{ display: "inline-block", overflow: "hidden", height: "1.15em", position: "relative" }}>
-      {/* Layer 1 — current text, slides up on hover */}
+    <span
+      style={{
+        position: "relative",
+        display: "inline-block",
+        height: "1.15em",
+        overflow: "hidden",
+      }}
+    >
       <motion.span
-        variants={{}}
-        style={{ display: "inline-flex" }}
+        variants={{ rest: { y: "0%" }, hover: { y: "-110%" } }}
+        transition={{ duration: 0.35, ease: [0.22, 0.61, 0.36, 1] }}
+        style={{ display: "block" }}
       >
-        {text.split("").map((char, i) => (
-          <motion.span
-            key={`top-${i}`}
-            variants={{ rest: { y: "0%" }, hover: { y: "-110%" } }}
-            transition={{ duration: 0.32, delay: i * 0.02, ease: [0.25, 0.4, 0.25, 1] }}
-            style={{ display: "inline-block", whiteSpace: "pre" }}
-          >
-            {char}
-          </motion.span>
-        ))}
+        {label}
       </motion.span>
-      {/* Layer 2 — cyan ghost, slides in from below */}
       <motion.span
-        variants={{}}
-        style={{ display: "inline-flex", position: "absolute", left: 0, top: 0, color: "#22d3ee" }}
+        variants={{ rest: { y: "110%" }, hover: { y: "0%" } }}
+        transition={{ duration: 0.35, ease: [0.22, 0.61, 0.36, 1] }}
+        style={{
+          display: "block",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          color: "var(--db-cyan)",
+        }}
       >
-        {text.split("").map((char, i) => (
-          <motion.span
-            key={`bot-${i}`}
-            variants={{ rest: { y: "110%" }, hover: { y: "0%" } }}
-            transition={{ duration: 0.32, delay: i * 0.02, ease: [0.25, 0.4, 0.25, 1] }}
-            style={{ display: "inline-block", whiteSpace: "pre" }}
-          >
-            {char}
-          </motion.span>
-        ))}
+        {label}
       </motion.span>
     </span>
   );
@@ -60,180 +54,182 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
+    const onScroll = () => setScrolled(window.scrollY > 16);
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => { setOpen(false); }, [pathname]);
+  useEffect(() => setOpen(false), [pathname]);
 
   return (
     <>
-      <motion.nav
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.7, ease: [0.25, 0.4, 0.25, 1] }}
+      <motion.header
+        initial={{ y: -80 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.8, ease: [0.22, 0.61, 0.36, 1] }}
         style={{
           position: "fixed",
-          top: 0, left: 0, right: 0,
-          zIndex: 50,
-          transition: "background 0.35s, border-color 0.35s, box-shadow 0.35s",
-          background: scrolled ? "rgba(4,6,15,0.9)" : "transparent",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          borderBottom: scrolled ? "1px solid rgba(26,34,64,0.6)" : "1px solid transparent",
-          boxShadow: scrolled ? "0 4px 32px rgba(0,0,0,0.3)" : "none",
+          inset: "0 0 auto 0",
+          height: "72px",
+          zIndex: 80,
+          borderBottom: scrolled
+            ? "1px solid rgba(244,241,232,0.13)"
+            : "1px solid transparent",
+          background: scrolled ? "rgba(3,3,3,0.76)" : "rgba(3,3,3,0.18)",
+          backdropFilter: "blur(26px)",
+          WebkitBackdropFilter: "blur(26px)",
         }}
       >
-        <div style={{
-          maxWidth: "1280px", margin: "0 auto",
-          padding: "0 1.5rem", height: "64px",
-          display: "flex", alignItems: "center", justifyContent: "space-between",
-        }}>
-
-          {/* ── Logo ── */}
+        <div
+          style={{
+            height: "100%",
+            maxWidth: "1540px",
+            margin: "0 auto",
+            padding: "0 1.25rem",
+            display: "grid",
+            gridTemplateColumns: "auto 1fr auto",
+            alignItems: "center",
+            gap: "1rem",
+          }}
+        >
           <Link href="/" style={{ textDecoration: "none" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
-              <div style={{
-                width: "28px", height: "28px",
-                background: "linear-gradient(135deg, #22d3ee, #818cf8)",
-                borderRadius: "6px",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: "12px", fontWeight: 700, color: "#04060f",
-                fontFamily: "var(--font-mono)",
-              }}>
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.7rem",
+              }}
+            >
+              <span
+                style={{
+                  width: "34px",
+                  height: "34px",
+                  borderRadius: "999px",
+                  border: "1px solid rgba(244,241,232,0.18)",
+                  display: "grid",
+                  placeItems: "center",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.72rem",
+                  color: "var(--db-black)",
+                  background: "var(--db-cream)",
+                }}
+              >
                 D²
-              </div>
-              <span style={{
-                fontFamily: "var(--font-sans)",
-                fontWeight: 700,
-                fontSize: "1rem",
-                color: "#e2e8f0",
-                letterSpacing: "-0.02em",
-              }}>
-                DB<sup style={{ fontSize: "0.6em", verticalAlign: "super" }}>2</sup>
               </span>
-            </div>
+              <span
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.76rem",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "var(--db-cream)",
+                }}
+              >
+                DB²
+              </span>
+            </motion.div>
           </Link>
 
-          {/* ── Desktop nav ── */}
-          <nav style={{ display: "flex", alignItems: "center", gap: "2px" }} className="hidden md:flex">
-            {NAV_LINKS.map((link) => {
+          <nav
+            className="hidden lg:flex"
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+              gap: "1.15rem",
+              fontFamily: "var(--font-mono)",
+              fontSize: "0.68rem",
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+            }}
+          >
+            {links.map((link) => {
               const active = pathname === link.href;
               return (
                 <Link key={link.href} href={link.href} style={{ textDecoration: "none" }}>
-                  {/* whileHover="hover" propagates to RollText children via variant context */}
-                  <motion.div
+                  <motion.span
                     initial="rest"
-                    whileHover="hover"
                     animate="rest"
+                    whileHover="hover"
                     style={{
-                      padding: "6px 14px",
-                      borderRadius: "6px",
-                      fontSize: "0.82rem",
-                      fontFamily: "var(--font-sans)",
-                      fontWeight: active ? 600 : 400,
-                      background: active ? "rgba(34,211,238,0.07)" : "transparent",
-                      cursor: "pointer",
-                      color: active ? "#22d3ee" : "#64748b",
+                      color: active ? "var(--db-cyan)" : "var(--db-stone)",
+                      opacity: active ? 1 : 0.78,
                     }}
                   >
-                    <RollText text={link.label} />
-                  </motion.div>
+                    <RollText label={link.label} />
+                  </motion.span>
                 </Link>
               );
             })}
           </nav>
 
-          {/* ── CTA ── */}
-          <div className="hidden md:flex">
-            <Link href="/genome-browser" style={{ textDecoration: "none" }}>
-              <motion.button
-                whileHover={{ scale: 1.04, boxShadow: "0 0 22px rgba(34,211,238,0.28)" }}
-                whileTap={{ scale: 0.97 }}
-                style={{
-                  padding: "8px 18px",
-                  borderRadius: "8px",
-                  background: "rgba(34,211,238,0.07)",
-                  border: "1px solid rgba(34,211,238,0.22)",
-                  color: "#22d3ee",
-                  fontSize: "0.72rem",
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  fontFamily: "var(--font-mono)",
-                  letterSpacing: "0.1em",
-                  textTransform: "uppercase",
-                }}
-              >
-                Launch Browser
-              </motion.button>
+          <div className="hidden lg:flex" style={{ justifyContent: "flex-end" }}>
+            <Link href="/genome-browser" className="db-magnetic-link">
+              Launch
             </Link>
           </div>
 
-          {/* ── Hamburger ── */}
           <button
-            onClick={() => setOpen(!open)}
-            className="md:hidden"
-            style={{ background: "none", border: "none", cursor: "pointer", padding: "8px", display: "flex", flexDirection: "column", gap: "5px" }}
-            aria-label="Toggle menu"
+            className="lg:hidden"
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Toggle navigation"
+            style={{
+              justifySelf: "end",
+              border: "1px solid rgba(244,241,232,0.14)",
+              background: "rgba(255,255,255,0.035)",
+              color: "var(--db-cream)",
+              borderRadius: "999px",
+              width: "42px",
+              height: "42px",
+              display: "grid",
+              placeItems: "center",
+            }}
           >
-            {[0, 1, 2].map((i) => (
-              <motion.span
-                key={i}
-                animate={
-                  open
-                    ? i === 0 ? { rotate: 45, y: 10 }
-                    : i === 1 ? { opacity: 0 }
-                    : { rotate: -45, y: -10 }
-                    : { rotate: 0, y: 0, opacity: 1 }
-                }
-                style={{ display: "block", width: "20px", height: "1.5px", background: "#64748b", borderRadius: "1px", transformOrigin: "center" }}
-              />
-            ))}
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem" }}>
+              {open ? "×" : "≡"}
+            </span>
           </button>
         </div>
-      </motion.nav>
+      </motion.header>
 
-      {/* ── Mobile menu ── */}
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: -8 }}
+            initial={{ opacity: 0, y: -14 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.2 }}
+            exit={{ opacity: 0, y: -14 }}
+            transition={{ duration: 0.25 }}
             style={{
               position: "fixed",
-              top: "64px", left: 0, right: 0,
-              zIndex: 49,
-              background: "rgba(4,6,15,0.97)",
-              backdropFilter: "blur(24px)",
-              borderBottom: "1px solid rgba(26,34,64,0.6)",
-              padding: "1rem 1.5rem 1.5rem",
+              top: "72px",
+              left: 0,
+              right: 0,
+              zIndex: 70,
+              background: "rgba(3,3,3,0.94)",
+              backdropFilter: "blur(28px)",
+              borderBottom: "1px solid rgba(244,241,232,0.13)",
+              padding: "1.2rem",
             }}
           >
-            {NAV_LINKS.map((link, i) => (
-              <motion.div
+            {links.map((link) => (
+              <Link
                 key={link.href}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: i * 0.05 }}
+                href={link.href}
+                style={{
+                  display: "block",
+                  padding: "1rem 0",
+                  color: pathname === link.href ? "var(--db-cyan)" : "var(--db-cream)",
+                  textDecoration: "none",
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "0.78rem",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  borderBottom: "1px solid rgba(244,241,232,0.1)",
+                }}
               >
-                <Link
-                  href={link.href}
-                  style={{
-                    display: "block", padding: "12px 0",
-                    color: pathname === link.href ? "#22d3ee" : "#64748b",
-                    textDecoration: "none",
-                    fontSize: "1rem",
-                    fontWeight: pathname === link.href ? 600 : 400,
-                    fontFamily: "var(--font-sans)",
-                    borderBottom: "1px solid rgba(26,34,64,0.4)",
-                  }}
-                >
-                  {link.label}
-                </Link>
-              </motion.div>
+                {link.label}
+              </Link>
             ))}
           </motion.div>
         )}
