@@ -3,6 +3,7 @@
 import Link from "next/link";
 import PageShell from "@/components/site/PageShell";
 import CinematicHero from "@/components/site/CinematicHero";
+import LayerExpand from "@/components/site/LayerExpand";
 
 const modules = [
   {
@@ -31,12 +32,6 @@ const modules = [
   },
 ];
 
-const layers = [
-  ["01", "Chromosome-level assembly", "Otau_3.2 reference files hosted for browser access and download."],
-  ["02", "Annotation tracks", "NCBI and custom lab annotations kept as separable scientific layers."],
-  ["03", "Transcriptomics", "RNA-seq resources will connect gene expression to biological features."],
-  ["04", "Future comparative tools", "BLAST and comparative genomics can be added without redesigning the platform."],
-];
 
 export default function HomePage() {
   return (
@@ -270,53 +265,30 @@ export default function HomePage() {
 
       <section style={{ padding: "8rem 1.25rem" }}>
         <div style={{ maxWidth: "1540px", margin: "0 auto" }}>
-          <p className="db-eyebrow">Scientific layers</p>
-          <h2 className="db-section-title" style={{ marginBottom: "2rem" }}>
-            Data infrastructure,
-            <br />
-            organized for discovery.
-          </h2>
-
-          <div style={{ display: "grid", gap: "0.85rem" }}>
-            {layers.map(([num, title, copy]) => (
-              <div
-                key={num}
-                className="db-glass"
-                style={{
-                  borderRadius: "24px",
-                  padding: "1.5rem",
-                  display: "grid",
-                  gridTemplateColumns: "80px 0.8fr 1.2fr",
-                  gap: "1.5rem",
-                  alignItems: "center",
-                }}
-              >
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    color: "var(--db-cyan)",
-                    fontSize: "0.76rem",
-                    letterSpacing: "0.16em",
-                  }}
-                >
-                  {num}
-                </span>
-                <h3
-                  style={{
-                    margin: 0,
-                    color: "var(--db-cream)",
-                    fontSize: "clamp(1.3rem, 2.4vw, 2.2rem)",
-                    letterSpacing: "-0.045em",
-                  }}
-                >
-                  {title}
-                </h3>
-                <p style={{ margin: 0, color: "var(--db-stone)", lineHeight: 1.7 }}>
-                  {copy}
-                </p>
-              </div>
-            ))}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "flex-end",
+              gap: "2rem",
+              flexWrap: "wrap",
+              marginBottom: "3rem",
+            }}
+          >
+            <div>
+              <p className="db-eyebrow">Scientific layers</p>
+              <h2 className="db-section-title" style={{ fontSize: "clamp(2.6rem, 5vw, 5.8rem)" }}>
+                Data infrastructure,
+                <br />
+                organized for discovery.
+              </h2>
+            </div>
+            <Link href="/resources" className="db-magnetic-link">
+              All resources
+            </Link>
           </div>
+
+          <LayerExpand />
         </div>
       </section>
 

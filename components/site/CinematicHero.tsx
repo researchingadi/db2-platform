@@ -3,7 +3,7 @@
 import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { useRef, useState } from "react";
-import BeetleGenomeCanvas from "./BeetleGenomeCanvas";
+import BeetleHeroBackground from "./BeetleHeroBackground";
 
 const states = [
   {
@@ -62,15 +62,15 @@ export default function CinematicHero() {
         }}
       >
         <motion.div
-          style={{
-            position: "absolute",
-            inset: 0,
-            scale: videoScale,
-            opacity: mediaOpacity,
-          }}
-        >
-          <BeetleGenomeCanvas progress={progress} />
-        </motion.div>
+  style={{
+    position: "absolute",
+    inset: 0,
+    scale: videoScale,
+    opacity: mediaOpacity,
+  }}
+>
+  <BeetleHeroBackground />
+</motion.div>
 
         <div className="db-grid" style={{ position: "absolute", inset: 0, opacity: 0.18 }} />
         <div className="db-grain" style={{ position: "absolute", inset: 0, opacity: 0.45 }} />

@@ -289,3 +289,193 @@ select {
     grid-template-columns: 1fr !important;
   }
 }
+.beetle-hero-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 68% 42%, rgba(0, 240, 255, 0.12), transparent 34%),
+    radial-gradient(circle at 35% 55%, rgba(73, 255, 182, 0.08), transparent 30%),
+    #030303;
+}
+
+.beetle-image-wrap {
+  position: absolute;
+  right: -2vw;
+  top: 6vh;
+  width: min(76vw, 1280px);
+  height: min(82vh, 860px);
+  border-radius: 42px;
+  overflow: hidden;
+  transform-origin: center;
+  filter:
+    saturate(1.35)
+    contrast(1.12)
+    brightness(1.02);
+  box-shadow:
+    0 70px 180px rgba(0, 0, 0, 0.62),
+    0 0 110px rgba(0, 240, 255, 0.16),
+    0 0 180px rgba(73, 255, 182, 0.08);
+  border: 1px solid rgba(244, 241, 232, 0.12);
+}
+.beetle-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.08);
+}
+
+.beetle-image-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(3, 3, 3, 0.18), transparent 42%, rgba(3, 3, 3, 0.08)),
+    radial-gradient(circle at 55% 45%, transparent 28%, rgba(3, 3, 3, 0.24) 100%);
+  pointer-events: none;
+}
+
+.beetle-glow {
+  position: absolute;
+  width: 34rem;
+  height: 34rem;
+  transform: translate(-50%, -50%);
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(0, 240, 255, 0.18), transparent 62%);
+  filter: blur(20px);
+  opacity: 0.9;
+}
+
+.beetle-orbit {
+  position: absolute;
+  right: 10vw;
+  top: 18vh;
+  width: min(52vw, 760px);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  pointer-events: none;
+}
+
+.beetle-orbit-one {
+  border: 1px solid rgba(0, 240, 255, 0.22);
+  box-shadow:
+    0 0 45px rgba(0, 240, 255, 0.08),
+    inset 0 0 45px rgba(0, 240, 255, 0.035);
+}
+
+.beetle-orbit-one::before,
+.beetle-orbit-one::after,
+.beetle-orbit-two::before,
+.beetle-orbit-two::after {
+  content: "";
+  position: absolute;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--db-cyan);
+  box-shadow: 0 0 24px rgba(0, 240, 255, 0.85);
+}
+
+.beetle-orbit-one::before {
+  top: -0.3rem;
+  left: 48%;
+}
+
+.beetle-orbit-one::after {
+  bottom: 11%;
+  right: 7%;
+  background: var(--db-green);
+  box-shadow: 0 0 24px rgba(73, 255, 182, 0.75);
+}
+
+.beetle-orbit-two {
+  right: 16vw;
+  top: 26vh;
+  width: min(38vw, 560px);
+  border: 1px dashed rgba(244, 241, 232, 0.18);
+}
+
+.beetle-orbit-two::before {
+  top: 22%;
+  right: -0.3rem;
+  background: var(--db-violet);
+  box-shadow: 0 0 24px rgba(141, 124, 255, 0.8);
+}
+
+.beetle-orbit-two::after {
+  left: 12%;
+  bottom: 8%;
+  background: var(--db-cream);
+  box-shadow: 0 0 24px rgba(244, 241, 232, 0.65);
+}
+
+.genome-track-field {
+  position: absolute;
+  left: 4vw;
+  top: 17vh;
+  width: min(38vw, 560px);
+  display: grid;
+  gap: 0.65rem;
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.genome-track-field span {
+  display: block;
+  height: 0.35rem;
+  border-radius: 999px;
+  transform-origin: left;
+  background:
+    linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.95), rgba(73, 255, 182, 0.7), transparent);
+  box-shadow: 0 0 22px rgba(0, 240, 255, 0.18);
+}
+
+.beetle-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(3, 3, 3, 0.92) 0%, rgba(3, 3, 3, 0.50) 34%, rgba(3, 3, 3, 0.04) 78%),
+    linear-gradient(to bottom, rgba(3, 3, 3, 0.08), rgba(3, 3, 3, 0.58)),
+    radial-gradient(circle at center, transparent 52%, rgba(0, 0, 0, 0.52) 100%);
+  pointer-events: none;
+}
+
+.beetle-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+}
+
+.beetle-scanlines {
+  position: absolute;
+  inset: 0;
+  opacity: 0.12;
+}
+
+@media (max-width: 1000px) {
+  .beetle-image-wrap {
+    right: -30vw;
+    top: 18vh;
+    width: 110vw;
+    height: 58vh;
+    opacity: 0.65;
+  }
+
+  .beetle-orbit {
+    right: -8vw;
+    top: 24vh;
+    width: 82vw;
+  }
+
+  .genome-track-field {
+    display: none;
+  }
+
+  .beetle-vignette {
+    background:
+      linear-gradient(to bottom, rgba(3,3,3,0.62), rgba(3,3,3,0.92)),
+      radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.86) 100%);
+  }
+}

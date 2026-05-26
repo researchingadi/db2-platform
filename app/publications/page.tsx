@@ -3,24 +3,28 @@ import PageShell from "@/components/site/PageShell";
 
 export const metadata = {
   title: "Publications — DB²",
-  description: "Genomics research and Davidson Lab publications for Onthophagus taurus",
+  description:
+    "Genomics research and Davidson Lab publications for Onthophagus taurus",
 };
 
 /* All entries are placeholders — not real publications */
 const SECTIONS = [
   {
     heading: "Genome Assembly & Annotation",
-    color: "#22d3ee",
+    accent: "#00f0ff",
+    accentRgb: "0,240,255",
     papers: [
       {
-        title: "Chromosome-level genome assembly of Onthophagus taurus reveals the genomic basis of horn polyphenism",
+        title:
+          "Chromosome-level genome assembly of Onthophagus taurus reveals the genomic basis of horn polyphenism",
         authors: "Davidson Lab et al.",
         journal: "placeholder — not a real publication",
         year: "2024",
         tags: ["Assembly", "Annotation", "NCBI"],
       },
       {
-        title: "Comparative genomics of dung beetles: structural variation and gene family expansion",
+        title:
+          "Comparative genomics of dung beetles: structural variation and gene family expansion",
         authors: "Placeholder Authors",
         journal: "placeholder — not a real publication",
         year: "2024",
@@ -30,17 +34,20 @@ const SECTIONS = [
   },
   {
     heading: "Davidson Lab Publications",
-    color: "#818cf8",
+    accent: "#8d7cff",
+    accentRgb: "141,124,255",
     papers: [
       {
-        title: "Developmental plasticity and the evolution of beetle horns",
+        title:
+          "Developmental plasticity and the evolution of beetle horns",
         authors: "Davidson Lab",
         journal: "placeholder — representative topic, not a real publication",
         year: "2023",
         tags: ["Plasticity", "Morphology", "Evo-devo"],
       },
       {
-        title: "RNA-seq analysis of horn development across nutrition-mediated alternative morphs",
+        title:
+          "RNA-seq analysis of horn development across nutrition-mediated alternative morphs",
         authors: "Placeholder Authors",
         journal: "placeholder — not a real publication",
         year: "2023",
@@ -50,10 +57,12 @@ const SECTIONS = [
   },
   {
     heading: "Dung Beetle Biology",
-    color: "#10b981",
+    accent: "#49ffb6",
+    accentRgb: "73,255,182",
     papers: [
       {
-        title: "Ecology and evolution of dung beetles: a global perspective",
+        title:
+          "Ecology and evolution of dung beetles: a global perspective",
         authors: "Placeholder Authors",
         journal: "placeholder — representative topic",
         year: "2022",
@@ -66,145 +75,160 @@ const SECTIONS = [
 export default function PublicationsPage() {
   return (
     <PageShell>
-      <div style={{ background: "var(--db-bg)", minHeight: "calc(100vh - 64px)" }}>
-
-        {/* ── Hero ── */}
-        <div style={{
-          padding: "4rem 1.5rem 3rem",
-          borderBottom: "1px solid rgba(26,34,64,0.4)",
+      {/* ── Hero ── */}
+      <div
+        style={{
+          padding: "6rem 1.25rem 4rem",
+          borderBottom: "1px solid var(--db-line)",
           position: "relative",
           overflow: "hidden",
-        }}>
-          <div style={{
-            position: "absolute",
-            top: "-30%", right: "5%",
-            width: "400px", height: "400px",
-            background: "radial-gradient(circle, rgba(129,140,248,0.08) 0%, transparent 70%)",
-            pointerEvents: "none",
-          }} />
-          <div style={{ maxWidth: "1280px", margin: "0 auto", position: "relative" }}>
-            <AnimatedSection>
-              <p style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.7rem",
-                color: "#818cf8",
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                marginBottom: "12px",
-              }}>DB² · Literature</p>
-              <h1 style={{
-                fontFamily: "var(--font-sans)",
-                fontWeight: 700,
-                fontSize: "clamp(2rem, 4vw, 3rem)",
-                color: "#e2e8f0",
-                letterSpacing: "-0.03em",
-                margin: "0 0 1rem",
-              }}>
-                Publications
-              </h1>
-              <p style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "0.95rem",
-                color: "#64748b",
-                maxWidth: "52ch",
-                lineHeight: 1.7,
-                margin: "0 0 12px",
-              }}>
-                Research papers associated with the DB² platform, Davidson Lab, and the
-                broader dung beetle genomics community.
-              </p>
-              <span style={{
-                display: "inline-block",
-                padding: "4px 12px",
-                borderRadius: "6px",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.68rem",
-                color: "#818cf8",
-                background: "rgba(129,140,248,0.08)",
-                border: "1px solid rgba(129,140,248,0.2)",
-              }}>
-                ⚠ All entries below are placeholders and do not represent real publications
-              </span>
-            </AnimatedSection>
-          </div>
+          background:
+            "radial-gradient(circle at 75% 25%, rgba(141,124,255,0.07), transparent 36%), var(--db-black)",
+        }}
+      >
+        <div style={{ maxWidth: "1540px", margin: "0 auto", position: "relative" }}>
+          <AnimatedSection>
+            <p
+              className="db-eyebrow"
+              style={{ color: "var(--db-violet)" }}
+            >
+              DB² · Literature
+            </p>
+            <h1
+              className="db-section-title"
+              style={{ fontSize: "clamp(2.8rem, 5vw, 5.5rem)" }}
+            >
+              Publications
+            </h1>
+            <p className="db-section-copy" style={{ marginTop: "1.25rem", marginBottom: "1.25rem" }}>
+              Research papers associated with the DB² platform, Davidson Lab, and
+              the broader dung beetle genomics community.
+            </p>
+            <span
+              className="db-pill"
+              style={{ borderColor: "rgba(141,124,255,0.3)", color: "var(--db-violet)" }}
+            >
+              <span
+                style={{
+                  width: "0.42rem",
+                  height: "0.42rem",
+                  borderRadius: "999px",
+                  background: "var(--db-violet)",
+                  display: "inline-block",
+                  boxShadow: "0 0 12px rgba(141,124,255,0.7)",
+                }}
+              />
+              All entries below are placeholders — not real publications
+            </span>
+          </AnimatedSection>
         </div>
+      </div>
 
-        {/* ── Sections ── */}
-        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "3rem 1.5rem 5rem" }}>
-          {SECTIONS.map((sec, si) => (
-            <AnimatedSection key={sec.heading} delay={si * 0.1} style={{ marginBottom: "3rem" }}>
-              {/* Section header */}
-              <div style={{
+      {/* ── Sections ── */}
+      <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
+        {SECTIONS.map((sec, si) => (
+          <AnimatedSection
+            key={sec.heading}
+            delay={si * 0.1}
+            style={{ marginBottom: "3.5rem" }}
+          >
+            {/* Section header */}
+            <div
+              style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "12px",
+                gap: "0.75rem",
                 marginBottom: "1.25rem",
-              }}>
-                <div style={{ width: "3px", height: "24px", borderRadius: "2px", background: sec.color }} />
-                <h2 style={{
-                  fontFamily: "var(--font-sans)",
-                  fontWeight: 600,
-                  fontSize: "1rem",
-                  color: "#94a3b8",
-                  letterSpacing: "0.02em",
+              }}
+            >
+              <div
+                style={{
+                  width: "3px",
+                  height: "22px",
+                  borderRadius: "2px",
+                  background: sec.accent,
+                  boxShadow: `0 0 12px rgba(${sec.accentRgb}, 0.65)`,
+                }}
+              />
+              <h2
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontWeight: 500,
+                  fontSize: "0.68rem",
+                  color: "var(--db-muted)",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
                   margin: 0,
-                }}>
-                  {sec.heading}
-                </h2>
-              </div>
+                }}
+              >
+                {sec.heading}
+              </h2>
+            </div>
 
-              {/* Paper cards */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {sec.papers.map((p, pi) => (
-                  <AnimatedSection key={p.title} delay={si * 0.1 + pi * 0.07}>
-                    <div style={{
+            {/* Paper cards */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              {sec.papers.map((p, pi) => (
+                <AnimatedSection key={p.title} delay={si * 0.1 + pi * 0.07}>
+                  <div
+                    className="db-glass"
+                    style={{
                       padding: "1.5rem",
-                      borderRadius: "12px",
-                      background: "rgba(9,13,26,0.8)",
-                      border: "1px solid rgba(26,34,64,0.5)",
-                      borderLeft: `3px solid ${sec.color}40`,
-                      transition: "border-color 0.2s",
-                    }}>
-                      <h3 style={{
+                      borderRadius: "18px",
+                      borderLeft: `3px solid rgba(${sec.accentRgb}, 0.45)`,
+                    }}
+                  >
+                    <h3
+                      style={{
                         fontFamily: "var(--font-sans)",
                         fontWeight: 600,
-                        fontSize: "0.95rem",
-                        color: "#e2e8f0",
-                        margin: "0 0 8px",
+                        fontSize: "0.98rem",
+                        color: "var(--db-cream)",
+                        margin: "0 0 0.55rem",
                         lineHeight: 1.5,
-                      }}>
-                        {p.title}
-                      </h3>
-                      <div style={{
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      {p.title}
+                    </h3>
+                    <div
+                      style={{
                         fontFamily: "var(--font-sans)",
                         fontSize: "0.82rem",
-                        color: "#64748b",
-                        marginBottom: "6px",
-                      }}>
-                        {p.authors} · <em>{p.journal}</em> · {p.year}
-                      </div>
-                      <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", marginTop: "10px" }}>
-                        {p.tags.map((t) => (
-                          <span key={t} style={{
-                            padding: "2px 8px",
-                            borderRadius: "4px",
-                            fontSize: "0.65rem",
-                            fontFamily: "var(--font-mono)",
-                            color: sec.color,
-                            background: `${sec.color}10`,
-                            border: `1px solid ${sec.color}25`,
-                          }}>
-                            {t}
-                          </span>
-                        ))}
-                      </div>
+                        color: "var(--db-muted)",
+                        marginBottom: "0.75rem",
+                        lineHeight: 1.5,
+                      }}
+                    >
+                      {p.authors} ·{" "}
+                      <em style={{ color: "var(--db-muted)", fontStyle: "italic" }}>
+                        {p.journal}
+                      </em>{" "}
+                      · {p.year}
                     </div>
-                  </AnimatedSection>
-                ))}
-              </div>
-            </AnimatedSection>
-          ))}
-        </div>
+                    <div
+                      style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}
+                    >
+                      {p.tags.map((t) => (
+                        <span
+                          key={t}
+                          className="db-pill"
+                          style={{
+                            fontSize: "0.6rem",
+                            padding: "0.24rem 0.55rem",
+                            borderColor: `rgba(${sec.accentRgb}, 0.28)`,
+                            color: sec.accent,
+                          }}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </AnimatedSection>
+              ))}
+            </div>
+          </AnimatedSection>
+        ))}
       </div>
     </PageShell>
   );

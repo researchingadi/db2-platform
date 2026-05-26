@@ -8,63 +8,69 @@ export const metadata = {
 
 const RESOURCES = [
   {
-    icon: "🧬",
+    abbr: "FA",
     title: "Genome Assembly",
     description:
       "Chromosome-level genome assembly for Onthophagus taurus (Otau_3.2 / IU_Otau_3.0). NCBI accession GCF_036711975.1. 12 chromosomes, ~295 Mb.",
     tags: ["FASTA", "GFF3", "NCBI RefSeq"],
     href: "/downloads",
-    accent: "#22d3ee",
+    accent: "#00f0ff",
+    accentRgb: "0,240,255",
     status: "available",
   },
   {
-    icon: "📌",
+    abbr: "AN",
     title: "NCBI Gene Annotation",
     description:
       "Official NCBI annotation track with 28,456 predicted gene models mapped to the Otau_3.2 assembly. GFF3 format with tabix index.",
     tags: ["GFF3", "Tabix", "28,456 genes"],
     href: "/downloads",
-    accent: "#818cf8",
+    accent: "#8d7cff",
+    accentRgb: "141,124,255",
     status: "available",
   },
   {
-    icon: "🧾",
+    abbr: "GT",
     title: "GTF Annotation",
     description:
       "GTF-format annotation file sorted and indexed for use with genome browsers and bioinformatics pipelines.",
     tags: ["GTF", "Tabix", "JBrowse 2"],
     href: "/downloads",
-    accent: "#10b981",
+    accent: "#49ffb6",
+    accentRgb: "73,255,182",
     status: "available",
   },
   {
-    icon: "📊",
+    abbr: "RN",
     title: "RNA-seq Datasets",
     description:
       "Transcriptomics data across developmental stages and tissues. Includes raw reads, alignments, and expression matrices.",
     tags: ["FASTQ", "BAM", "TPM matrix"],
     href: "#",
-    accent: "#22d3ee",
+    accent: "#00f0ff",
+    accentRgb: "0,240,255",
     status: "coming-soon",
   },
   {
-    icon: "📚",
+    abbr: "DC",
     title: "Documentation",
     description:
       "Guides for using the genome browser, downloading data files, and interpreting annotation tracks.",
     tags: ["User guide", "API", "Tutorials"],
     href: "#",
-    accent: "#818cf8",
+    accent: "#8d7cff",
+    accentRgb: "141,124,255",
     status: "coming-soon",
   },
   {
-    icon: "⚡",
+    abbr: "BL",
     title: "BLAST Interface",
     description:
       "Align sequences against the Otau_3.2 assembly and predicted proteome. Local BLAST with genome-browser integration.",
     tags: ["BLAST+", "Nucleotide", "Protein"],
     href: "#",
-    accent: "#10b981",
+    accent: "#49ffb6",
+    accentRgb: "73,255,182",
     status: "coming-soon",
   },
 ];
@@ -72,193 +78,164 @@ const RESOURCES = [
 export default function ResourcesPage() {
   return (
     <PageShell>
-      <div style={{ background: "var(--db-bg)", minHeight: "calc(100vh - 64px)" }}>
-
-        {/* ── Page hero ── */}
-        <div style={{
-          padding: "4rem 1.5rem 3rem",
-          borderBottom: "1px solid rgba(26,34,64,0.4)",
+      {/* ── Page hero ── */}
+      <div
+        style={{
+          padding: "6rem 1.25rem 4rem",
+          borderBottom: "1px solid var(--db-line)",
           position: "relative",
           overflow: "hidden",
-        }}>
-          {/* gradient blob */}
-          <div style={{
-            position: "absolute",
-            top: "-20%", left: "60%",
-            width: "500px", height: "400px",
-            background: "radial-gradient(circle, rgba(34,211,238,0.08) 0%, transparent 70%)",
-            pointerEvents: "none",
-          }} />
-          <div style={{ maxWidth: "1280px", margin: "0 auto", position: "relative" }}>
-            <AnimatedSection>
-              <p style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.7rem",
-                color: "#22d3ee",
-                letterSpacing: "0.14em",
-                textTransform: "uppercase",
-                marginBottom: "12px",
-              }}>
-                DB² · Resources
-              </p>
-              <h1 style={{
-                fontFamily: "var(--font-sans)",
-                fontWeight: 700,
-                fontSize: "clamp(2rem, 4vw, 3rem)",
-                color: "#e2e8f0",
-                letterSpacing: "-0.03em",
-                margin: "0 0 1rem",
-              }}>
-                Genomic Resources
-              </h1>
-              <p style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "0.95rem",
-                color: "#64748b",
-                maxWidth: "54ch",
-                lineHeight: 1.7,
-                margin: 0,
-              }}>
-                All data, annotations, and tools available for{" "}
-                <em style={{ color: "#94a3b8" }}>Onthophagus taurus</em> genomics research.
-                Files are hosted on Cloudflare R2 for global low-latency access.
-              </p>
-            </AnimatedSection>
-          </div>
+          background:
+            "radial-gradient(circle at 65% 30%, rgba(0,240,255,0.07), transparent 38%), var(--db-black)",
+        }}
+      >
+        <div style={{ maxWidth: "1540px", margin: "0 auto", position: "relative" }}>
+          <AnimatedSection>
+            <p className="db-eyebrow">DB² · Resources</p>
+            <h1
+              className="db-section-title"
+              style={{ fontSize: "clamp(2.8rem, 5vw, 5.5rem)" }}
+            >
+              Genomic Resources
+            </h1>
+            <p className="db-section-copy" style={{ marginTop: "1.25rem" }}>
+              All data, annotations, and tools available for{" "}
+              <em style={{ color: "var(--db-stone)", fontStyle: "italic" }}>
+                Onthophagus taurus
+              </em>{" "}
+              genomics research. Files hosted on Cloudflare R2 for global
+              low-latency access.
+            </p>
+          </AnimatedSection>
         </div>
+      </div>
 
-        {/* ── Resource cards ── */}
-        <div style={{ maxWidth: "1280px", margin: "0 auto", padding: "3rem 1.5rem 5rem" }}>
-          <div style={{
+      {/* ── Resource cards ── */}
+      <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
+        <div
+          style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-            gap: "16px",
-          }}>
-            {RESOURCES.map((r, i) => (
-              <AnimatedSection key={r.title} delay={i * 0.07}>
-                <div style={{
-                  padding: "1.75rem",
-                  borderRadius: "14px",
-                  background: "rgba(9,13,26,0.8)",
-                  border: `1px solid ${r.status === "available" ? `${r.accent}30` : "rgba(26,34,64,0.5)"}`,
-                  height: "100%",
+            gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
+            gap: "0.9rem",
+          }}
+        >
+          {RESOURCES.map((r, i) => (
+            <AnimatedSection key={r.title} delay={i * 0.07}>
+              <div
+                className="db-glass db-noise-card"
+                style={{
+                  borderRadius: "22px",
+                  padding: "1.6rem",
+                  minHeight: "280px",
                   display: "flex",
                   flexDirection: "column",
                   gap: "1rem",
-                  position: "relative",
-                  overflow: "hidden",
-                }}>
-                  {/* top rule */}
-                  <div style={{
-                    position: "absolute",
-                    top: 0, left: "10%", right: "10%",
-                    height: "1px",
-                    background: `linear-gradient(90deg, transparent, ${r.accent}80, transparent)`,
-                    opacity: r.status === "available" ? 0.8 : 0.2,
-                  }} />
-
-                  {/* icon + status */}
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between" }}>
-                    <div style={{
-                      width: "44px", height: "44px",
-                      borderRadius: "10px",
-                      background: `${r.accent}15`,
-                      border: `1px solid ${r.accent}30`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "1.2rem",
-                      opacity: r.status === "available" ? 1 : 0.5,
-                    }}>
-                      {r.icon}
-                    </div>
-                    {r.status === "coming-soon" && (
-                      <span style={{
-                        padding: "3px 10px",
-                        borderRadius: "4px",
-                        fontSize: "0.65rem",
-                        fontFamily: "var(--font-mono)",
-                        color: "#818cf8",
-                        background: "rgba(129,140,248,0.1)",
-                        border: "1px solid rgba(129,140,248,0.2)",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                      }}>
-                        Coming Soon
-                      </span>
-                    )}
-                    {r.status === "available" && (
-                      <span style={{
-                        padding: "3px 10px",
-                        borderRadius: "4px",
-                        fontSize: "0.65rem",
-                        fontFamily: "var(--font-mono)",
-                        color: "#10b981",
-                        background: "rgba(16,185,129,0.1)",
-                        border: "1px solid rgba(16,185,129,0.2)",
-                        textTransform: "uppercase",
-                        letterSpacing: "0.08em",
-                      }}>
-                        Available
-                      </span>
-                    )}
-                  </div>
-
-                  {/* text */}
-                  <div style={{ flex: 1 }}>
-                    <h3 style={{
-                      fontFamily: "var(--font-sans)",
-                      fontWeight: 600,
-                      fontSize: "1rem",
-                      color: "#e2e8f0",
-                      margin: "0 0 8px",
-                      opacity: r.status === "available" ? 1 : 0.6,
-                    }}>
-                      {r.title}
-                    </h3>
-                    <p style={{
-                      fontFamily: "var(--font-sans)",
-                      fontSize: "0.85rem",
-                      color: "#64748b",
-                      lineHeight: 1.65,
-                      margin: 0,
-                    }}>
-                      {r.description}
-                    </p>
-                  </div>
-
-                  {/* tags */}
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                    {r.tags.map((t) => (
-                      <span key={t} style={{
-                        padding: "3px 10px",
-                        borderRadius: "4px",
-                        fontSize: "0.68rem",
-                        fontFamily: "var(--font-mono)",
-                        color: "#475569",
-                        background: "rgba(14,20,38,0.8)",
-                        border: "1px solid rgba(26,34,64,0.5)",
-                      }}>
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  {r.status === "available" && (
-                    <a href={r.href} style={{
-                      display: "inline-flex",
+                  opacity: r.status === "coming-soon" ? 0.7 : 1,
+                  ...(r.status === "available"
+                    ? { borderColor: `rgba(${r.accentRgb}, 0.28)` }
+                    : {}),
+                }}
+              >
+                {/* Header */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "48px",
+                      height: "48px",
+                      borderRadius: "12px",
+                      background: `rgba(${r.accentRgb}, 0.1)`,
+                      border: `1px solid rgba(${r.accentRgb}, 0.25)`,
+                      display: "flex",
                       alignItems: "center",
-                      gap: "6px",
-                      color: r.accent,
-                      textDecoration: "none",
-                      fontSize: "0.8rem",
+                      justifyContent: "center",
                       fontFamily: "var(--font-mono)",
-                    }}>
-                      View downloads →
-                    </a>
+                      fontSize: "0.68rem",
+                      color: r.accent,
+                      letterSpacing: "0.1em",
+                      fontWeight: 500,
+                    }}
+                  >
+                    {r.abbr}
+                  </div>
+                  {r.status === "coming-soon" ? (
+                    <div className="db-pill">
+                      <span
+                        style={{
+                          width: "0.42rem",
+                          height: "0.42rem",
+                          borderRadius: "999px",
+                          background: "var(--db-muted)",
+                          display: "inline-block",
+                        }}
+                      />
+                      Soon
+                    </div>
+                  ) : (
+                    <div className="db-pill">
+                      <span className="db-dot" />
+                      Live
+                    </div>
                   )}
                 </div>
-              </AnimatedSection>
-            ))}
-          </div>
+
+                {/* Content */}
+                <div style={{ flex: 1 }}>
+                  <h3
+                    style={{
+                      margin: "0 0 0.55rem",
+                      fontSize: "1.05rem",
+                      letterSpacing: "-0.03em",
+                      color: "var(--db-cream)",
+                      fontWeight: 600,
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {r.title}
+                  </h3>
+                  <p
+                    style={{
+                      margin: 0,
+                      color: "var(--db-stone)",
+                      lineHeight: 1.7,
+                      fontSize: "0.84rem",
+                    }}
+                  >
+                    {r.description}
+                  </p>
+                </div>
+
+                {/* Tags */}
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+                  {r.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="db-pill"
+                      style={{ fontSize: "0.62rem", padding: "0.28rem 0.6rem" }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+
+                {/* CTA */}
+                {r.status === "available" && (
+                  <a
+                    href={r.href}
+                    className="db-magnetic-link"
+                    style={{ color: r.accent, fontSize: "0.7rem" }}
+                  >
+                    View downloads
+                  </a>
+                )}
+              </div>
+            </AnimatedSection>
+          ))}
         </div>
       </div>
     </PageShell>
