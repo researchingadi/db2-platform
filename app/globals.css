@@ -1,26 +1,155 @@
+/* ── Fontsource ──────────────────────────────────────────────────────────── */
+@import "@fontsource/space-grotesk/400.css";
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/600.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+
+/* ── Tailwind ────────────────────────────────────────────────────────────── */
 @import "tailwindcss";
 
+/* ── Design tokens ───────────────────────────────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --db-bg:         #04060f;
+  --db-surface:    #090d1a;
+  --db-surface-2:  #0e1426;
+  --db-border:     #1a2240;
+  --db-border-dim: #0f1630;
+  --db-cyan:       #22d3ee;
+  --db-cyan-dim:   rgba(34, 211, 238, 0.15);
+  --db-violet:     #818cf8;
+  --db-violet-dim: rgba(129, 140, 248, 0.15);
+  --db-emerald:    #10b981;
+  --db-emerald-dim:rgba(16, 185, 129, 0.12);
+  --db-text:       #e2e8f0;
+  --db-muted:      #64748b;
+  --db-muted-2:    #94a3b8;
+  --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--db-bg);
+  color: var(--db-text);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+/* ── Tailwind theme tokens ───────────────────────────────────────────────── */
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+  --color-db-bg:       var(--db-bg);
+  --color-db-surface:  var(--db-surface);
+  --color-db-border:   var(--db-border);
+  --color-db-cyan:     var(--db-cyan);
+  --color-db-violet:   var(--db-violet);
+  --color-db-emerald:  var(--db-emerald);
+  --color-db-text:     var(--db-text);
+  --color-db-muted:    var(--db-muted);
+}
+
+/* ── Keyframe animations ─────────────────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px);  }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.9; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg);   }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes gradient-shift {
+  0%   { background-position: 0%   50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0%   50%; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Utility classes ─────────────────────────────────────────────────────── */
+.font-sans { font-family: var(--font-sans); }
+.font-mono { font-family: var(--font-mono); }
+
+.text-gradient-cyan {
+  background: linear-gradient(135deg, var(--db-cyan), var(--db-violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-violet {
+  background: linear-gradient(135deg, var(--db-violet), var(--db-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass {
+  background: rgba(9, 13, 26, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--db-border);
+}
+
+.glass-light {
+  background: rgba(14, 20, 38, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--db-border-dim);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 20px rgba(34, 211, 238, 0.25),
+              0 0 60px rgba(34, 211, 238, 0.10);
+}
+
+.glow-violet {
+  box-shadow: 0 0 20px rgba(129, 140, 248, 0.25),
+              0 0 60px rgba(129, 140, 248, 0.10);
+}
+
+.border-glow-cyan {
+  border-color: rgba(34, 211, 238, 0.5);
+  box-shadow: 0 0 16px rgba(34, 211, 238, 0.2),
+              inset 0 0 16px rgba(34, 211, 238, 0.04);
+}
+
+.border-glow-violet {
+  border-color: rgba(129, 140, 248, 0.5);
+  box-shadow: 0 0 16px rgba(129, 140, 248, 0.2),
+              inset 0 0 16px rgba(129, 140, 248, 0.04);
+}
+
+/* scrollbar */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--db-bg); }
+::-webkit-scrollbar-thumb { background: var(--db-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--db-muted); }

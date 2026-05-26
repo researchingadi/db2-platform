@@ -11,15 +11,20 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
+    "@fontsource/jetbrains-mono": "^5.2.8",
+    "@fontsource/space-grotesk": "^5.2.10",
     "@jbrowse/react-linear-genome-view": "^2.18.0",
     "@mui/material": "^6.5.0",
+    "@types/three": "^0.184.1",
+    "framer-motion": "^12.40.0",
     "mobx": "^6.15.4",
     "mobx-react": "^9.2.2",
     "mobx-state-tree": "^5.4.2",
     "next": "^14.2.35",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-draggable": "^4.5.0"
+    "react-draggable": "^4.5.0",
+    "three": "^0.184.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.3.0",
