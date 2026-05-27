@@ -13,7 +13,7 @@
 
 (DB)² is a modern, visually engaging genome and transcriptomics database for the dung beetle *Onthophagus taurus*. It integrates chromosome-level genome assembly data, NCBI-generated and Davidson Lab custom gene annotations, RNA-seq datasets linked to biological features, and community resources — all in one accessible platform.
 
-Built as a research resource for the [Davidson Lab](https://davidsonlab-msu.github.io/) at Mississippi State University, (DB)² is designed to be usable by anyone — from expert bioinformaticians to undergraduate researchers exploring beetle genomics for the first time.
+Built as a research resource by the [Davidson Lab](https://davidsonlab-msu.github.io/) at Mississippi State University, (DB)² is designed to be usable by anyone — from expert bioinformaticians to undergraduate researchers exploring beetle genomics for the first time.
 
 ---
 
