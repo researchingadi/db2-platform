@@ -280,7 +280,7 @@ Assembly citation:
 This project is developed by the Davidson Lab at Mississippi State University. For questions about data, annotations, or collaboration:
 
 - **Lab website:** [Davidson Lab, MSU]
-- **GitHub issues:** [github.com/operator2036/db2-platform/issues](https://github.com/operator2036/db2-platform/issues)
+- **GitHub issues:** [github.com/researchingadi/db2-platform/issues](https://github.com/researchingadi/db2-platform/issues)
 
 ---
 
@@ -289,7 +289,7 @@ This project is developed by the Davidson Lab at Mississippi State University. F
 | Name | Role |
 |---|---|
 | Dr. Philip L. Davidson | Principal Investigator |
-| Adi (operator2036) | Bioinformatics Web Developer |
+| Adi (researchingadi) | Bioinformatics Web Developer |
 
 ---
 
