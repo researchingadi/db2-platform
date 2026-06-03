@@ -13,7 +13,7 @@
 
 (DB)² is a modern, visually engaging genome and transcriptomics database for the dung beetle *Onthophagus taurus*. It integrates chromosome-level genome assembly data, NCBI-generated and Davidson Lab custom gene annotations, RNA-seq datasets linked to biological features, and community resources — all in one accessible platform.
 
-Built as a research resource for the [Davidson Lab](https://davidsonlab-msu.github.io/) at Mississippi State University, (DB)² is designed to be usable by anyone — from expert bioinformaticians to undergraduate researchers exploring beetle genomics for the first time.
+Built as a research resource by the [Davidson Lab](https://davidsonlab-msu.github.io/) at Mississippi State University, (DB)² is designed to be usable by anyone — from expert bioinformaticians to undergraduate researchers exploring beetle genomics for the first time.
 
 ---
 
@@ -280,7 +280,7 @@ Assembly citation:
 This project is developed by the Davidson Lab at Mississippi State University. For questions about data, annotations, or collaboration:
 
 - **Lab website:** [Davidson Lab, MSU]
-- **GitHub issues:** [github.com/operator2036/db2-platform/issues](https://github.com/operator2036/db2-platform/issues)
+- **GitHub issues:** [github.com/researchingadi/db2-platform/issues](https://github.com/researchingadi/db2-platform/issues)
 
 ---
 
@@ -289,7 +289,7 @@ This project is developed by the Davidson Lab at Mississippi State University. F
 | Name | Role |
 |---|---|
 | Dr. Philip L. Davidson | Principal Investigator |
-| Adi (operator2036) | Bioinformatics Web Developer |
+| Adi (researchingadi) | Bioinformatics Web Developer |
 
 ---
 
