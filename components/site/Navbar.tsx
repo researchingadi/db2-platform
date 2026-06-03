@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 const links = [
   { href: "/", label: "Index" },
   { href: "/genome-browser", label: "Genome Browser" },
+  { href: "/distribution", label: "Distribution" },
   { href: "/resources", label: "Resources" },
   { href: "/downloads", label: "Downloads" },
   { href: "/publications", label: "Publications" },
