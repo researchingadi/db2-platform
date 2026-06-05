@@ -106,7 +106,7 @@ db2-platform/
 ### Installation
 
 ```bash
-git clone https://github.com/operator2036/db2-platform.git
+git clone https://github.com/researchingadi/db2-platform.git
 cd db2-platform
 npm install
 npm run dev
@@ -289,7 +289,7 @@ This project is developed by the Davidson Lab at Mississippi State University. F
 | Name | Role |
 |---|---|
 | Dr. Philip L. Davidson | Principal Investigator |
-| Adi (researchingadi) | Bioinformatics Web Developer |
+| Adi Singh (researchingadi) | Bioinformatics Full Stack Researcher |
 
 ---
 
