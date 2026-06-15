@@ -14,6 +14,7 @@ const PI = {
   institution: "Mississippi State University",
   location: "Starkville, MS, USA",
   website: "davidsonlab-msu.github.io",
+  image: "/media/philipdavidson.jpg",
   description:
     "Dr. Davidson leads the laboratory studying developmental plasticity, genome evolution, and the molecular basis of alternative phenotypes in dung beetles.",
   accent: "#00f0ff",
@@ -29,6 +30,7 @@ const COLLABORATORS = [
     location: "Boston, MA, USA",
     email: "ascasasa@bu.edu",
     website: "www.casasalab.com",
+    image: "/media/sophiacasasa.jpeg",
     accent: "#8d7cff",
     accentRgb: "141,124,255",
   },
@@ -40,6 +42,7 @@ const COLLABORATORS = [
     location: "Chongqing, China",
     email: "yongganghu@swu.edu.cn",
     website: "researchgate.net/profile/Yonggang-Hu-2",
+    image: "/media/yongganghu.jpeg",
     accent: "#49ffb6",
     accentRgb: "73,255,182",
   },
@@ -51,6 +54,7 @@ const COLLABORATORS = [
     location: "Bloomington, IN, USA",
     email: "armin@iu.edu",
     website: "www.ecoevodevo.com",
+    image: "/media/armin.jpg",
     accent: "#8d7cff",
     accentRgb: "141,124,255",
   },
@@ -62,6 +66,7 @@ const COLLABORATORS = [
     location: "San Diego, CA, USA",
     email: "prohner@ucsd.edu",
     website: "rohnerlab.biosci.ucsd.edu",
+    image: "/media/patrickrohner.jpg",
     accent: "#49ffb6",
     accentRgb: "73,255,182",
   },
@@ -76,6 +81,7 @@ const DEVS = [
     institution: "Mississippi State University",
     location: "Starkville, MS, USA",
     email: "as5142@msstate.edu",
+    image: "/media/adi.png",
     accent: "#8d7cff",
     accentRgb: "141,124,255",
   },
@@ -90,6 +96,7 @@ function PersonCard({
   location,
   email,
   website,
+  image,
   description,
   accent,
   accentRgb,
@@ -103,11 +110,13 @@ function PersonCard({
   location?: string;
   email?: string;
   website?: string;
+  image?: string;
   description?: string;
   accent: string;
   accentRgb: string;
   large?: boolean;
 }) {
+  const avatarSize = large ? "72px" : "54px";
   return (
     <div
       className="db-glass"
@@ -135,19 +144,35 @@ function PersonCard({
       {/* Avatar */}
       <div
         style={{
-          width: large ? "60px" : "46px",
-          height: large ? "60px" : "46px",
+          width: avatarSize,
+          height: avatarSize,
           borderRadius: "50%",
           background: `rgba(${accentRgb}, 0.12)`,
-          border: `1px solid rgba(${accentRgb}, 0.3)`,
+          border: `2px solid rgba(${accentRgb}, 0.35)`,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           fontSize: large ? "1.5rem" : "1.1rem",
           marginBottom: "1rem",
+          overflow: "hidden",
+          flexShrink: 0,
         }}
       >
-        🪲
+        {image ? (
+          <img
+            src={image}
+            alt={name}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center top",
+              display: "block",
+            }}
+          />
+        ) : (
+          <span>🪲</span>
+        )}
       </div>
 
       <h3
