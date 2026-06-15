@@ -7,49 +7,61 @@ export const metadata = {
 };
 
 const PI = {
-  name: "Dr. Philip Davidson",
+  name: "Dr. Philip L. Davidson",
+  title: "Assistant Professor",
   role: "Principal Investigator",
-  affiliation: "Davidson Lab",
+  department: "Department of Biological Sciences",
+  institution: "Mississippi State University",
+  location: "Starkville, MS, USA",
+  website: "davidsonlab-msu.github.io",
   description:
     "Dr. Davidson leads the laboratory studying developmental plasticity, genome evolution, and the molecular basis of alternative phenotypes in dung beetles.",
   accent: "#00f0ff",
   accentRgb: "0,240,255",
 };
 
-/* Placeholder team members — not real people */
 const COLLABORATORS = [
   {
-    name: "Collaborator A",
-    role: "Genome Assembly",
-    affiliation: "Placeholder affiliation",
+    name: "Dr. Sofía Casasa",
+    role: "Collaborating PI",
+    department: "Department of Biology",
+    institution: "Boston University",
+    location: "Boston, MA, USA",
+    email: "ascasasa@bu.edu",
+    website: "www.casasalab.com",
     accent: "#8d7cff",
     accentRgb: "141,124,255",
   },
   {
-    name: "Collaborator B",
-    role: "Bioinformatics",
-    affiliation: "Placeholder affiliation",
+    name: "Dr. Yonggang Hu",
+    role: "Collaborating PI",
+    department: "State Key Laboratory of Resource Insects",
+    institution: "Southwest University",
+    location: "Chongqing, China",
+    email: "yongganghu@swu.edu.cn",
+    website: "researchgate.net/profile/Yonggang-Hu-2",
     accent: "#49ffb6",
     accentRgb: "73,255,182",
   },
-];
-
-const STUDENTS = [
   {
-    name: "Graduate Student A",
-    role: "PhD Student — Genomics",
-    accent: "#00f0ff",
-    accentRgb: "0,240,255",
-  },
-  {
-    name: "Graduate Student B",
-    role: "PhD Student — RNA-seq",
+    name: "Dr. Armin Moczek",
+    role: "Collaborating PI",
+    department: "Department of Biology",
+    institution: "Indiana University",
+    location: "Bloomington, IN, USA",
+    email: "armin@iu.edu",
+    website: "www.ecoevodevo.com",
     accent: "#8d7cff",
     accentRgb: "141,124,255",
   },
   {
-    name: "Undergraduate A",
-    role: "Undergraduate Researcher",
+    name: "Dr. Patrick Rohner",
+    role: "Collaborating PI",
+    department: "Department of Ecology, Behavior & Evolution",
+    institution: "University of California San Diego",
+    location: "San Diego, CA, USA",
+    email: "prohner@ucsd.edu",
+    website: "rohnerlab.biosci.ucsd.edu",
     accent: "#49ffb6",
     accentRgb: "73,255,182",
   },
@@ -57,8 +69,13 @@ const STUDENTS = [
 
 const DEVS = [
   {
-    name: "Platform Developer",
-    role: "Full-stack · DB² Platform",
+    name: "Adi Singh",
+    title: "Graduate Student",
+    role: "Bioinformatics Developer",
+    department: "Computer Science & Engineering",
+    institution: "Mississippi State University",
+    location: "Starkville, MS, USA",
+    email: "as5142@msstate.edu",
     accent: "#8d7cff",
     accentRgb: "141,124,255",
   },
@@ -66,16 +83,26 @@ const DEVS = [
 
 function PersonCard({
   name,
+  title,
   role,
-  affiliation,
+  department,
+  institution,
+  location,
+  email,
+  website,
   description,
   accent,
   accentRgb,
   large = false,
 }: {
   name: string;
+  title?: string;
   role: string;
-  affiliation?: string;
+  department?: string;
+  institution?: string;
+  location?: string;
+  email?: string;
+  website?: string;
   description?: string;
   accent: string;
   accentRgb: string;
@@ -129,12 +156,24 @@ function PersonCard({
           fontWeight: 700,
           fontSize: large ? "1.1rem" : "0.95rem",
           color: "var(--db-cream)",
-          margin: "0 0 0.25rem",
+          margin: "0 0 0.1rem",
           letterSpacing: "-0.025em",
         }}
       >
         {name}
       </h3>
+      {title && (
+        <div
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "0.78rem",
+            color: "var(--db-stone)",
+            marginBottom: "0.25rem",
+          }}
+        >
+          {title}
+        </div>
+      )}
       <div
         style={{
           fontFamily: "var(--font-mono)",
@@ -142,21 +181,90 @@ function PersonCard({
           color: accent,
           letterSpacing: "0.06em",
           textTransform: "uppercase",
-          marginBottom: affiliation ? "0.3rem" : 0,
+          marginBottom: "0.5rem",
         }}
       >
         {role}
       </div>
-      {affiliation && (
+      {department && (
         <div
           style={{
             fontFamily: "var(--font-sans)",
-            fontSize: "0.8rem",
+            fontSize: "0.78rem",
             color: "var(--db-muted)",
+            marginBottom: "0.15rem",
+          }}
+        >
+          {department}
+        </div>
+      )}
+      {institution && (
+        <div
+          style={{
+            fontFamily: "var(--font-sans)",
+            fontSize: "0.78rem",
+            color: "var(--db-muted)",
+            marginBottom: "0.15rem",
+          }}
+        >
+          {institution}
+        </div>
+      )}
+      {location && (
+        <div
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.65rem",
+            color: "var(--db-muted)",
+            letterSpacing: "0.04em",
+            opacity: 0.7,
+            marginBottom: "0.75rem",
+          }}
+        >
+          {location}
+        </div>
+      )}
+      {(email || website) && (
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "0.25rem",
             marginBottom: description ? "0.8rem" : 0,
           }}
         >
-          {affiliation}
+          {email && (
+            <a
+              href={`mailto:${email}`}
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.65rem",
+                color: accent,
+                letterSpacing: "0.03em",
+                textDecoration: "none",
+                opacity: 0.85,
+              }}
+            >
+              {email}
+            </a>
+          )}
+          {website && (
+            <a
+              href={website.startsWith("http") ? website : `https://${website}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "0.65rem",
+                color: "var(--db-muted)",
+                letterSpacing: "0.03em",
+                textDecoration: "none",
+                opacity: 0.75,
+              }}
+            >
+              {website}
+            </a>
+          )}
         </div>
       )}
       {description && (
@@ -271,34 +379,6 @@ export default function PeoplePage() {
           >
             {COLLABORATORS.map((c) => (
               <PersonCard key={c.name} {...c} />
-            ))}
-          </div>
-        </AnimatedSection>
-
-        {/* Students */}
-        <AnimatedSection style={{ marginBottom: "3.5rem" }}>
-          <SectionLabel label="Student Researchers" accent="var(--db-green)" />
-          <p
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.66rem",
-              color: "var(--db-muted)",
-              letterSpacing: "0.1em",
-              textTransform: "uppercase",
-              marginBottom: "1rem",
-            }}
-          >
-            Placeholder — details to be added
-          </p>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-              gap: "0.75rem",
-            }}
-          >
-            {STUDENTS.map((s) => (
-              <PersonCard key={s.name} {...s} />
             ))}
           </div>
         </AnimatedSection>
