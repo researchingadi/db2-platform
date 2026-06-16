@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   try {
     const res = await fetch(url, {
       headers: { "Accept": "application/json" },
-      next: { revalidate: 300 },
+      cache: "no-store",
     });
 
     if (!res.ok) {
