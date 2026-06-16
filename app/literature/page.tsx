@@ -22,38 +22,147 @@ const CHIPS = [
 ];
 
 const DEFAULT_QUERY = "Onthophagus taurus";
+const PAGE_SIZE = 10;
+const MAX_PAGES = 100;
+
+// ── Pagination helpers ──────────────────────────────────────────────────────
+
+function getPageNumbers(current: number, total: number): (number | null)[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+
+  const show = new Set<number>();
+  show.add(1); show.add(2);
+  show.add(total - 1); show.add(total);
+  for (let p = Math.max(1, current - 1); p <= Math.min(total, current + 1); p++) {
+    show.add(p);
+  }
+
+  const sorted = Array.from(show).sort((a, b) => a - b);
+  const result: (number | null)[] = [];
+  let prev = 0;
+  for (const p of sorted) {
+    if (p - prev > 1) result.push(null);
+    result.push(p);
+    prev = p;
+  }
+  return result;
+}
+
+function pageButtonStyle(isActive: boolean, isDisabled: boolean): React.CSSProperties {
+  return {
+    background: isActive ? "#6366f1" : "#0c1028",
+    border: `1px solid ${isActive ? "#6366f1" : "rgba(99,102,241,0.2)"}`,
+    color: isActive ? "#ffffff" : "#94a3b8",
+    borderRadius: "6px",
+    padding: "6px 12px",
+    fontSize: "13px",
+    fontFamily: "var(--font-mono)",
+    cursor: isDisabled ? "not-allowed" : "pointer",
+    opacity: isDisabled ? 0.3 : 1,
+    transition: "border-color 0.15s, color 0.15s",
+    minWidth: "36px",
+  };
+}
+
+// ── Component ───────────────────────────────────────────────────────────────
 
 export default function LiteraturePage() {
   const [query, setQuery] = useState(DEFAULT_QUERY);
   const [inputValue, setInputValue] = useState(DEFAULT_QUERY);
   const [papers, setPapers] = useState<Paper[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedAbstracts, setExpandedAbstracts] = useState<Set<string>>(new Set());
 
-  const search = useCallback(async (term: string) => {
-    if (!term.trim()) return;
-    setLoading(true);
-    setError(null);
-    setPapers([]);
-    try {
-      const res = await fetch(`/api/literature?query=${encodeURIComponent(term)}`);
-      if (!res.ok) throw new Error("API error");
-      const data = await res.json();
-      setPapers(data.resultList?.result ?? []);
-    } catch {
-      setError(
-        "Unable to load results. The Europe PMC API may be temporarily unavailable."
-      );
-    } finally {
-      setLoading(false);
-    }
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [cursors, setCursors] = useState<string[]>(["*"]);
+  const [totalResults, setTotalResults] = useState(0);
+
+  // ── Core fetch ─────────────────────────────────────────────────────────────
+  const fetchPage = useCallback(async (term: string, cursor: string) => {
+    const res = await fetch(
+      `/api/literature?query=${encodeURIComponent(term)}&cursor=${encodeURIComponent(cursor)}`
+    );
+    if (!res.ok) throw new Error("API error");
+    return res.json();
   }, []);
+
+  // ── New query search ───────────────────────────────────────────────────────
+  const search = useCallback(
+    async (term: string) => {
+      if (!term.trim()) return;
+      setLoading(true);
+      setError(null);
+      setPapers([]);
+      setCurrentPage(1);
+      setCursors(["*"]);
+      setTotalResults(0);
+      try {
+        const data = await fetchPage(term, "*");
+        setPapers(data.resultList?.result ?? []);
+        setTotalResults(data.hitCount ?? 0);
+        const next: string | undefined = data.nextCursorMark;
+        if (next) setCursors(["*", next]);
+      } catch {
+        setError(
+          "Unable to load results. The Europe PMC API may be temporarily unavailable."
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [fetchPage]
+  );
 
   useEffect(() => {
     search(DEFAULT_QUERY);
   }, [search]);
 
+  // ── Page navigation ────────────────────────────────────────────────────────
+  const goToPage = useCallback(
+    async (targetPage: number) => {
+      if (!query.trim()) return;
+      setLoading(true);
+      setError(null);
+
+      try {
+        // Walk forward through cursors until we have the one for targetPage
+        const knownCursors = [...cursors];
+        while (knownCursors.length < targetPage) {
+          const cursor = knownCursors[knownCursors.length - 1];
+          const data = await fetchPage(query, cursor);
+          const next: string | undefined = data.nextCursorMark;
+          if (!next) break;
+          knownCursors.push(next);
+        }
+
+        const targetCursor = knownCursors[targetPage - 1];
+        if (targetCursor === undefined) {
+          setLoading(false);
+          return;
+        }
+
+        const data = await fetchPage(query, targetCursor);
+        setPapers(data.resultList?.result ?? []);
+
+        const next: string | undefined = data.nextCursorMark;
+        if (next && knownCursors.length <= targetPage) knownCursors.push(next);
+
+        setCursors(knownCursors);
+        setCurrentPage(targetPage);
+      } catch {
+        setError(
+          "Unable to load results. The Europe PMC API may be temporarily unavailable."
+        );
+      } finally {
+        setLoading(false);
+      }
+    },
+    [query, cursors, fetchPage]
+  );
+
+  // ── Handlers ───────────────────────────────────────────────────────────────
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setQuery(inputValue);
@@ -66,15 +175,22 @@ export default function LiteraturePage() {
     search(chip);
   };
 
-  const toggleAbstract = (paperId: string) => {
+  const toggleAbstract = (id: string) => {
     setExpandedAbstracts((prev) => {
       const next = new Set(prev);
-      if (next.has(paperId)) next.delete(paperId);
-      else next.add(paperId);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   };
 
+  // ── Derived pagination values ──────────────────────────────────────────────
+  const totalPages = Math.min(Math.ceil(totalResults / PAGE_SIZE), MAX_PAGES);
+  const startResult = totalResults > 0 ? (currentPage - 1) * PAGE_SIZE + 1 : 0;
+  const endResult = Math.min(currentPage * PAGE_SIZE, totalResults);
+  const pageNumbers = totalPages > 1 ? getPageNumbers(currentPage, totalPages) : [];
+
+  // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <PageShell>
       {/* ── Hero ── */}
@@ -155,14 +271,7 @@ export default function LiteraturePage() {
           </form>
 
           {/* Quick-filter chips */}
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "0.5rem",
-              marginTop: "1rem",
-            }}
-          >
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "1rem" }}>
             {CHIPS.map((chip) => (
               <button
                 key={chip}
@@ -247,7 +356,7 @@ export default function LiteraturePage() {
         {/* Results */}
         {!loading && !error && papers.length > 0 && (
           <>
-            {/* Count */}
+            {/* Count + range */}
             <div
               style={{
                 fontFamily: "var(--font-mono)",
@@ -258,7 +367,8 @@ export default function LiteraturePage() {
                 marginBottom: "1.5rem",
               }}
             >
-              Showing {papers.length} results for &ldquo;{query}&rdquo;
+              Showing results {startResult}–{endResult} of{" "}
+              {totalResults.toLocaleString()} for &ldquo;{query}&rdquo;
             </div>
 
             {/* Cards */}
@@ -446,6 +556,121 @@ export default function LiteraturePage() {
                 );
               })}
             </div>
+
+            {/* ── Pagination ── */}
+            {totalPages > 1 && (
+              <div style={{ marginTop: "2.5rem" }}>
+                {/* Range label */}
+                <p
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.64rem",
+                    color: "#94a3b8",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    textAlign: "center",
+                    marginBottom: "1rem",
+                  }}
+                >
+                  Showing results {startResult}–{endResult} of{" "}
+                  {totalResults.toLocaleString()}
+                  {totalResults > MAX_PAGES * PAGE_SIZE
+                    ? ` (showing first ${MAX_PAGES} pages)`
+                    : ""}
+                </p>
+
+                {/* Buttons */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.35rem",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {/* Prev */}
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => goToPage(currentPage - 1)}
+                    style={pageButtonStyle(false, currentPage === 1)}
+                    onMouseEnter={(e) => {
+                      if (currentPage !== 1) {
+                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)";
+                        e.currentTarget.style.color = "#f1f5f9";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (currentPage !== 1) {
+                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)";
+                        e.currentTarget.style.color = "#94a3b8";
+                      }
+                    }}
+                  >
+                    ←
+                  </button>
+
+                  {/* Page numbers */}
+                  {pageNumbers.map((p, i) =>
+                    p === null ? (
+                      <span
+                        key={`ellipsis-${i}`}
+                        style={{
+                          color: "#475569",
+                          fontFamily: "var(--font-mono)",
+                          fontSize: "13px",
+                          padding: "0 4px",
+                          userSelect: "none",
+                        }}
+                      >
+                        …
+                      </span>
+                    ) : (
+                      <button
+                        key={p}
+                        onClick={() => p !== currentPage && goToPage(p)}
+                        style={pageButtonStyle(p === currentPage, false)}
+                        onMouseEnter={(e) => {
+                          if (p !== currentPage) {
+                            e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)";
+                            e.currentTarget.style.color = "#f1f5f9";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          if (p !== currentPage) {
+                            e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)";
+                            e.currentTarget.style.color = "#94a3b8";
+                          }
+                        }}
+                      >
+                        {p}
+                      </button>
+                    )
+                  )}
+
+                  {/* Next */}
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => goToPage(currentPage + 1)}
+                    style={pageButtonStyle(false, currentPage === totalPages)}
+                    onMouseEnter={(e) => {
+                      if (currentPage !== totalPages) {
+                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)";
+                        e.currentTarget.style.color = "#f1f5f9";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (currentPage !== totalPages) {
+                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)";
+                        e.currentTarget.style.color = "#94a3b8";
+                      }
+                    }}
+                  >
+                    →
+                  </button>
+                </div>
+              </div>
+            )}
           </>
         )}
 

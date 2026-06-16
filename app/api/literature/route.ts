@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const query = request.nextUrl.searchParams.get("query") || "Onthophagus taurus";
-  const url = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${encodeURIComponent(query)}&format=json&pageSize=25&resultType=core`;
+  const cursor = request.nextUrl.searchParams.get("cursor") || "*";
+  const url = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${encodeURIComponent(query)}&format=json&pageSize=10&resultType=core&cursorMark=${encodeURIComponent(cursor)}`;
 
   try {
     const res = await fetch(url, {
