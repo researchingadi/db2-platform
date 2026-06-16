@@ -3,21 +3,15 @@
 import { useCallback, useEffect, useState } from "react";
 import PageShell from "@/components/site/PageShell";
 
-interface Author {
-  authorId: string;
-  name: string;
-}
-
 interface Paper {
-  paperId: string;
+  pmid?: string;
   title: string;
-  authors: Author[];
-  year: number | null;
-  abstract: string | null;
-  externalIds: { DOI?: string; [key: string]: string | undefined } | null;
-  venue: string | null;
-  citationCount: number | null;
-  openAccessPdf: { url: string } | null;
+  authorString?: string;
+  pubYear?: string;
+  journalTitle?: string;
+  doi?: string;
+  abstractText?: string;
+  citedByCount?: number;
 }
 
 const CHIPS = [
@@ -27,7 +21,7 @@ const CHIPS = [
   "Scarabaeinae evolution",
 ];
 
-const DEFAULT_QUERY = "dung beetle Onthophagus";
+const DEFAULT_QUERY = "Onthophagus taurus";
 
 export default function LiteraturePage() {
   const [query, setQuery] = useState(DEFAULT_QUERY);
@@ -43,15 +37,13 @@ export default function LiteraturePage() {
     setError(null);
     setPapers([]);
     try {
-      const res = await fetch(
-        `https://api.semanticscholar.org/graph/v1/paper/search?query=${encodeURIComponent(term)}&fields=title,authors,year,abstract,externalIds,venue,citationCount,openAccessPdf&limit=25`
-      );
+      const res = await fetch(`/api/literature?query=${encodeURIComponent(term)}`);
       if (!res.ok) throw new Error("API error");
       const data = await res.json();
-      setPapers(data.data ?? []);
+      setPapers(data.resultList?.result ?? []);
     } catch {
       setError(
-        "Unable to load results. The Semantic Scholar API may be temporarily unavailable."
+        "Unable to load results. The Europe PMC API may be temporarily unavailable."
       );
     } finally {
       setLoading(false);
@@ -107,7 +99,7 @@ export default function LiteraturePage() {
             Literature
           </h1>
           <p className="db-section-copy" style={{ marginTop: "1.25rem", marginBottom: "2rem" }}>
-            Real-time academic search powered by Semantic Scholar · 200M+ papers
+            Real-time academic search powered by Europe PMC · 40M+ life sciences articles
           </p>
 
           {/* Search bar */}
@@ -271,21 +263,25 @@ export default function LiteraturePage() {
 
             {/* Cards */}
             <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              {papers.map((paper) => {
-                const doi = paper.externalIds?.DOI;
-                const paperUrl = doi
-                  ? `https://doi.org/${doi}`
-                  : `https://www.semanticscholar.org/paper/${paper.paperId}`;
-                const authors = paper.authors ?? [];
+              {papers.map((paper, idx) => {
+                const paperUrl = paper.doi
+                  ? `https://doi.org/${paper.doi}`
+                  : paper.pmid
+                  ? `https://europepmc.org/article/MED/${paper.pmid}`
+                  : "#";
+                const pmcUrl = paper.pmid
+                  ? `https://europepmc.org/article/MED/${paper.pmid}`
+                  : paperUrl;
+                const authorParts = paper.authorString
+                  ? paper.authorString.split(", ")
+                  : [];
                 const authorStr =
-                  authors.length > 3
-                    ? authors
-                        .slice(0, 3)
-                        .map((a) => a.name)
-                        .join(", ") + " et al."
-                    : authors.map((a) => a.name).join(", ");
-                const abstract = paper.abstract ?? "";
-                const isExpanded = expandedAbstracts.has(paper.paperId);
+                  authorParts.length > 3
+                    ? authorParts.slice(0, 3).join(", ") + " et al."
+                    : paper.authorString ?? "";
+                const abstract = paper.abstractText ?? "";
+                const cardKey = paper.pmid ?? paper.doi ?? String(idx);
+                const isExpanded = expandedAbstracts.has(cardKey);
                 const needsToggle = abstract.length > 200;
                 const displayAbstract = isExpanded
                   ? abstract
@@ -293,7 +289,7 @@ export default function LiteraturePage() {
 
                 return (
                   <div
-                    key={paper.paperId}
+                    key={cardKey}
                     className="db-glass"
                     style={{
                       padding: "1.5rem",
@@ -343,7 +339,7 @@ export default function LiteraturePage() {
                       </div>
                     )}
 
-                    {/* Year · Venue · Badges */}
+                    {/* Year · Journal · Badges */}
                     <div
                       style={{
                         display: "flex",
@@ -353,7 +349,7 @@ export default function LiteraturePage() {
                         marginBottom: abstract ? "0.75rem" : 0,
                       }}
                     >
-                      {paper.year && (
+                      {paper.pubYear && (
                         <span
                           style={{
                             fontFamily: "var(--font-mono)",
@@ -362,10 +358,10 @@ export default function LiteraturePage() {
                             color: "var(--db-violet)",
                           }}
                         >
-                          {paper.year}
+                          {paper.pubYear}
                         </span>
                       )}
-                      {paper.venue && (
+                      {paper.journalTitle && (
                         <span
                           style={{
                             fontFamily: "var(--font-sans)",
@@ -375,10 +371,10 @@ export default function LiteraturePage() {
                             opacity: 0.8,
                           }}
                         >
-                          {paper.venue}
+                          {paper.journalTitle}
                         </span>
                       )}
-                      {paper.citationCount != null && paper.citationCount > 0 && (
+                      {paper.citedByCount != null && paper.citedByCount > 0 && (
                         <span
                           style={{
                             background: "rgba(141,124,255,0.1)",
@@ -389,26 +385,8 @@ export default function LiteraturePage() {
                             fontFamily: "var(--font-mono)",
                           }}
                         >
-                          Cited by {paper.citationCount}
+                          Cited by {paper.citedByCount}
                         </span>
-                      )}
-                      {paper.openAccessPdf?.url && (
-                        <a
-                          href={paper.openAccessPdf.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          style={{
-                            background: "rgba(16,185,129,0.1)",
-                            color: "#10b981",
-                            borderRadius: "999px",
-                            padding: "0.14rem 0.55rem",
-                            fontSize: "0.64rem",
-                            fontFamily: "var(--font-mono)",
-                            textDecoration: "none",
-                          }}
-                        >
-                          PDF
-                        </a>
                       )}
                     </div>
 
@@ -426,7 +404,7 @@ export default function LiteraturePage() {
                         {displayAbstract}
                         {needsToggle && (
                           <button
-                            onClick={() => toggleAbstract(paper.paperId)}
+                            onClick={() => toggleAbstract(cardKey)}
                             style={{
                               marginLeft: "0.4rem",
                               background: "none",
@@ -445,9 +423,9 @@ export default function LiteraturePage() {
                       </p>
                     )}
 
-                    {/* Semantic Scholar link */}
+                    {/* Europe PMC link */}
                     <a
-                      href={`https://www.semanticscholar.org/paper/${paper.paperId}`}
+                      href={pmcUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{
@@ -462,7 +440,7 @@ export default function LiteraturePage() {
                       onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
                       onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}
                     >
-                      View on Semantic Scholar →
+                      View on Europe PMC →
                     </a>
                   </div>
                 );
@@ -482,7 +460,7 @@ export default function LiteraturePage() {
             opacity: 0.55,
           }}
         >
-          Literature data provided by Semantic Scholar (semanticscholar.org) · Updated in real time
+          Literature data provided by Europe PMC (europepmc.org) · Updated in real time
         </p>
       </div>
     </PageShell>
