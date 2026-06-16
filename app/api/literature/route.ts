@@ -1,30 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
-  const query =
-    request.nextUrl.searchParams.get("query") || "dung beetle Onthophagus";
-
-  const url = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${encodeURIComponent(query)}&format=json&pageSize=25&sort=cited&resultType=core`;
+  const query = request.nextUrl.searchParams.get("query") || "Onthophagus taurus";
+  const url = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${encodeURIComponent(query)}&format=json&pageSize=25&resultType=core`;
 
   try {
     const res = await fetch(url, {
-      headers: { "Accept": "application/json" },
       cache: "no-store",
+      headers: {
+        "Accept": "application/json",
+        "User-Agent": "Mozilla/5.0 (compatible; DB2-DungBeetleDatabase/1.0; mailto:pld59@msstate.edu)",
+      },
     });
 
-    if (!res.ok) {
-      return NextResponse.json(
-        { error: "Europe PMC API error" },
-        { status: res.status }
-      );
-    }
-
-    const data = await res.json();
-    return NextResponse.json(data);
+    const text = await res.text();
+    return new NextResponse(text, {
+      status: res.status,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Failed to fetch literature" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to fetch" }, { status: 500 });
   }
 }
