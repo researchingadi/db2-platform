@@ -104,18 +104,7 @@ export default function Navbar() {
                 gap: "0.7rem",
               }}
             >
-              <Image src="/media/Logo.png" alt="DB² Logo" width={40} height={40} />
-              <span
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.76rem",
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  color: "var(--db-cream)",
-                }}
-              >
-                DB²
-              </span>
+              <Image src="/media/Logo.png" alt="DB² Logo" width={52} height={52} />
             </motion.div>
           </Link>
 
