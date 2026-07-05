@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -103,22 +104,7 @@ export default function Navbar() {
                 gap: "0.7rem",
               }}
             >
-              <span
-                style={{
-                  width: "34px",
-                  height: "34px",
-                  borderRadius: "999px",
-                  border: "1px solid rgba(244,241,232,0.18)",
-                  display: "grid",
-                  placeItems: "center",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.72rem",
-                  color: "var(--db-black)",
-                  background: "var(--db-cream)",
-                }}
-              >
-                D²
-              </span>
+              <Image src="/media/Logo.png" alt="DB² Logo" width={40} height={40} />
               <span
                 style={{
                   fontFamily: "var(--font-mono)",
