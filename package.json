@@ -16,12 +16,7 @@
     "@fontsource/space-grotesk": "^5.2.10",
     "@jbrowse/react-linear-genome-view": "^2.18.0",
     "@mui/material": "^6.5.0",
-<<<<<<< HEAD
     "@mui/system": "^9.1.1",
-=======
-    "@mui/system": "^9.2.0",
-    "@react-leaflet/core": "^2.1.0",
->>>>>>> c0f479e73dd72317e95e37003e83fd5bff2090aa
     "@types/leaflet": "^1.9.21",
     "@types/three": "^0.184.1",
     "framer-motion": "^12.40.0",
