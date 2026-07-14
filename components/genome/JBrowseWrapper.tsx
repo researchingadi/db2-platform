@@ -15,6 +15,14 @@ const JBrowseViewInner = dynamic(() => import("./JBrowseViewInner"), {
   ),
 });
 
-export default function JBrowseWrapper({ assembly, tracks }: { assembly: object; tracks: object[] }) {
-  return <JBrowseViewInner assembly={assembly} tracks={tracks} />;
+export default function JBrowseWrapper({
+  assembly,
+  tracks,
+  speciesKey,
+}: {
+  assembly: object;
+  tracks: object[];
+  speciesKey: string;
+}) {
+  return <JBrowseViewInner assembly={assembly} tracks={tracks} speciesKey={speciesKey} />;
 }
