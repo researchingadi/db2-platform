@@ -4,6 +4,11 @@ import Link from "next/link";
 import PageShell from "@/components/site/PageShell";
 import CinematicHero from "@/components/site/CinematicHero";
 import LayerExpand from "@/components/site/LayerExpand";
+import ScrollHero from "./components/home/ScrollHero";
+import StatsBar from "./components/home/StatsBar";
+import SpeciesSection from "./components/home/SpeciesSection";
+import FeaturesSection from "./components/home/FeaturesSection";
+import AssemblyCard from "./components/home/AssemblyCard";
 
 const modules = [
   {
@@ -37,6 +42,8 @@ export default function HomePage() {
   return (
     <PageShell padTop={false}>
       <CinematicHero />
+
+      <ScrollHero />
 
       <section
         style={{
@@ -154,6 +161,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <StatsBar />
+
+      <SpeciesSection />
 
       <section
         style={{
@@ -291,6 +302,10 @@ export default function HomePage() {
           <LayerExpand />
         </div>
       </section>
+
+      <FeaturesSection />
+
+      <AssemblyCard />
 
       <section
         style={{
