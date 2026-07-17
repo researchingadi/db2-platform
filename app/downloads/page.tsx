@@ -198,6 +198,14 @@ const SPECIES: Species[] = [
   },
 ];
 
+const TOTAL_FILES = SPECIES.reduce((acc, sp) => acc + sp.files.length, 0);
+const TOTAL_SIZE_GB = (
+  SPECIES.reduce(
+    (acc, sp) => acc + sp.files.reduce((a, f) => a + parseFloat(f.size), 0),
+    0
+  ) / 1024
+).toFixed(1);
+
 export default function DownloadsPage() {
   return (
     <PageShell>
@@ -207,37 +215,110 @@ export default function DownloadsPage() {
         .dl-row:hover { background: rgba(255,255,255,0.025); }
       `}</style>
 
-      {/* ── Hero ── */}
-      <div
+      {/* ── Cinematic header ── */}
+      <section
         style={{
-          padding: "6rem 1.25rem 4rem",
-          borderBottom: "1px solid var(--db-line)",
           position: "relative",
+          height: "300px",
           overflow: "hidden",
-          background:
-            "radial-gradient(circle at 70% 25%, rgba(0,240,255,0.06), transparent 36%), var(--db-black)",
+          borderBottom: "1px solid rgba(0,240,255,0.12)",
         }}
       >
-        <div style={{ maxWidth: "1540px", margin: "0 auto", position: "relative" }}>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: 0.65,
+          }}
+        >
+          <source src="/downloads-bg.mp4" type="video/mp4" />
+        </video>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to bottom, rgba(3,3,3,0.4), rgba(3,3,3,0.95))",
+          }}
+        />
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            padding: "0 1.25rem 2rem",
+            maxWidth: "1540px",
+            margin: "0 auto",
+          }}
+        >
           <AnimatedSection>
-            <p className="db-eyebrow">DB² · Data Access</p>
+            <p className="db-eyebrow">Genomic Data Repository · CC BY 4.0</p>
             <h1
-              className="db-section-title"
-              style={{ fontSize: "clamp(2.8rem, 5vw, 5.5rem)" }}
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontWeight: 700,
+                fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+                color: "var(--db-cream)",
+                letterSpacing: "-0.03em",
+                margin: 0,
+                lineHeight: 1.1,
+              }}
             >
               Downloads
             </h1>
-            <p className="db-section-copy" style={{ marginTop: "1.25rem", marginBottom: "1.5rem" }}>
-              Genome assemblies, annotation files, and sequences for four dung beetle
-              species. All files are hosted on Cloudflare R2 and freely available.
+            <p
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "14px",
+                color: "var(--db-stone)",
+                marginTop: "10px",
+                maxWidth: "520px",
+              }}
+            >
+              Genome assemblies, annotations, masked genomes, protein and
+              nucleotide sequences for all four dung beetle species. Hosted on
+              Cloudflare R2.
             </p>
-            <div className="db-pill">
-              <span className="db-dot" />
-              Hosted on Cloudflare R2 · CDN-distributed
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+                marginTop: "14px",
+                flexWrap: "wrap",
+              }}
+            >
+              {[
+                `${SPECIES.length} Species`,
+                `${TOTAL_FILES} Files`,
+                `~${TOTAL_SIZE_GB} GB Total`,
+              ].map((stat, i) => (
+                <span key={stat} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  {i > 0 && <span style={{ color: "var(--db-muted)", fontSize: "11px" }}>·</span>}
+                  <span
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "11px",
+                      color: "var(--db-cyan)",
+                    }}
+                  >
+                    {stat}
+                  </span>
+                </span>
+              ))}
             </div>
           </AnimatedSection>
         </div>
-      </div>
+      </section>
 
       {/* ── Species sections ── */}
       <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>

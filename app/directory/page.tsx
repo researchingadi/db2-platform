@@ -1,4 +1,5 @@
 import PageShell from "@/components/site/PageShell";
+import AnimatedSection from "@/components/site/AnimatedSection";
 
 export const metadata = {
   title: "Directory — DB²",
@@ -169,47 +170,84 @@ function PersonCard({ person }: { person: Person }) {
 export default function DirectoryPage() {
   return (
     <PageShell>
-      <div style={{ background: "#06081a", minHeight: "100vh", padding: "80px 24px" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
-
-          {/* Page header */}
-          <div style={{ marginBottom: "56px" }}>
-            <p
-              style={{
-                fontFamily: "'Outfit', system-ui, sans-serif",
-                fontSize: "11px",
-                fontWeight: 600,
-                textTransform: "uppercase",
-                letterSpacing: "1.5px",
-                color: "#6366f1",
-                margin: "0 0 10px",
-              }}
-            >
-              DB² · People
-            </p>
+      {/* ── Cinematic header ── */}
+      <section
+        style={{
+          position: "relative",
+          height: "280px",
+          overflow: "hidden",
+          borderBottom: "1px solid rgba(0,240,255,0.12)",
+        }}
+      >
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: 0.7,
+          }}
+        >
+          <source src="/directory-bg.mp4" type="video/mp4" />
+        </video>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to bottom, rgba(3,3,3,0.3), rgba(3,3,3,0.92))",
+          }}
+        />
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            padding: "0 24px 32px",
+            maxWidth: "1100px",
+            margin: "0 auto",
+          }}
+        >
+          <AnimatedSection>
+            <p className="db-eyebrow">Davidson Lab · Mississippi State University</p>
             <h1
               style={{
-                fontFamily: "'Syne', system-ui, sans-serif",
-                fontWeight: 800,
-                fontSize: "28px",
-                color: "#f1f5f9",
-                margin: "0 0 8px",
-                lineHeight: 1.2,
+                fontFamily: "var(--font-sans)",
+                fontWeight: 700,
+                fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+                color: "var(--db-cream)",
+                letterSpacing: "-0.03em",
+                margin: 0,
+                lineHeight: 1.1,
               }}
             >
               Directory
             </h1>
             <p
               style={{
-                fontFamily: "'Outfit', system-ui, sans-serif",
-                fontSize: "15px",
-                color: "#64748b",
-                margin: 0,
+                fontFamily: "var(--font-sans)",
+                fontSize: "14px",
+                color: "var(--db-stone)",
+                marginTop: "10px",
+                maxWidth: "520px",
               }}
             >
-              Principal Investigators, Developers &amp; Collaborators
+              Principal investigators, graduate researchers, and
+              collaborating scientists across four institutions.
             </p>
-          </div>
+          </AnimatedSection>
+        </div>
+      </section>
+
+      <div style={{ background: "#06081a", minHeight: "100vh", padding: "80px 24px" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
           {/* Davidson Lab */}
           <section style={{ marginBottom: "56px" }}>

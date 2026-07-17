@@ -75,54 +75,88 @@ const SECTIONS = [
 export default function PublicationsPage() {
   return (
     <PageShell>
-      {/* ── Hero ── */}
-      <div
+      {/* ── Cinematic header ── */}
+      <section
         style={{
-          padding: "6rem 1.25rem 4rem",
-          borderBottom: "1px solid var(--db-line)",
           position: "relative",
+          height: "280px",
           overflow: "hidden",
-          background:
-            "radial-gradient(circle at 75% 25%, rgba(141,124,255,0.07), transparent 36%), var(--db-black)",
+          borderBottom: "1px solid rgba(0,240,255,0.12)",
         }}
       >
-        <div style={{ maxWidth: "1540px", margin: "0 auto", position: "relative" }}>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: 0.7,
+          }}
+        >
+          <source src="/publications-bg.mp4" type="video/mp4" />
+        </video>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to bottom, rgba(3,3,3,0.3), rgba(3,3,3,0.92))",
+          }}
+        />
+        <div
+          style={{
+            position: "relative",
+            zIndex: 1,
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "flex-end",
+            padding: "0 1.25rem 2rem",
+            maxWidth: "1540px",
+            margin: "0 auto",
+          }}
+        >
           <AnimatedSection>
-            <p
-              className="db-eyebrow"
-              style={{ color: "var(--db-violet)" }}
-            >
-              DB² · Literature
-            </p>
+            <p className="db-eyebrow">DB² · Literature</p>
             <h1
-              className="db-section-title"
-              style={{ fontSize: "clamp(2.8rem, 5vw, 5.5rem)" }}
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontWeight: 700,
+                fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+                color: "var(--db-cream)",
+                letterSpacing: "-0.03em",
+                margin: 0,
+                lineHeight: 1.1,
+              }}
             >
               Publications
             </h1>
-            <p className="db-section-copy" style={{ marginTop: "1.25rem", marginBottom: "1.25rem" }}>
+            <p
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "14px",
+                color: "var(--db-stone)",
+                marginTop: "10px",
+                maxWidth: "520px",
+              }}
+            >
               Research papers associated with the DB² platform, Davidson Lab, and
               the broader dung beetle genomics community.
             </p>
             <span
               className="db-pill"
-              style={{ borderColor: "rgba(141,124,255,0.3)", color: "var(--db-violet)" }}
+              style={{ marginTop: "12px" }}
             >
-              <span
-                style={{
-                  width: "0.42rem",
-                  height: "0.42rem",
-                  borderRadius: "999px",
-                  background: "var(--db-violet)",
-                  display: "inline-block",
-                  boxShadow: "0 0 12px rgba(141,124,255,0.7)",
-                }}
-              />
+              <span className="db-dot" />
               All entries below are placeholders — not real publications
             </span>
           </AnimatedSection>
         </div>
-      </div>
+      </section>
 
       {/* ── Sections ── */}
       <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
