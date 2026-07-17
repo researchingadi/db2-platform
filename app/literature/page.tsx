@@ -193,19 +193,40 @@ export default function LiteraturePage() {
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <PageShell>
-      {/* ── Hero ── */}
-      <div
+      {/* ── Cinematic header ── */}
+      <section
         style={{
-          padding: "6rem 1.25rem 4rem",
-          borderBottom: "1px solid var(--db-line)",
           position: "relative",
           overflow: "hidden",
-          background:
-            "radial-gradient(circle at 75% 25%, rgba(141,124,255,0.07), transparent 36%), var(--db-black)",
+          borderBottom: "1px solid rgba(0,240,255,0.12)",
         }}
       >
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: 0.7,
+          }}
+        >
+          <source src="/publications-bg.mp4" type="video/mp4" />
+        </video>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to bottom, rgba(3,3,3,0.5), rgba(3,3,3,0.95))",
+          }}
+        />
+        <div style={{ position: "relative", zIndex: 1, padding: "6rem 1.25rem 4rem" }}>
         <div style={{ maxWidth: "1540px", margin: "0 auto", position: "relative" }}>
-          <p className="db-eyebrow" style={{ color: "var(--db-violet)" }}>
+          <p className="db-eyebrow">
             DB² · Literature
           </p>
           <h1
@@ -302,7 +323,8 @@ export default function LiteraturePage() {
             ))}
           </div>
         </div>
-      </div>
+        </div>
+      </section>
 
       {/* ── Content ── */}
       <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
