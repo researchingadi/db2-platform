@@ -18,9 +18,40 @@ export default function GenomeBrowserPage() {
           minHeight: "calc(100vh - 72px)",
           background: "var(--db-black)",
           padding: "2.5rem 1.5rem 3rem",
+          position: "relative",
         }}
       >
-        <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            objectFit: "cover",
+            opacity: 0.6,
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        >
+          <source src="/genome-bg.mp4" type="video/mp4" />
+        </video>
+
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "linear-gradient(to bottom, rgba(3,3,3,0.75), rgba(3,3,3,0.85))",
+            zIndex: 0,
+            pointerEvents: "none",
+          }}
+        />
+
+        <div style={{ position: "relative", zIndex: 1, maxWidth: "1280px", margin: "0 auto" }}>
 
           {/* ── Header ── */}
           <div style={{ marginBottom: "1.75rem" }}>
