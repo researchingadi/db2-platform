@@ -23,7 +23,7 @@ export default function ClosingCTA() {
           width: "600px",
           height: "600px",
           borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(141,124,255,0.08), transparent 70%)",
+          background: "radial-gradient(circle, rgba(0,240,255,0.08), transparent 70%)",
           pointerEvents: "none",
         }}
       />
@@ -46,11 +46,10 @@ export default function ClosingCTA() {
         </h2>
         <h2
           style={{
-            fontFamily: "var(--font-serif)",
-            fontStyle: "italic",
+            fontFamily: "var(--font-sans)",
             fontWeight: 700,
             fontSize: "clamp(2.2rem, 5vw, 4rem)",
-            color: "var(--db-violet)",
+            color: "var(--db-cyan)",
             margin: 0,
             lineHeight: 1.1,
           }}
@@ -86,7 +85,7 @@ export default function ClosingCTA() {
               whileHover={{ scale: 1.03 }}
               style={{
                 display: "inline-block",
-                background: "var(--db-violet)",
+                background: "var(--db-cyan)",
                 color: "#030303",
                 fontFamily: "var(--font-sans)",
                 fontWeight: 600,
@@ -101,12 +100,12 @@ export default function ClosingCTA() {
           </Link>
           <Link href="/downloads" style={{ textDecoration: "none" }}>
             <motion.span
-              whileHover={{ borderColor: "#8d7cff" }}
+              whileHover={{ borderColor: "#00f0ff" }}
               style={{
                 display: "inline-block",
                 background: "transparent",
-                color: "var(--db-violet)",
-                border: "1px solid rgba(141,124,255,0.4)",
+                color: "var(--db-cyan)",
+                border: "1px solid rgba(0,240,255,0.4)",
                 fontFamily: "var(--font-sans)",
                 fontWeight: 600,
                 fontSize: "0.85rem",

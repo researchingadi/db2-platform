@@ -19,8 +19,8 @@ export default function AssemblyCard() {
         style={{
           maxWidth: "1200px",
           margin: "0 auto",
-          background: "linear-gradient(135deg, var(--db-charcoal), #0a0a18)",
-          border: "1px solid rgba(141,124,255,0.2)",
+          background: "linear-gradient(135deg, var(--db-charcoal), var(--db-panel))",
+          border: "1px solid rgba(0,240,255,0.2)",
           borderRadius: "16px",
           padding: "40px 48px",
           display: "grid",
@@ -35,11 +35,11 @@ export default function AssemblyCard() {
           <p className="db-eyebrow">Featured Assembly</p>
           <h2
             style={{
-              fontFamily: "var(--font-serif)",
-              fontStyle: "italic",
+              fontFamily: "var(--font-sans)",
               fontWeight: 700,
               fontSize: "1.8rem",
               color: "var(--db-cream)",
+              letterSpacing: "-0.03em",
               margin: 0,
             }}
           >
@@ -98,7 +98,7 @@ export default function AssemblyCard() {
               whileHover={{ scale: 1.03 }}
               style={{
                 display: "inline-block",
-                background: "var(--db-violet)",
+                background: "var(--db-cyan)",
                 color: "#030303",
                 fontFamily: "var(--font-sans)",
                 fontWeight: 600,
@@ -117,7 +117,7 @@ export default function AssemblyCard() {
           className="assembly-card-vertical"
           style={{
             fontFamily: "var(--font-mono)",
-            color: "rgba(141,124,255,0.1)",
+            color: "rgba(0,240,255,0.08)",
             fontSize: "11px",
             letterSpacing: "0.15em",
             writingMode: "vertical-rl",

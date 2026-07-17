@@ -164,16 +164,7 @@ export default function ScrollHero() {
             pointerEvents: zone1Opacity < 0.05 ? "none" : "auto",
           }}
         >
-          <p
-            style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.65rem",
-              letterSpacing: "0.2em",
-              textTransform: "uppercase",
-              color: "var(--db-violet)",
-              marginBottom: "16px",
-            }}
-          >
+          <p className="db-eyebrow" style={{ marginBottom: "16px" }}>
             Davidson Lab · Mississippi State University
           </p>
           <h1
@@ -191,7 +182,7 @@ export default function ScrollHero() {
             <br />
             <span
               style={{
-                background: "linear-gradient(135deg, #8d7cff, #a99bff, #00f0ff)",
+                background: "linear-gradient(135deg, #00f0ff, #49ffb6)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -217,10 +208,10 @@ export default function ScrollHero() {
           <div style={{ display: "flex", gap: "12px", marginTop: "28px", flexWrap: "wrap" }}>
             <Link href="/genome-browser" style={{ textDecoration: "none" }}>
               <motion.span
-                whileHover={{ scale: 1.03, boxShadow: "0 0 32px rgba(141,124,255,0.4)" }}
+                whileHover={{ scale: 1.03, boxShadow: "0 0 32px rgba(0,240,255,0.4)" }}
                 style={{
                   display: "inline-block",
-                  background: "var(--db-violet)",
+                  background: "var(--db-cyan)",
                   color: "#030303",
                   fontFamily: "var(--font-sans)",
                   fontWeight: 600,
@@ -239,8 +230,8 @@ export default function ScrollHero() {
                 style={{
                   display: "inline-block",
                   background: "transparent",
-                  color: "var(--db-violet)",
-                  border: "1px solid rgba(141,124,255,0.4)",
+                  color: "var(--db-cyan)",
+                  border: "1px solid rgba(0,240,255,0.4)",
                   fontFamily: "var(--font-sans)",
                   fontWeight: 600,
                   fontSize: "0.8rem",
@@ -303,7 +294,7 @@ export default function ScrollHero() {
           <Link
             href="/genome-browser"
             className="db-magnetic-link"
-            style={{ justifyContent: "flex-end", marginTop: "10px", color: "var(--db-violet)" }}
+            style={{ justifyContent: "flex-end", marginTop: "10px" }}
           >
             Open Genome Browser →
           </Link>

@@ -18,8 +18,8 @@ const SPECIES = [
     scientific: "Onthophagus sagittarius",
     assembly: "Osag_1.3",
     size: "~561 Mb",
-    accent: "#8d7cff",
-    accentRgb: "141,124,255",
+    accent: "#49ffb6",
+    accentRgb: "73,255,182",
     description:
       "Closely related Onthophagus species with AUGUSTUS gene annotations, plus gene and protein sequence downloads.",
   },
@@ -27,8 +27,8 @@ const SPECIES = [
     scientific: "Digitonthophagus gazella",
     assembly: "Dgaz_1.3",
     size: "~346 Mb",
-    accent: "#49ffb6",
-    accentRgb: "73,255,182",
+    accent: "#00f0ff",
+    accentRgb: "0,240,255",
     description:
       "The gazelle dung beetle, with a full genome assembly, repeat-masked genome, and AUGUSTUS annotations.",
   },
@@ -36,8 +36,8 @@ const SPECIES = [
     scientific: "Onthophagus binodis",
     assembly: "Obin_1.0",
     size: "~843 Mb",
-    accent: "#f59e0b",
-    accentRgb: "245,158,11",
+    accent: "#49ffb6",
+    accentRgb: "73,255,182",
     description:
       "The largest assembly in the database, including masked genome, protein, and nucleotide sequence downloads.",
   },
@@ -115,7 +115,7 @@ export default function SpeciesSection() {
                   />
                   <span
                     style={{
-                      fontFamily: "var(--font-serif)",
+                      fontFamily: "var(--font-sans)",
                       fontStyle: "italic",
                       fontWeight: 700,
                       fontSize: "15px",
@@ -162,7 +162,7 @@ export default function SpeciesSection() {
                 </p>
                 <div
                   style={{
-                    color: "var(--db-violet)",
+                    color: "var(--db-cyan)",
                     fontFamily: "var(--font-sans)",
                     fontSize: "12px",
                     marginTop: "14px",
