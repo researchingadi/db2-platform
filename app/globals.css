@@ -480,3 +480,7 @@ select {
       radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.86) 100%);
   }
 }
+
+.leaflet-tile-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(0.85) contrast(0.9);
+}
