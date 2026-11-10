@@ -10,7 +10,8 @@
     "db:up": "docker compose up -d db",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "email:test": "tsx scripts/email-test.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -34,6 +35,7 @@
     "mobx-react": "^9.2.2",
     "mobx-state-tree": "^5.4.2",
     "next": "^14.2.35",
+    "nodemailer": "^10.4.0",
     "postgres": "^4.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -46,6 +48,7 @@
     "@next/env": "^14.2.35",
     "@tailwindcss/postcss": "^4.3.0",
     "@types/node": "^20.17.10",
+    "@types/nodemailer": "^8.0.2",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "drizzle-kit": "^0.31.11",
@@ -53,6 +56,7 @@
     "eslint-config-next": "^14.2.35",
     "postcss": "^8.5.15",
     "tailwindcss": "^4.3.0",
+    "tsx": "^4.23.15",
     "typescript": "^5.6.3"
   }
 }

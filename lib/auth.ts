@@ -5,7 +5,7 @@ import { nextCookies } from "better-auth/next-js";
 import { eq, or } from "drizzle-orm";
 import { PHASE_PRODUCTION_BUILD } from "next/constants";
 import { db, schema } from "./db";
-import { sendEmail } from "./email";
+import { passwordResetEmail, registrationNoticeEmail, sendEmail, verifyEmailEmail } from "./email";
 import {
   ADMIN_EMAILS,
   BLOCKED_MESSAGES,
@@ -18,7 +18,6 @@ import {
 } from "./auth-config";
 
 const isProd = process.env.NODE_ENV === "production";
-const siteUrl = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
 
 // Better Auth initialises eagerly and crashes the process in production when
 // BETTER_AUTH_SECRET is missing. `next build` imports this module while collecting
@@ -68,11 +67,7 @@ export const auth = betterAuth({
     autoSignIn: REGISTRATION_MODE === "open" && !EMAIL_VERIFICATION_REQUIRED,
     revokeSessionsOnPasswordReset: true,
     sendResetPassword: async ({ user, url }) => {
-      await sendEmail({
-        to: user.email,
-        subject: "Reset your DB² password",
-        text: `Hi ${user.name},\n\nSomeone asked to reset the password for your DB² account. To choose a new password, open this link (it expires in 1 hour):\n\n${url}\n\nIf you didn't ask for this, you can ignore this email.`,
-      });
+      await sendEmail({ to: user.email, ...passwordResetEmail({ name: user.name, url }) });
     },
   },
 
@@ -80,11 +75,7 @@ export const auth = betterAuth({
     sendOnSignUp: EMAIL_VERIFICATION_REQUIRED,
     autoSignInAfterVerification: false,
     sendVerificationEmail: async ({ user, url }) => {
-      await sendEmail({
-        to: user.email,
-        subject: "Verify your email for DB²",
-        text: `Hi ${user.name},\n\nPlease confirm your email address for your DB² account:\n\n${url}`,
-      });
+      await sendEmail({ to: user.email, ...verifyEmailEmail({ name: user.name, url }) });
     },
   },
 
@@ -131,23 +122,15 @@ export const auth = betterAuth({
           };
         },
         after: async (created) => {
-          const status = String(created.status ?? "pending");
           await sendEmail({
             to: LAB_NOTIFY_EMAIL,
-            subject: `New DB² registration: ${created.name} (${status})`,
-            text: [
-              `A new DB² account was registered.`,
-              ``,
-              `Name:        ${created.name}`,
-              `Email:       ${created.email}`,
-              `Institution: ${String(created.institution ?? "")}`,
-              `Status:      ${status}`,
-              ``,
-              `Why they want access:`,
-              String(created.purpose ?? ""),
-              ``,
-              status === "pending" ? `Review it at ${siteUrl}/admin/users` : `No action needed.`,
-            ].join("\n"),
+            ...registrationNoticeEmail({
+              name: created.name,
+              email: created.email,
+              institution: created.institution == null ? null : String(created.institution),
+              purpose: created.purpose == null ? null : String(created.purpose),
+              status: String(created.status ?? "pending"),
+            }),
           });
         },
       },

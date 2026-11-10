@@ -4,15 +4,13 @@ import { and, eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db, schema } from "@/lib/db";
-import { sendEmail } from "@/lib/email";
+import { accountApprovedEmail, accountRejectedEmail, sendEmail } from "@/lib/email";
 import { getCurrentUser } from "@/lib/session";
 
 const decisionSchema = z.object({
   userId: z.string().trim().min(1).max(64),
   decision: z.enum(["approve", "reject"]),
 });
-
-const siteUrl = process.env.BETTER_AUTH_URL ?? "http://localhost:3000";
 
 export async function decideUser(formData: FormData): Promise<void> {
   // Authorisation is enforced here, on the server, not just by hiding buttons.
@@ -37,19 +35,10 @@ export async function decideUser(formData: FormData): Promise<void> {
     .returning({ email: schema.user.email, name: schema.user.name });
 
   if (updated) {
-    await sendEmail(
-      status === "approved"
-        ? {
-            to: updated.email,
-            subject: "Your DB² account was approved",
-            text: `Hi ${updated.name},\n\nThe Davidson Lab has approved your DB² account. You can log in here:\n\n${siteUrl}/login`,
-          }
-        : {
-            to: updated.email,
-            subject: "Your DB² registration",
-            text: `Hi ${updated.name},\n\nThank you for your interest in DB². Your registration was not approved.\n\nIf you think this is a mistake, contact dungbeetledatabase@gmail.com.`,
-          },
-    );
+    await sendEmail({
+      to: updated.email,
+      ...(status === "approved" ? accountApprovedEmail(updated) : accountRejectedEmail(updated)),
+    });
   }
 
   revalidatePath("/admin/users");
