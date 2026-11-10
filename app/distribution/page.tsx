@@ -54,7 +54,7 @@ export default function DistributionPage() {
           background: "#06081a",
           minHeight: "100vh",
           padding: "24px",
-          paddingTop: "calc(72px + 24px)",
+          paddingTop: "calc(var(--nav-height) + 24px)",
           boxSizing: "border-box",
         }}
       >

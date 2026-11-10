@@ -67,7 +67,7 @@ export default function Navbar() {
         style={{
           position: "fixed",
           inset: "0 0 auto 0",
-          height: "72px",
+          height: "var(--nav-height)",
           zIndex: 80,
           borderBottom: scrolled
             ? "var(--arcade-border) solid var(--db-cream)"
@@ -89,9 +89,19 @@ export default function Navbar() {
           }}
         >
           <Link href="/" style={{ textDecoration: "none" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}>
-              <Image src="/media/Logo.png" alt="DB² Logo" width={52} height={52} />
-            </div>
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}
+            >
+              <Image
+                src="/media/header.jpg"
+                alt="DungBase DB²"
+                width={2400}
+                height={732}
+                priority
+                className="nav-logo"
+              />
+            </motion.div>
           </Link>
 
           <nav
@@ -127,21 +137,23 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <button
-            className="lg:hidden arcade-btn"
-            onClick={() => setOpen((v) => !v)}
-            aria-label="Toggle navigation"
-            aria-expanded={open}
-            style={{
-              justifySelf: "end",
-              width: "44px",
-              height: "44px",
-              padding: 0,
-              fontSize: "0.8rem",
-            }}
-          >
-            {open ? "×" : "≡"}
-          </button>
+          {/* Wrapper carries lg:hidden; .arcade-btn's display would otherwise override it */}
+          <div className="lg:hidden" style={{ justifySelf: "end" }}>
+            <button
+              className="arcade-btn"
+              onClick={() => setOpen((v) => !v)}
+              aria-label="Toggle navigation"
+              aria-expanded={open}
+              style={{
+                width: "44px",
+                height: "44px",
+                padding: 0,
+                fontSize: "0.8rem",
+              }}
+            >
+              {open ? "×" : "≡"}
+            </button>
+          </div>
         </div>
       </motion.header>
 
@@ -154,14 +166,16 @@ export default function Navbar() {
             transition={{ duration: 0.2, ease: "linear" }}
             style={{
               position: "fixed",
-              top: "72px",
+              top: "var(--nav-height)",
               left: 0,
               right: 0,
               zIndex: 70,
+              maxHeight: "calc(100dvh - var(--nav-height))",
+              overflowY: "auto",
               background: "var(--db-black)",
               borderBottom: "var(--arcade-border) solid var(--db-cream)",
               boxShadow: "0 6px 0 #000",
-              padding: "1.2rem",
+              padding: "1.75rem 1.2rem 1.2rem",
             }}
           >
             {links.map((link) => {

@@ -18,7 +18,7 @@ export default function PageShell({ children, padTop = true }: PageShellProps) {
       }}
     >
       <Navbar />
-      <main style={{ flex: 1, paddingTop: padTop ? "72px" : 0 }}>
+      <main style={{ flex: 1, paddingTop: padTop ? "var(--nav-height)" : 0 }}>
         {children}
       </main>
       <Footer />

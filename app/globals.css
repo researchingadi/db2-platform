@@ -35,6 +35,30 @@
   --arcade-pink: #ff2e93; /* CTA accent only */
   --font-pixel: "Press Start 2P", ui-monospace, monospace;
   --font-pixel-sm: "VT323", ui-monospace, monospace;
+
+  /* Header height: 48px logo + 2×12px breathing room + 4px border (mobile) */
+  --nav-height: 76px;
+}
+
+@media (min-width: 1024px) {
+  :root {
+    /* 60px logo + 2×12px breathing room + 4px border (lg+) */
+    --nav-height: 88px;
+  }
+}
+
+.nav-logo {
+  display: block;
+  flex-shrink: 0;
+  height: 48px;
+  width: auto;
+  max-width: none;
+}
+
+@media (min-width: 1024px) {
+  .nav-logo {
+    height: 60px;
+  }
 }
 
 *,
