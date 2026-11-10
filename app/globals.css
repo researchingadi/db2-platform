@@ -611,6 +611,12 @@ select {
   outline-offset: 6px;
 }
 
+/* Visible keyboard focus for plain text links (footer, contact page) */
+.focus-ring:focus-visible {
+  outline: 2px dashed var(--db-cyan);
+  outline-offset: 3px;
+}
+
 .arcade-title {
   margin: 0;
   font-family: var(--font-pixel);

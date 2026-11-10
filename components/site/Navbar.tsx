@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const links = [
-  { href: "/", label: "Index" },
+  { href: "/", label: "Home" },
   { href: "/genome-browser/otaurus", label: "Genome Browser" },
   { href: "/distribution", label: "Distribution" },
   { href: "/resources", label: "Resources" },
