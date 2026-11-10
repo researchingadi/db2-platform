@@ -1,236 +1,166 @@
-import Link from "next/link";
 import AnimatedSection from "@/components/site/AnimatedSection";
 import PageShell from "@/components/site/PageShell";
+import { PI, COLLABORATORS, DEVS } from "@/lib/people";
 
 export const metadata = {
   title: "Contact Us — DB²",
-  description: "Contact the Davidson Lab about DB² data, bugs, or collaboration",
+  description: "Contact the DB² help desk or the DB² team",
 };
 
-/* Card styling mirrors PersonCard on the People page */
-function ContactCard({
-  heading,
-  accent,
-  accentRgb,
-  children,
-}: {
-  heading: string;
-  accent: string;
-  accentRgb: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div
-      className="db-glass"
-      style={{
-        padding: "1.4rem",
-        borderRadius: "20px",
-        borderColor: `rgba(${accentRgb}, 0.22)`,
-        position: "relative",
-        overflow: "hidden",
-        height: "100%",
-      }}
-    >
-      {/* top accent bar */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "2px",
-          background: `linear-gradient(90deg, ${accent}, transparent 70%)`,
-          opacity: 0.65,
-        }}
-      />
-      <h2
-        style={{
-          fontFamily: "var(--font-mono)",
-          fontWeight: 500,
-          fontSize: "0.68rem",
-          color: accent,
-          letterSpacing: "0.06em",
-          textTransform: "uppercase",
-          margin: "0 0 0.9rem",
-        }}
-      >
-        {heading}
-      </h2>
-      {children}
-    </div>
-  );
-}
+const HELP_EMAIL = "dungbeetledatabase@gmail.com";
+// PI email is not stored in lib/people.ts (adding it would show it on the People page)
+const PI_EMAIL = "pld59@msstate.edu";
 
-const nameStyle: React.CSSProperties = {
-  fontFamily: "var(--font-sans)",
-  fontWeight: 700,
-  fontSize: "0.95rem",
-  color: "var(--db-cream)",
-  margin: "0 0 0.1rem",
-  letterSpacing: "-0.025em",
+const ADI = DEVS.find((d) => d.name === "Adi Singh")!;
+
+type Row = {
+  position: string;
+  name: string;
+  website?: string;
+  affiliation: string;
+  email: string;
 };
 
-const titleStyle: React.CSSProperties = {
+const TEAMS: { team: string; rows: Row[] }[] = [
+  {
+    team: "Davidson Lab · Mississippi State University",
+    rows: [
+      {
+        position: "PI",
+        name: PI.name,
+        website: PI.website,
+        affiliation: PI.department,
+        email: PI_EMAIL,
+      },
+      {
+        position: "Bioinformatics Developer",
+        name: ADI.name,
+        affiliation: ADI.department,
+        email: ADI.email,
+      },
+    ],
+  },
+  {
+    team: "Collaborating Principal Investigators",
+    rows: COLLABORATORS.map((c) => ({
+      position: "Collaborating PI",
+      name: c.name,
+      website: c.website,
+      affiliation: `${c.department}, ${c.institution}`,
+      email: c.email,
+    })),
+  },
+];
+
+const bodyText: React.CSSProperties = {
   fontFamily: "var(--font-sans)",
-  fontSize: "0.78rem",
+  fontSize: "1rem",
+  lineHeight: 1.7,
   color: "var(--db-stone)",
-  marginBottom: "0.5rem",
 };
 
-const metaStyle: React.CSSProperties = {
-  fontFamily: "var(--font-sans)",
-  fontSize: "0.78rem",
-  color: "var(--db-muted)",
-  marginBottom: "0.15rem",
+const inlineLink: React.CSSProperties = {
+  color: "var(--db-cyan)",
+  textDecoration: "underline",
+  textUnderlineOffset: "3px",
+  overflowWrap: "anywhere",
 };
 
-const locationStyle: React.CSSProperties = {
-  fontFamily: "var(--font-mono)",
-  fontSize: "0.65rem",
-  color: "var(--db-muted)",
-  letterSpacing: "0.04em",
-  opacity: 0.7,
-  marginBottom: "0.75rem",
-};
-
-const noteStyle: React.CSSProperties = {
-  fontFamily: "var(--font-sans)",
-  fontSize: "0.85rem",
-  color: "var(--db-stone)",
-  lineHeight: 1.68,
-  margin: "0.8rem 0 0",
-};
-
-function linkStyle(color: string): React.CSSProperties {
-  return {
-    fontFamily: "var(--font-mono)",
-    fontSize: "0.72rem",
-    color,
-    letterSpacing: "0.03em",
-    textDecoration: "underline",
-    textUnderlineOffset: "3px",
-    width: "fit-content",
-  };
+function href(website: string) {
+  return website.startsWith("http") ? website : `https://${website}`;
 }
 
 export default function ContactPage() {
   return (
     <PageShell>
-      {/* ── Header ── */}
-      <section
-        style={{
-          borderBottom: "1px solid rgba(0,240,255,0.12)",
-        }}
-      >
-        <div
-          style={{
-            maxWidth: "1540px",
-            margin: "0 auto",
-            padding: "4rem 1.25rem 2.5rem",
-          }}
-        >
-          <AnimatedSection>
-            <p className="db-eyebrow">DB² · Contact</p>
-            <h1
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontWeight: 700,
-                fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-                color: "var(--db-cream)",
-                letterSpacing: "-0.03em",
-                margin: 0,
-                lineHeight: 1.1,
-              }}
-            >
-              Contact Us
-            </h1>
-            <p
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "14px",
-                color: "var(--db-stone)",
-                marginTop: "10px",
-                maxWidth: "520px",
-              }}
-            >
-              Questions about the data, found a bug, or want to collaborate?
-              Reach out to the Davidson Lab.
-            </p>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ── Cards ── */}
       <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
+        {/* ── Header ── */}
         <AnimatedSection>
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-              gap: "0.75rem",
-            }}
-          >
-            <ContactCard
-              heading="General inquiries & collaboration"
-              accent="var(--db-cyan)"
-              accentRgb="0,240,255"
-            >
-              <h3 style={nameStyle}>Dr. Philip L. Davidson</h3>
-              <div style={titleStyle}>Principal Investigator</div>
-              <div style={metaStyle}>Department of Biological Sciences</div>
-              <div style={metaStyle}>Mississippi State University</div>
-              <div style={locationStyle}>Starkville, MS, USA</div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
-                <a
-                  href="mailto:pld59@msstate.edu"
-                  className="focus-ring"
-                  style={linkStyle("var(--db-cyan)")}
-                >
-                  pld59@msstate.edu
-                </a>
-                <a
-                  href="https://davidsonlab-msu.github.io"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="focus-ring"
-                  style={linkStyle("var(--db-stone)")}
-                >
-                  davidsonlab-msu.github.io
-                </a>
-              </div>
-            </ContactCard>
+          <p className="db-eyebrow">DB² · Contact</p>
+          <h1 className="arcade-title" style={{ fontSize: "clamp(1.4rem, 3vw, 2.1rem)" }}>
+            Contact Us
+          </h1>
+        </AnimatedSection>
 
-            <ContactCard
-              heading="Website & technical issues"
-              accent="var(--db-violet)"
-              accentRgb="141,124,255"
-            >
-              <h3 style={nameStyle}>Adi Singh</h3>
-              <div style={titleStyle}>Bioinformatics Developer</div>
-              <a
-                href="mailto:as5142@msstate.edu"
-                className="focus-ring"
-                style={linkStyle("var(--db-violet)")}
-              >
-                as5142@msstate.edu
+        {/* ── Help desk ── */}
+        <AnimatedSection style={{ marginTop: "2.5rem", maxWidth: "860px" }}>
+          <ul style={{ ...bodyText, margin: 0, paddingLeft: "1.25rem", display: "grid", gap: "0.9rem" }}>
+            <li>
+              <strong style={{ color: "var(--db-cream)" }}>Help desk:</strong> To ask questions,
+              point out any problem with content, or suggest improvements to DB², please email{" "}
+              <a href={`mailto:${HELP_EMAIL}`} className="focus-ring" style={inlineLink}>
+                {HELP_EMAIL}
               </a>
-              <p style={noteStyle}>Report bugs, broken links, or data problems on the site.</p>
-            </ContactCard>
+              .
+            </li>
+            <li>
+              <strong style={{ color: "var(--db-cream)" }}>Software bugs:</strong> To report a bug,
+              email{" "}
+              <a href={`mailto:${HELP_EMAIL}`} className="focus-ring" style={inlineLink}>
+                {HELP_EMAIL}
+              </a>{" "}
+              and include the page URL, the species you were viewing, what you expected, and what
+              happened (a screenshot helps).
+            </li>
+          </ul>
+        </AnimatedSection>
 
-            <ContactCard
-              heading="Collaborating PIs"
-              accent="var(--db-green)"
-              accentRgb="73,255,182"
-            >
-              <p style={{ ...noteStyle, marginTop: 0 }}>
-                Contact details for our collaborating PIs are on the{" "}
-                <Link href="/people" className="focus-ring" style={{ color: "var(--db-green)", textUnderlineOffset: "3px" }}>
-                  People page
-                </Link>
-                .
-              </p>
-            </ContactCard>
-          </div>
+        {/* ── Team table ── */}
+        <AnimatedSection style={{ marginTop: "3.5rem" }}>
+          <h2
+            className="arcade-title"
+            style={{ fontSize: "clamp(0.85rem, 1.6vw, 1.1rem)", marginBottom: "1.5rem" }}
+          >
+            DB² Team Contact Information
+          </h2>
+
+          <table className="contact-table">
+            <caption className="sr-only">
+              DB² team members grouped by team, with position, affiliation and e-mail
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Position</th>
+                <th scope="col">Person</th>
+                <th scope="col">Affiliation</th>
+                <th scope="col">E-Mail</th>
+              </tr>
+            </thead>
+            {TEAMS.map(({ team, rows }) => (
+              <tbody key={team}>
+                <tr className="team-row">
+                  <th scope="colgroup" colSpan={4}>
+                    {team}
+                  </th>
+                </tr>
+                {rows.map((r) => (
+                  <tr key={r.name} className="person-row">
+                    <td data-label="Position">{r.position}</td>
+                    <th scope="row" data-label="Person">
+                      {r.website ? (
+                        <a
+                          href={href(r.website)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="focus-ring"
+                        >
+                          {r.name}
+                        </a>
+                      ) : (
+                        r.name
+                      )}
+                    </th>
+                    <td data-label="Affiliation">{r.affiliation}</td>
+                    <td data-label="E-Mail">
+                      <a href={`mailto:${r.email}`} className="focus-ring">
+                        {r.email}
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            ))}
+          </table>
         </AnimatedSection>
       </div>
     </PageShell>

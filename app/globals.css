@@ -617,6 +617,106 @@ select {
   outline-offset: 3px;
 }
 
+/* Contact page team table: hard border, team header rows, stacks below 700px */
+.contact-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: var(--arcade-border) solid var(--db-cream);
+  box-shadow: var(--arcade-shadow);
+  background: var(--db-charcoal);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--db-cream);
+  text-align: left;
+}
+
+.contact-table thead th {
+  padding: 0.85rem 1rem;
+  background: var(--db-black);
+  border-bottom: var(--arcade-border) solid var(--db-cream);
+  color: var(--db-cyan);
+  font-family: var(--font-pixel);
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.contact-table .team-row th {
+  padding: 0.65rem 1rem;
+  background: var(--db-cream);
+  color: var(--db-black);
+  font-family: var(--font-pixel);
+  font-size: 0.58rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.contact-table tbody td,
+.contact-table tbody .person-row th {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--db-line);
+  vertical-align: top;
+  font-weight: 400;
+}
+
+.contact-table .person-row:nth-child(even) {
+  background: var(--db-panel-2);
+}
+
+.contact-table a {
+  color: var(--db-cyan);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 699px) {
+  .contact-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .contact-table,
+  .contact-table tbody,
+  .contact-table tr,
+  .contact-table th,
+  .contact-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .contact-table .person-row {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--db-line);
+  }
+
+  .contact-table tbody td,
+  .contact-table tbody .person-row th {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 0.75rem;
+    padding: 0.3rem 1rem;
+    border-bottom: 0;
+  }
+
+  .contact-table tbody td::before,
+  .contact-table tbody .person-row th::before {
+    content: attr(data-label);
+    color: var(--db-stone);
+    font-family: var(--font-pixel-sm);
+    font-size: 1.05rem;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+}
+
 .arcade-title {
   margin: 0;
   font-family: var(--font-pixel);
