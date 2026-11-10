@@ -1,136 +1,98 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { MotionConfig, motion } from "framer-motion";
 
 export default function ClosingCTA() {
   return (
     <section
       style={{
-        padding: "100px 24px",
+        padding: "80px 24px 100px",
         textAlign: "center",
         background: "var(--db-black)",
         position: "relative",
         overflow: "hidden",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-          width: "600px",
-          height: "600px",
-          borderRadius: "50%",
-          background: "radial-gradient(circle, rgba(0,240,255,0.08), transparent 70%)",
-          pointerEvents: "none",
-        }}
-      />
-
-      <div style={{ position: "relative", zIndex: 1 }}>
-        <p className="db-eyebrow" style={{ justifyContent: "center", display: "flex" }}>
-          Open Science · Open Data
-        </p>
-        <h2
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontWeight: 700,
-            fontSize: "clamp(2.2rem, 5vw, 4rem)",
-            color: "var(--db-cream)",
-            margin: 0,
-            lineHeight: 1.1,
-          }}
-        >
-          The genome of a beetle.
-        </h2>
-        <h2
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontWeight: 700,
-            fontSize: "clamp(2.2rem, 5vw, 4rem)",
-            color: "var(--db-cyan)",
-            margin: 0,
-            lineHeight: 1.1,
-          }}
-        >
-          A window into evolution.
-        </h2>
-        <p
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "1rem",
-            color: "var(--db-stone)",
-            maxWidth: "480px",
-            margin: "20px auto 0",
-            lineHeight: 1.8,
-          }}
-        >
-          DB² is an open platform built for researchers, educators, and anyone
-          curious about the genomics of adaptation. All data is freely
-          accessible.
-        </p>
-
+      <MotionConfig reducedMotion="user">
         <div
-          style={{
-            display: "flex",
-            gap: "14px",
-            justifyContent: "center",
-            flexWrap: "wrap",
-            marginTop: "36px",
-          }}
+          className="arcade-panel"
+          style={{ position: "relative", zIndex: 1, maxWidth: "820px", margin: "0 auto", padding: "0 28px 36px" }}
         >
-          <Link href="/genome-browser" style={{ textDecoration: "none" }}>
-            <motion.span
-              whileHover={{ scale: 1.03 }}
-              style={{
-                display: "inline-block",
-                background: "var(--db-cyan)",
-                color: "#030303",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 600,
-                fontSize: "0.85rem",
-                letterSpacing: "0.04em",
-                padding: "13px 28px",
-                borderRadius: "9px",
-              }}
-            >
-              Explore the Genome Browser
-            </motion.span>
-          </Link>
-          <Link href="/downloads" style={{ textDecoration: "none" }}>
-            <motion.span
-              whileHover={{ borderColor: "#00f0ff" }}
-              style={{
-                display: "inline-block",
-                background: "transparent",
-                color: "var(--db-cyan)",
-                border: "1px solid rgba(0,240,255,0.4)",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 600,
-                fontSize: "0.85rem",
-                letterSpacing: "0.04em",
-                padding: "13px 28px",
-                borderRadius: "9px",
-              }}
-            >
-              Browse All Species
-            </motion.span>
-          </Link>
-        </div>
+          {/* Title bar: the existing eyebrow line */}
+          <p className="arcade-panel__bar" style={{ justifyContent: "center", display: "flex", margin: "0 -28px 32px" }}>
+            Open Science · Open Data
+          </p>
+          <h2
+            className="arcade-title"
+            style={{
+              fontSize: "clamp(1.15rem, 3.2vw, 2rem)",
+              margin: 0,
+              lineHeight: 1.4,
+            }}
+          >
+            The genome of a beetle.
+          </h2>
+          <h2
+            className="arcade-title"
+            style={{
+              fontSize: "clamp(1.15rem, 3.2vw, 2rem)",
+              color: "var(--db-cyan)",
+              margin: "6px 0 0",
+              lineHeight: 1.4,
+            }}
+          >
+            A window into evolution.
+          </h2>
+          <p
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: "1rem",
+              color: "var(--db-stone)",
+              maxWidth: "520px",
+              margin: "24px auto 0",
+              lineHeight: 1.8,
+            }}
+          >
+            DB² is an open platform built for researchers, educators, and anyone
+            curious about the genomics of adaptation. All data is freely
+            accessible.
+          </p>
 
-        <p
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.65rem",
-            color: "var(--db-muted)",
-            letterSpacing: "0.1em",
-            marginTop: "56px",
-          }}
-        >
-          Genome data from NCBI · Occurrence data from iNaturalist · Literature from Europe PMC
-        </p>
-      </div>
+          <div
+            style={{
+              display: "flex",
+              gap: "16px",
+              justifyContent: "center",
+              flexWrap: "wrap",
+              marginTop: "36px",
+            }}
+          >
+            <Link href="/genome-browser" className="focus-ring" style={{ textDecoration: "none" }}>
+              <motion.span className="arcade-btn" style={{ padding: "0.9rem 1.2rem" }}>
+                Explore the Genome Browser
+              </motion.span>
+            </Link>
+            <Link href="/downloads" className="focus-ring" style={{ textDecoration: "none" }}>
+              <motion.span className="arcade-btn" style={{ padding: "0.9rem 1.2rem" }}>
+                Browse All Species
+              </motion.span>
+            </Link>
+          </div>
+
+          <p
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: "14px",
+              color: "var(--db-stone)",
+              lineHeight: 1.6,
+              marginTop: "40px",
+            }}
+          >
+            Genome data from NCBI · Occurrence data from iNaturalist · Literature from Europe PMC
+          </p>
+        </div>
+      </MotionConfig>
     </section>
   );
 }

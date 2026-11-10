@@ -32,7 +32,7 @@ export default function FeatureCard({
       className="arcade-panel"
       style={{
         height: "100%",
-        borderColor: soon ? "var(--db-muted)" : color,
+        borderColor: soon ? "var(--db-stone)" : color,
         cursor: soon ? "default" : "pointer",
         display: "flex",
         flexDirection: "column",
@@ -43,8 +43,8 @@ export default function FeatureCard({
       <div
         className="arcade-panel__bar"
         style={{
-          background: soon ? "var(--db-muted)" : color,
-          borderBottomColor: soon ? "var(--db-muted)" : color,
+          background: soon ? "var(--db-stone)" : color,
+          borderBottomColor: soon ? "var(--db-stone)" : color,
         }}
       >
         <span>{title}</span>
@@ -66,7 +66,7 @@ export default function FeatureCard({
             width: "44px",
             height: "44px",
             border: `3px solid ${color}`,
-            boxShadow: "3px 3px 0 #000",
+            boxShadow: "3px 3px 0 var(--db-black)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",

@@ -901,9 +901,24 @@ select {
   vertical-align: middle;
 }
 
+/* Clickable arcade panels (home page cards): hover = cyan border + deeper shadow.
+   No transform, so it never fights framer-motion's entrance animation. */
+.arcade-hover {
+  transition:
+    border-color 120ms steps(2, end),
+    box-shadow 120ms steps(2, end);
+}
+
+.arcade-hover:hover,
+.arcade-hover:focus-within {
+  border-color: var(--db-cyan);
+  box-shadow: 9px 9px 0 #000;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .arcade-progress__fill,
-  .arcade-toggle {
+  .arcade-toggle,
+  .arcade-hover {
     transition: none;
   }
 }

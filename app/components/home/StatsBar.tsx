@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { MotionConfig, motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
 type Stat = {
@@ -47,76 +47,81 @@ export default function StatsBar() {
   return (
     <section
       style={{
-        background: "var(--db-charcoal)",
-        borderTop: "1px solid var(--db-line)",
-        borderBottom: "1px solid var(--db-line)",
-        padding: "28px 24px",
+        background: "var(--db-black)",
+        borderTop: "var(--arcade-border) solid var(--db-cream)",
+        borderBottom: "var(--arcade-border) solid var(--db-cream)",
+        padding: "40px 24px 46px",
       }}
     >
-      <div
-        ref={ref}
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          maxWidth: "1540px",
-          margin: "0 auto",
-        }}
-      >
-        {stats.map((stat, i) => (
-          <div
-            key={stat.label}
-            style={{
-              flex: "1 1 160px",
-              textAlign: "center",
-              padding: "0.5rem 1rem",
-              borderLeft: i === 0 ? "none" : "1px solid var(--db-line)",
-            }}
-          >
-            <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              animate={inView ? { y: 0, opacity: 1 } : {}}
-              transition={{ delay: i * 0.08, duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
+      <MotionConfig reducedMotion="user">
+        <div
+          ref={ref}
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: "20px",
+            maxWidth: "1540px",
+            margin: "0 auto",
+          }}
+        >
+          {stats.map((stat, i) => (
+            <div
+              key={stat.label}
+              className="arcade-panel"
+              style={{
+                flex: "1 1 180px",
+                textAlign: "center",
+                padding: 0,
+              }}
             >
-              <div style={{ fontSize: "1.3rem" }}>{stat.icon}</div>
-              <div
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  fontWeight: 700,
-                  fontSize: "2.2rem",
-                  color: "var(--db-cream)",
-                  marginTop: "0.25rem",
-                }}
+              <motion.div
+                initial={{ y: 20, opacity: 0 }}
+                animate={inView ? { y: 0, opacity: 1 } : {}}
+                transition={{ delay: i * 0.08, duration: 0.5, ease: [0.22, 0.61, 0.36, 1] }}
+                style={{ padding: "18px 14px 20px" }}
               >
-                {stat.value}
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  fontWeight: 600,
-                  fontSize: "0.75rem",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.08em",
-                  color: "var(--db-stone)",
-                  marginTop: "4px",
-                }}
-              >
-                {stat.label}
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-sans)",
-                  fontWeight: 400,
-                  fontSize: "0.7rem",
-                  color: "var(--db-muted)",
-                  marginTop: "2px",
-                }}
-              >
-                {stat.sublabel}
-              </div>
-            </motion.div>
-          </div>
-        ))}
-      </div>
+                <div style={{ fontSize: "1.4rem", lineHeight: 1 }}>{stat.icon}</div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-mono)",
+                    fontWeight: 500,
+                    fontSize: "2rem",
+                    lineHeight: 1.2,
+                    color: "var(--db-cream)",
+                    marginTop: "10px",
+                  }}
+                >
+                  {stat.value}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-pixel)",
+                    fontSize: "0.58rem",
+                    lineHeight: 1.5,
+                    textTransform: "uppercase",
+                    color: "var(--db-cyan)",
+                    marginTop: "12px",
+                  }}
+                >
+                  {stat.label}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-sans)",
+                    fontWeight: 400,
+                    fontSize: "14px",
+                    lineHeight: 1.45,
+                    color: "var(--db-stone)",
+                    marginTop: "8px",
+                  }}
+                >
+                  {stat.sublabel}
+                </div>
+              </motion.div>
+            </div>
+          ))}
+        </div>
+      </MotionConfig>
     </section>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { MotionConfig, motion } from "framer-motion";
 
 const SPECS = [
   { label: "Assembly Level", value: "Chromosome" },
@@ -14,123 +14,114 @@ const SPECS = [
 
 export default function AssemblyCard() {
   return (
-    <section style={{ padding: "72px 24px", background: "var(--db-black)" }}>
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          background: "linear-gradient(135deg, var(--db-charcoal), var(--db-panel))",
-          border: "1px solid rgba(0,240,255,0.2)",
-          borderRadius: "16px",
-          padding: "40px 48px",
-          display: "grid",
-          gridTemplateColumns: "1fr auto",
-          gap: "40px",
-          alignItems: "center",
-          overflow: "hidden",
-        }}
-        className="assembly-card-grid"
-      >
-        <div>
-          <p className="db-eyebrow">Featured Assembly</p>
-          <h2
+    <section style={{ padding: "80px 24px", background: "var(--db-black)" }}>
+      <MotionConfig reducedMotion="user">
+        <div
+          className="arcade-panel assembly-card-grid"
+          style={{
+            position: "relative",
+            maxWidth: "1200px",
+            margin: "0 auto",
+            padding: "0 48px 40px",
+            display: "grid",
+            gridTemplateColumns: "1fr",
+            overflow: "hidden",
+          }}
+        >
+          <div style={{ minWidth: 0 }}>
+            {/* Title bar: the existing "Featured Assembly" eyebrow */}
+            <p className="arcade-panel__bar" style={{ margin: "0 -48px 28px" }}>
+              Featured Assembly
+            </p>
+            <h2
+              className="arcade-title"
+              style={{
+                fontSize: "clamp(1.05rem, 2.4vw, 1.5rem)",
+                lineHeight: 1.4,
+                margin: 0,
+                overflowWrap: "anywhere",
+              }}
+            >
+              Onthophagus taurus · Otau_3.2
+            </h2>
+            <p
+              style={{
+                fontFamily: "var(--font-mono)",
+                fontSize: "15px",
+                color: "var(--db-cyan)",
+                marginTop: "12px",
+              }}
+            >
+              GCF_036711975.1
+            </p>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(2, minmax(0,1fr))",
+                gap: "18px 24px",
+                marginTop: "28px",
+                maxWidth: "520px",
+              }}
+            >
+              {SPECS.map((spec) => (
+                <div key={spec.label} style={{ borderLeft: "var(--arcade-border) solid var(--db-cyan)", paddingLeft: "12px" }}>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-pixel)",
+                      fontSize: "0.5rem",
+                      lineHeight: 1.6,
+                      textTransform: "uppercase",
+                      color: "var(--db-stone)",
+                    }}
+                  >
+                    {spec.label}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-sans)",
+                      fontWeight: 600,
+                      fontSize: "15px",
+                      color: "var(--db-cream)",
+                      marginTop: "6px",
+                    }}
+                  >
+                    {spec.value}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <Link href="/genome-browser" className="focus-ring" style={{ textDecoration: "none", display: "inline-block", marginTop: "32px" }}>
+              <motion.span className="arcade-btn pixel-glyphs">
+                Open Genome Browser →
+              </motion.span>
+            </Link>
+          </div>
+
+          <div
+            className="assembly-card-vertical"
             style={{
-              fontFamily: "var(--font-sans)",
-              fontWeight: 700,
-              fontSize: "1.8rem",
-              color: "var(--db-cream)",
-              letterSpacing: "-0.03em",
-              margin: 0,
-            }}
-          >
-            Onthophagus taurus · Otau_3.2
-          </h2>
-          <p
-            style={{
+              position: "absolute",
+              top: "72px",
+              right: "20px",
               fontFamily: "var(--font-mono)",
-              fontSize: "12px",
-              color: "var(--db-muted)",
-              marginTop: "6px",
+              color: "var(--db-stone)",
+              fontSize: "14px",
+              letterSpacing: "0.15em",
+              writingMode: "vertical-rl",
+              textOrientation: "mixed",
             }}
           >
             GCF_036711975.1
-          </p>
-
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, minmax(0,1fr))",
-              gap: "12px",
-              marginTop: "24px",
-              maxWidth: "460px",
-            }}
-          >
-            {SPECS.map((spec) => (
-              <div key={spec.label}>
-                <div
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "10px",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.08em",
-                    color: "var(--db-muted)",
-                  }}
-                >
-                  {spec.label}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-sans)",
-                    fontWeight: 500,
-                    fontSize: "13px",
-                    color: "var(--db-stone)",
-                    marginTop: "2px",
-                  }}
-                >
-                  {spec.value}
-                </div>
-              </div>
-            ))}
           </div>
-
-          <Link href="/genome-browser" style={{ textDecoration: "none" }}>
-            <motion.span
-              whileHover={{ scale: 1.03 }}
-              style={{
-                display: "inline-block",
-                background: "var(--db-cyan)",
-                color: "#030303",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 600,
-                fontSize: "13px",
-                padding: "10px 22px",
-                borderRadius: "8px",
-                marginTop: "28px",
-              }}
-            >
-              Open Genome Browser →
-            </motion.span>
-          </Link>
         </div>
-
-        <div
-          className="assembly-card-vertical"
-          style={{
-            fontFamily: "var(--font-mono)",
-            color: "rgba(0,240,255,0.08)",
-            fontSize: "11px",
-            letterSpacing: "0.15em",
-            writingMode: "vertical-rl",
-            textOrientation: "mixed",
-          }}
-        >
-          GCF_036711975.1
-        </div>
-      </div>
+      </MotionConfig>
 
       <style>{`
         @media (max-width: 768px) {
-          .assembly-card-grid { grid-template-columns: 1fr !important; }
+          .assembly-card-grid { grid-template-columns: 1fr !important; padding-left: 22px !important; padding-right: 22px !important; }
+          .assembly-card-grid .arcade-panel__bar { margin-left: -22px !important; margin-right: -22px !important; }
           .assembly-card-vertical { display: none; }
         }
       `}</style>
