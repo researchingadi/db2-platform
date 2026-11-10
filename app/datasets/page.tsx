@@ -8,30 +8,33 @@ type DatasetRow = Record<string, string>;
 const ROWS_PER_PAGE = 25;
 
 const STRATEGY_COLORS: Record<string, { bg: string; color: string }> = {
-  WGS: { bg: "rgba(99,102,241,0.12)", color: "#818cf8" },
-  "RNA-Seq": { bg: "rgba(6,182,212,0.12)", color: "#06b6d4" },
-  "Targeted-Capture": { bg: "rgba(16,185,129,0.12)", color: "#10b981" },
-  "RAD-Seq": { bg: "rgba(245,158,11,0.12)", color: "#f59e0b" },
-  "Hi-C": { bg: "rgba(139,92,246,0.12)", color: "#8b5cf6" },
+  WGS: { bg: "var(--db-black)", color: "var(--db-cyan)" },
+  "RNA-Seq": { bg: "var(--db-black)", color: "var(--db-green)" },
+  "Targeted-Capture": { bg: "var(--db-black)", color: "var(--db-violet)" },
+  "RAD-Seq": { bg: "var(--db-black)", color: "var(--db-cream)" },
+  "Hi-C": { bg: "var(--db-black)", color: "var(--db-stone)" },
 };
-const STRATEGY_FALLBACK = { bg: "rgba(148,163,184,0.12)", color: "#94a3b8" };
+const STRATEGY_FALLBACK = { bg: "var(--db-black)", color: "var(--db-stone)" };
 
 const SOURCE_COLORS: Record<string, { bg: string; color: string }> = {
-  GENOMIC: { bg: "rgba(99,102,241,0.1)", color: "#818cf8" },
-  TRANSCRIPTOMIC: { bg: "rgba(6,182,212,0.1)", color: "#06b6d4" },
+  GENOMIC: { bg: "var(--db-black)", color: "var(--db-cyan)" },
+  TRANSCRIPTOMIC: { bg: "var(--db-black)", color: "var(--db-green)" },
 };
-const SOURCE_FALLBACK = { bg: "rgba(148,163,184,0.1)", color: "#94a3b8" };
+const SOURCE_FALLBACK = { bg: "var(--db-black)", color: "var(--db-stone)" };
 
 function Pill({ label, colors }: { label: string; colors: { bg: string; color: string } }) {
   return (
     <span
       style={{
+        display: "inline-block",
         background: colors.bg,
         color: colors.color,
-        borderRadius: "4px",
-        padding: "2px 7px",
-        fontSize: "11px",
+        border: `2px solid ${colors.color}`,
+        padding: "1px 7px",
+        fontFamily: "var(--font-mono)",
+        fontSize: "14px",
         fontWeight: 600,
+        lineHeight: 1.4,
         whiteSpace: "nowrap",
       }}
     >
@@ -118,14 +121,13 @@ export default function DatasetsPage() {
   }
 
   const selectStyle: React.CSSProperties = {
-    background: "#06081a",
-    border: "1px solid rgba(99,102,241,0.2)",
-    borderRadius: "7px",
-    padding: "8px 12px",
-    color: "#94a3b8",
+    padding: "9px 12px",
+    color: "var(--db-cream)",
     fontFamily: "var(--font-sans)",
-    fontSize: "13px",
+    fontSize: "14px",
     cursor: "pointer",
+    width: "auto",
+    maxWidth: "100%",
   };
 
   const start = filteredData.length === 0 ? 0 : (currentPage - 1) * ROWS_PER_PAGE + 1;
@@ -156,43 +158,35 @@ export default function DatasetsPage() {
 
   function pageButtonStyle(active: boolean, disabled: boolean): React.CSSProperties {
     return {
-      background: active ? "#6366f1" : "#06081a",
-      border: `1px solid ${active ? "#6366f1" : "rgba(99,102,241,0.2)"}`,
-      color: active ? "#ffffff" : "#94a3b8",
-      borderRadius: "6px",
-      padding: "5px 10px",
-      fontSize: "12.5px",
+      background: active ? "var(--db-cyan)" : "var(--db-black)",
+      border: `2px solid ${active ? "var(--db-cyan)" : "var(--db-cream)"}`,
+      color: active ? "var(--db-black)" : "var(--db-cream)",
+      boxShadow: "3px 3px 0 var(--db-black)",
+      padding: "0.55rem 0.7rem",
+      fontSize: "0.6rem",
+      lineHeight: 1.4,
       cursor: disabled ? "not-allowed" : "pointer",
-      opacity: disabled ? 0.3 : 1,
-      fontFamily: "var(--font-sans)",
+      opacity: disabled ? 0.45 : 1,
+      fontFamily: '"Arcade Glyphs", var(--font-pixel)',
+      minWidth: "40px",
     };
   }
 
   return (
     <PageShell>
-      <div style={{ background: "#06081a", minHeight: "100vh" }}>
-        <div style={{ maxWidth: "1300px", margin: "0 auto", padding: "24px" }}>
+      <div style={{ background: "var(--db-black)", minHeight: "100vh" }}>
+        <div style={{ maxWidth: "1300px", margin: "0 auto", padding: "40px 16px 64px" }}>
           {/* ── Header ── */}
-          <div style={{ marginBottom: "24px" }}>
-            <p
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "11px",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "#6366f1",
-                margin: 0,
-              }}
-            >
+          <div style={{ marginBottom: "28px" }}>
+            <p className="db-eyebrow" style={{ margin: 0 }}>
               SCARABAEINAE · NCBI SRA
             </p>
             <h1
+              className="arcade-title"
               style={{
-                fontFamily: "Syne, var(--font-sans)",
-                fontSize: "28px",
-                fontWeight: 800,
-                color: "#f1f5f9",
-                margin: "6px 0 0",
+                fontSize: "clamp(1.3rem, 3vw, 1.9rem)",
+                lineHeight: 1.3,
+                margin: "12px 0 0",
               }}
             >
               Genomic Datasets
@@ -200,10 +194,11 @@ export default function DatasetsPage() {
             <p
               style={{
                 fontFamily: "var(--font-sans)",
-                fontSize: "14px",
-                color: "#94a3b8",
-                maxWidth: "600px",
-                marginTop: "8px",
+                fontSize: "15px",
+                lineHeight: 1.6,
+                color: "var(--db-stone)",
+                maxWidth: "640px",
+                marginTop: "14px",
               }}
             >
               Genomic and transcriptomic datasets for Scarabaeinae (dung beetles)
@@ -215,12 +210,10 @@ export default function DatasetsPage() {
 
           {/* ── Search and filter bar ── */}
           <div
+            className="arcade-panel"
             style={{
-              background: "#0c1028",
-              border: "1px solid rgba(99,102,241,0.12)",
-              borderRadius: "12px",
-              padding: "16px 20px",
-              marginBottom: "20px",
+              padding: "16px",
+              marginBottom: "24px",
               display: "flex",
               gap: "10px",
               flexWrap: "wrap",
@@ -232,25 +225,22 @@ export default function DatasetsPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search species, title, institution, accession..."
+              className="arcade-input"
               style={{
                 flex: 1,
-                minWidth: "220px",
-                background: "#06081a",
-                border: "1px solid rgba(99,102,241,0.2)",
-                borderRadius: "7px",
-                padding: "8px 14px",
-                color: "#f1f5f9",
+                minWidth: "min(220px, 100%)",
+                padding: "9px 12px",
                 fontFamily: "var(--font-sans)",
-                fontSize: "13px",
-                outline: "none",
+                fontSize: "15px",
               }}
-              onFocus={(e) => (e.currentTarget.style.borderColor = "#6366f1")}
-              onBlur={(e) => (e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)")}
+              onFocus={(e) => (e.currentTarget.style.borderColor = "var(--db-cyan)")}
+              onBlur={(e) => (e.currentTarget.style.borderColor = "var(--db-cream)")}
             />
 
             <select
               value={filterSpecies}
               onChange={(e) => setFilterSpecies(e.target.value)}
+              className="arcade-input"
               style={selectStyle}
             >
               <option value="">All Species</option>
@@ -264,6 +254,7 @@ export default function DatasetsPage() {
             <select
               value={filterStrategy}
               onChange={(e) => setFilterStrategy(e.target.value)}
+              className="arcade-input"
               style={selectStyle}
             >
               <option value="">All Strategies</option>
@@ -277,6 +268,7 @@ export default function DatasetsPage() {
             <select
               value={filterSource}
               onChange={(e) => setFilterSource(e.target.value)}
+              className="arcade-input"
               style={selectStyle}
             >
               <option value="">All Sources</option>
@@ -290,6 +282,7 @@ export default function DatasetsPage() {
             <select
               value={filterStudy}
               onChange={(e) => setFilterStudy(e.target.value)}
+              className="arcade-input"
               style={selectStyle}
             >
               <option value="">All Studies</option>
@@ -303,8 +296,8 @@ export default function DatasetsPage() {
             <span
               style={{
                 fontFamily: "var(--font-mono)",
-                fontSize: "12px",
-                color: "#475569",
+                fontSize: "14px",
+                color: "var(--db-stone)",
                 whiteSpace: "nowrap",
                 marginLeft: "auto",
               }}
@@ -315,16 +308,7 @@ export default function DatasetsPage() {
             {hasActiveFilters && (
               <button
                 onClick={clearFilters}
-                style={{
-                  background: "rgba(99,102,241,0.1)",
-                  color: "#818cf8",
-                  border: "1px solid rgba(99,102,241,0.2)",
-                  borderRadius: "6px",
-                  padding: "6px 12px",
-                  fontSize: "12px",
-                  cursor: "pointer",
-                  fontFamily: "var(--font-sans)",
-                }}
+                className="arcade-btn arcade-btn--small"
               >
                 Clear filters ×
               </button>
@@ -333,10 +317,9 @@ export default function DatasetsPage() {
 
           {/* ── Data table ── */}
           <div
+            className="arcade-panel"
             style={{
-              background: "#0c1028",
-              border: "1px solid rgba(99,102,241,0.12)",
-              borderRadius: "12px",
+              padding: 0,
               overflow: "hidden",
             }}
           >
@@ -344,19 +327,25 @@ export default function DatasetsPage() {
               <div
                 style={{
                   textAlign: "center",
-                  color: "#475569",
-                  padding: "60px",
-                  fontSize: "14px",
+                  color: "var(--db-cream)",
+                  padding: "60px 16px",
+                  fontFamily: "var(--font-pixel)",
+                  fontSize: "0.65rem",
+                  lineHeight: 1.6,
+                  textTransform: "uppercase",
                 }}
               >
+                <span className="blink" style={{ display: "inline-block", width: "10px", height: "10px", background: "var(--db-cyan)", marginRight: "12px" }} />
                 Loading datasets...
               </div>
             ) : filteredData.length === 0 ? (
               <div
                 style={{
                   textAlign: "center",
-                  color: "#475569",
-                  padding: "48px",
+                  color: "var(--db-stone)",
+                  padding: "48px 16px",
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "15px",
                 }}
               >
                 No datasets match your search.
@@ -364,16 +353,9 @@ export default function DatasetsPage() {
             ) : (
               <>
                 <div style={{ overflowX: "auto" }}>
-                  <table
-                    style={{
-                      width: "100%",
-                      borderCollapse: "collapse",
-                      fontSize: "13px",
-                      fontFamily: "var(--font-sans)",
-                    }}
-                  >
+                  <table className="blast-table" style={{ minWidth: "980px" }}>
                     <thead>
-                      <tr style={{ background: "rgba(99,102,241,0.07)" }}>
+                      <tr>
                         {[
                           "Species",
                           "Title",
@@ -383,19 +365,7 @@ export default function DatasetsPage() {
                           "Size (Mb)",
                           "Accession",
                         ].map((col) => (
-                          <th
-                            key={col}
-                            style={{
-                              padding: "10px 14px",
-                              textAlign: "left",
-                              fontSize: "10.5px",
-                              fontWeight: 700,
-                              textTransform: "uppercase",
-                              letterSpacing: "1px",
-                              color: "#475569",
-                              borderBottom: "1px solid rgba(99,102,241,0.12)",
-                            }}
-                          >
+                          <th key={col}>
                             {col}
                           </th>
                         ))}
@@ -405,28 +375,27 @@ export default function DatasetsPage() {
                       {pagedData.map((row, i) => (
                         <tr
                           key={row["Accession"] || i}
-                          style={{ borderBottom: "1px solid rgba(255,255,255,0.04)" }}
                           onMouseEnter={(e) =>
-                            (e.currentTarget.style.background = "rgba(99,102,241,0.04)")
+                            (e.currentTarget.style.background = "var(--db-panel-2)")
                           }
                           onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                         >
                           <td
                             style={{
-                              padding: "9px 14px",
+                              padding: "10px 14px",
                               verticalAlign: "top",
                               fontStyle: "italic",
-                              color: "#f1f5f9",
-                              fontWeight: 500,
+                              color: "var(--db-cream)",
+                              fontWeight: 600,
                             }}
                           >
                             {row["Species"]}
                           </td>
-                          <td style={{ padding: "9px 14px", verticalAlign: "top" }}>
+                          <td style={{ padding: "10px 14px", verticalAlign: "top" }}>
                             <span
                               style={{
-                                color: "#94a3b8",
-                                maxWidth: "220px",
+                                color: "var(--db-stone)",
+                                maxWidth: "240px",
                                 display: "block",
                                 overflow: "hidden",
                                 textOverflow: "ellipsis",
@@ -438,15 +407,15 @@ export default function DatasetsPage() {
                           </td>
                           <td
                             style={{
-                              padding: "9px 14px",
+                              padding: "10px 14px",
                               verticalAlign: "top",
-                              color: "#64748b",
-                              fontSize: "12px",
+                              color: "var(--db-stone)",
+                              fontSize: "14px",
                             }}
                           >
                             {row["Institution"]}
                           </td>
-                          <td style={{ padding: "9px 14px", verticalAlign: "top" }}>
+                          <td style={{ padding: "10px 14px", verticalAlign: "top" }}>
                             <Pill
                               label={row["Library Strategy"]}
                               colors={
@@ -454,7 +423,7 @@ export default function DatasetsPage() {
                               }
                             />
                           </td>
-                          <td style={{ padding: "9px 14px", verticalAlign: "top" }}>
+                          <td style={{ padding: "10px 14px", verticalAlign: "top" }}>
                             <Pill
                               label={row["Library Source"]}
                               colors={SOURCE_COLORS[row["Library Source"]] || SOURCE_FALLBACK}
@@ -462,26 +431,28 @@ export default function DatasetsPage() {
                           </td>
                           <td
                             style={{
-                              padding: "9px 14px",
+                              padding: "10px 14px",
                               verticalAlign: "top",
-                              color: "#64748b",
-                              fontSize: "12px",
+                              color: "var(--db-cream)",
+                              fontSize: "14px",
                               fontFamily: "var(--font-mono)",
                               textAlign: "right",
                             }}
                           >
                             {row["Size (Mb)"]}
                           </td>
-                          <td style={{ padding: "9px 14px", verticalAlign: "top" }}>
+                          <td style={{ padding: "10px 14px", verticalAlign: "top" }}>
                             <a
                               href={row["Link"]}
                               target="_blank"
                               rel="noreferrer"
+                              className="focus-ring"
                               style={{
-                                color: "#6366f1",
+                                color: "var(--db-cyan)",
                                 fontFamily: "var(--font-mono)",
-                                fontSize: "11.5px",
-                                textDecoration: "none",
+                                fontSize: "14px",
+                                textDecoration: "underline",
+                                textUnderlineOffset: "3px",
                               }}
                             >
                               {row["Accession"]}
@@ -496,40 +467,40 @@ export default function DatasetsPage() {
                 {/* ── Pagination ── */}
                 <div
                   style={{
-                    padding: "12px 16px",
-                    borderTop: "1px solid rgba(99,102,241,0.1)",
+                    padding: "14px 16px",
+                    borderTop: "var(--arcade-border) solid var(--db-cream)",
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    background: "#0c1028",
+                    background: "var(--db-charcoal)",
                     flexWrap: "wrap",
-                    gap: "10px",
+                    gap: "12px",
                   }}
                 >
                   <span
                     style={{
                       fontFamily: "var(--font-mono)",
-                      fontSize: "11.5px",
-                      color: "#475569",
+                      fontSize: "14px",
+                      color: "var(--db-stone)",
                     }}
                   >
                     Showing {start}–{end} of {filteredData.length} datasets
                   </span>
 
-                  <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                  <div style={{ display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
                     <button
                       onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                       disabled={currentPage === 1}
                       style={pageButtonStyle(false, currentPage === 1)}
                       onMouseEnter={(e) => {
                         if (currentPage === 1) return;
-                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)";
-                        e.currentTarget.style.color = "#f1f5f9";
+                        e.currentTarget.style.borderColor = "var(--db-cyan)";
+                        e.currentTarget.style.color = "var(--db-cyan)";
                       }}
                       onMouseLeave={(e) => {
                         if (currentPage === 1) return;
-                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)";
-                        e.currentTarget.style.color = "#94a3b8";
+                        e.currentTarget.style.borderColor = "var(--db-cream)";
+                        e.currentTarget.style.color = "var(--db-cream)";
                       }}
                     >
                       ← Prev
@@ -539,7 +510,7 @@ export default function DatasetsPage() {
                       p === "…" ? (
                         <span
                           key={`ellipsis-${idx}`}
-                          style={{ color: "#475569", padding: "0 4px", fontSize: "12.5px" }}
+                          style={{ color: "var(--db-stone)", padding: "0 4px", fontSize: "14px", fontFamily: "var(--font-mono)" }}
                         >
                           …
                         </span>
@@ -550,13 +521,13 @@ export default function DatasetsPage() {
                           style={pageButtonStyle(p === currentPage, false)}
                           onMouseEnter={(e) => {
                             if (p === currentPage) return;
-                            e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)";
-                            e.currentTarget.style.color = "#f1f5f9";
+                            e.currentTarget.style.borderColor = "var(--db-cyan)";
+                            e.currentTarget.style.color = "var(--db-cyan)";
                           }}
                           onMouseLeave={(e) => {
                             if (p === currentPage) return;
-                            e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)";
-                            e.currentTarget.style.color = "#94a3b8";
+                            e.currentTarget.style.borderColor = "var(--db-cream)";
+                            e.currentTarget.style.color = "var(--db-cream)";
                           }}
                         >
                           {p}
@@ -570,13 +541,13 @@ export default function DatasetsPage() {
                       style={pageButtonStyle(false, currentPage === totalPages)}
                       onMouseEnter={(e) => {
                         if (currentPage === totalPages) return;
-                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)";
-                        e.currentTarget.style.color = "#f1f5f9";
+                        e.currentTarget.style.borderColor = "var(--db-cyan)";
+                        e.currentTarget.style.color = "var(--db-cyan)";
                       }}
                       onMouseLeave={(e) => {
                         if (currentPage === totalPages) return;
-                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)";
-                        e.currentTarget.style.color = "#94a3b8";
+                        e.currentTarget.style.borderColor = "var(--db-cream)";
+                        e.currentTarget.style.color = "var(--db-cream)";
                       }}
                     >
                       Next →

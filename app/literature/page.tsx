@@ -50,17 +50,18 @@ function getPageNumbers(current: number, total: number): (number | null)[] {
 
 function pageButtonStyle(isActive: boolean, isDisabled: boolean): React.CSSProperties {
   return {
-    background: isActive ? "#6366f1" : "#0c1028",
-    border: `1px solid ${isActive ? "#6366f1" : "rgba(99,102,241,0.2)"}`,
-    color: isActive ? "#ffffff" : "#94a3b8",
-    borderRadius: "6px",
-    padding: "6px 12px",
-    fontSize: "13px",
-    fontFamily: "var(--font-mono)",
+    background: isActive ? "var(--db-cyan)" : "var(--db-black)",
+    border: `2px solid ${isActive ? "var(--db-cyan)" : "var(--db-cream)"}`,
+    color: isActive ? "var(--db-black)" : "var(--db-cream)",
+    boxShadow: "3px 3px 0 var(--db-black)",
+    padding: "0.55rem 0.7rem",
+    fontSize: "0.6rem",
+    lineHeight: 1.4,
+    fontFamily: '"Arcade Glyphs", var(--font-pixel)',
     cursor: isDisabled ? "not-allowed" : "pointer",
-    opacity: isDisabled ? 0.3 : 1,
-    transition: "border-color 0.15s, color 0.15s",
-    minWidth: "36px",
+    opacity: isDisabled ? 0.45 : 1,
+    transition: "border-color 120ms steps(2, end), color 120ms steps(2, end)",
+    minWidth: "40px",
   };
 }
 
@@ -198,7 +199,7 @@ export default function LiteraturePage() {
         style={{
           position: "relative",
           overflow: "hidden",
-          borderBottom: "1px solid rgba(0,240,255,0.12)",
+          borderBottom: "var(--arcade-border) solid var(--db-cream)",
         }}
       >
         <video
@@ -217,25 +218,30 @@ export default function LiteraturePage() {
         >
           <source src="/publications-bg.mp4" type="video/mp4" />
         </video>
+        <div style={{ position: "relative", zIndex: 1, padding: "4rem 1.25rem 3rem" }}>
         <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(to bottom, rgba(3,3,3,0.15), rgba(3,3,3,0.7))",
-          }}
-        />
-        <div style={{ position: "relative", zIndex: 1, padding: "6rem 1.25rem 4rem" }}>
-        <div style={{ maxWidth: "1540px", margin: "0 auto", position: "relative" }}>
+          className="arcade-panel"
+          style={{ maxWidth: "820px", margin: "0 auto 0 max(0px, calc((100% - 1540px) / 2))", position: "relative", padding: "22px" }}
+        >
           <p className="db-eyebrow">
             DB² · Literature
           </p>
           <h1
-            className="db-section-title"
-            style={{ fontSize: "clamp(2.8rem, 5vw, 5.5rem)" }}
+            className="arcade-title"
+            style={{ fontSize: "clamp(1.4rem, 3.2vw, 2rem)", lineHeight: 1.3, marginTop: "14px" }}
           >
             Literature
           </h1>
-          <p className="db-section-copy" style={{ marginTop: "1.25rem", marginBottom: "2rem" }}>
+          <p
+            style={{
+              marginTop: "1rem",
+              marginBottom: "1.5rem",
+              fontFamily: "var(--font-sans)",
+              fontSize: "15px",
+              lineHeight: 1.6,
+              color: "var(--db-cream)",
+            }}
+          >
             Real-time academic search powered by Europe PMC · 40M+ life sciences articles
           </p>
 
@@ -247,43 +253,29 @@ export default function LiteraturePage() {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Search academic literature..."
+                className="arcade-input"
                 style={{
                   width: "100%",
-                  padding: "0.85rem 5.5rem 0.85rem 1.25rem",
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(141,124,255,0.3)",
-                  borderRadius: "12px",
-                  color: "var(--db-cream)",
+                  padding: "0.8rem 7.5rem 0.8rem 0.9rem",
                   fontFamily: "var(--font-sans)",
-                  fontSize: "0.95rem",
-                  outline: "none",
+                  fontSize: "15px",
                   boxSizing: "border-box",
-                  transition: "border-color 0.2s",
                 }}
                 onFocus={(e) =>
-                  (e.currentTarget.style.borderColor = "rgba(141,124,255,0.6)")
+                  (e.currentTarget.style.borderColor = "var(--db-cyan)")
                 }
                 onBlur={(e) =>
-                  (e.currentTarget.style.borderColor = "rgba(141,124,255,0.3)")
+                  (e.currentTarget.style.borderColor = "var(--db-cream)")
                 }
               />
               <button
                 type="submit"
+                className="arcade-btn arcade-btn--small"
                 style={{
                   position: "absolute",
-                  right: "0.5rem",
-                  top: "50%",
-                  transform: "translateY(-50%)",
-                  background: "rgba(141,124,255,0.15)",
-                  border: "1px solid rgba(141,124,255,0.35)",
-                  borderRadius: "8px",
-                  color: "var(--db-violet)",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.65rem",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  padding: "0.4rem 0.9rem",
-                  cursor: "pointer",
+                  right: "0.6rem",
+                  top: "0.55rem",
+                  boxShadow: "none",
                 }}
               >
                 Search
@@ -297,25 +289,15 @@ export default function LiteraturePage() {
               <button
                 key={chip}
                 onClick={() => handleChip(chip)}
-                style={{
-                  background: "rgba(141,124,255,0.07)",
-                  border: "1px solid rgba(141,124,255,0.22)",
-                  borderRadius: "999px",
-                  color: "var(--db-muted)",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.64rem",
-                  letterSpacing: "0.06em",
-                  padding: "0.32rem 0.85rem",
-                  cursor: "pointer",
-                  transition: "border-color 0.18s, color 0.18s",
-                }}
+                className={query === chip ? "arcade-toggle arcade-toggle--active" : "arcade-toggle"}
+                style={{ textTransform: "none", fontFamily: "var(--font-sans)", fontSize: "14px", fontWeight: 600 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(141,124,255,0.5)";
-                  e.currentTarget.style.color = "var(--db-violet)";
+                  e.currentTarget.style.borderColor = "var(--db-cyan)";
+                  e.currentTarget.style.color = "";
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(141,124,255,0.22)";
-                  e.currentTarget.style.color = "var(--db-muted)";
+                  e.currentTarget.style.borderColor = "";
+                  e.currentTarget.style.color = "";
                 }}
               >
                 {chip}
@@ -331,15 +313,19 @@ export default function LiteraturePage() {
         {/* Loading */}
         {loading && (
           <p
+            className="arcade-panel"
             style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.82rem",
-              color: "var(--db-muted)",
+              fontFamily: "var(--font-pixel)",
+              fontSize: "0.65rem",
+              lineHeight: 1.6,
+              textTransform: "uppercase",
+              color: "var(--db-cream)",
               textAlign: "center",
-              padding: "4rem 0",
-              letterSpacing: "0.06em",
+              padding: "3rem 1rem",
+              margin: 0,
             }}
           >
+            <span className="blink" style={{ display: "inline-block", width: "10px", height: "10px", background: "var(--db-cyan)", marginRight: "12px" }} />
             Searching literature...
           </p>
         )}
@@ -347,15 +333,19 @@ export default function LiteraturePage() {
         {/* Error */}
         {!loading && error && (
           <p
+            className="arcade-panel"
             style={{
               fontFamily: "var(--font-sans)",
-              fontSize: "0.88rem",
-              color: "#ef4444",
+              fontSize: "15px",
+              color: "var(--db-cream)",
+              borderColor: "var(--arcade-pink)",
               textAlign: "center",
-              padding: "4rem 0",
+              padding: "2.5rem 1.25rem",
               lineHeight: 1.6,
+              margin: 0,
             }}
           >
+            <span className="pixel-glyphs" style={{ color: "var(--arcade-pink)", fontSize: "0.7rem", marginRight: "10px" }}>⚠</span>
             {error}
           </p>
         )}
@@ -363,12 +353,15 @@ export default function LiteraturePage() {
         {/* No results */}
         {!loading && !error && papers.length === 0 && (
           <p
+            className="arcade-panel"
             style={{
               fontFamily: "var(--font-sans)",
-              fontSize: "0.88rem",
-              color: "var(--db-muted)",
+              fontSize: "15px",
+              color: "var(--db-stone)",
               textAlign: "center",
-              padding: "4rem 0",
+              padding: "2.5rem 1.25rem",
+              lineHeight: 1.6,
+              margin: 0,
             }}
           >
             No papers found for &ldquo;{query}&rdquo;. Try a different search term.
@@ -382,9 +375,9 @@ export default function LiteraturePage() {
             <div
               style={{
                 fontFamily: "var(--font-mono)",
-                fontSize: "0.66rem",
-                color: "var(--db-muted)",
-                letterSpacing: "0.1em",
+                fontSize: "14px",
+                color: "var(--db-stone)",
+                letterSpacing: "0.04em",
                 textTransform: "uppercase",
                 marginBottom: "1.5rem",
               }}
@@ -394,7 +387,7 @@ export default function LiteraturePage() {
             </div>
 
             {/* Cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
               {papers.map((paper, idx) => {
                 const paperUrl = paper.doi
                   ? `https://doi.org/${paper.doi}`
@@ -422,31 +415,30 @@ export default function LiteraturePage() {
                 return (
                   <div
                     key={cardKey}
-                    className="db-glass"
+                    className="arcade-panel"
                     style={{
-                      padding: "1.5rem",
-                      borderRadius: "18px",
-                      borderLeft: "3px solid rgba(141,124,255,0.45)",
+                      padding: "0 22px 22px",
+                      display: "flex",
+                      flexDirection: "column",
                     }}
                   >
                     {/* Title */}
-                    <h3 style={{ margin: "0 0 0.4rem" }}>
+                    <h3 style={{ margin: "0 0 0.5rem", order: 1 }}>
                       <a
                         href={paperUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         style={{
                           fontFamily: "var(--font-sans)",
-                          fontWeight: 600,
-                          fontSize: "0.98rem",
+                          fontWeight: 700,
+                          fontSize: "17px",
                           color: "var(--db-cream)",
                           textDecoration: "none",
-                          lineHeight: 1.5,
-                          letterSpacing: "-0.02em",
-                          transition: "color 0.15s",
+                          lineHeight: 1.45,
                         }}
+                        className="focus-ring"
                         onMouseEnter={(e) =>
-                          (e.currentTarget.style.color = "var(--db-violet)")
+                          (e.currentTarget.style.color = "var(--db-cyan)")
                         }
                         onMouseLeave={(e) =>
                           (e.currentTarget.style.color = "var(--db-cream)")
@@ -460,10 +452,11 @@ export default function LiteraturePage() {
                     {authorStr && (
                       <div
                         style={{
+                          order: 2,
                           fontFamily: "var(--font-sans)",
-                          fontSize: "0.8rem",
-                          color: "var(--db-muted)",
-                          marginBottom: "0.5rem",
+                          fontSize: "15px",
+                          color: "var(--db-stone)",
+                          marginBottom: "0.75rem",
                           lineHeight: 1.5,
                         }}
                       >
@@ -473,21 +466,24 @@ export default function LiteraturePage() {
 
                     {/* Year · Journal · Badges */}
                     <div
+                      className="arcade-panel__bar"
                       style={{
+                        order: 0,
                         display: "flex",
                         alignItems: "center",
+                        justifyContent: "flex-start",
                         flexWrap: "wrap",
-                        gap: "0.5rem",
-                        marginBottom: abstract ? "0.75rem" : 0,
+                        gap: "0.5rem 0.9rem",
+                        margin: "0 -22px 16px",
+                        minHeight: "40px",
                       }}
                     >
                       {paper.pubYear && (
                         <span
                           style={{
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "0.72rem",
-                            fontWeight: 700,
-                            color: "var(--db-violet)",
+                            fontFamily: "var(--font-pixel)",
+                            fontSize: "0.6rem",
+                            color: "var(--db-black)",
                           }}
                         >
                           {paper.pubYear}
@@ -497,10 +493,11 @@ export default function LiteraturePage() {
                         <span
                           style={{
                             fontFamily: "var(--font-sans)",
-                            fontSize: "0.72rem",
-                            color: "var(--db-muted)",
+                            fontSize: "14px",
+                            fontWeight: 600,
+                            textTransform: "none",
+                            color: "var(--db-black)",
                             fontStyle: "italic",
-                            opacity: 0.8,
                           }}
                         >
                           {paper.journalTitle}
@@ -509,12 +506,12 @@ export default function LiteraturePage() {
                       {paper.citedByCount != null && paper.citedByCount > 0 && (
                         <span
                           style={{
-                            background: "rgba(141,124,255,0.1)",
-                            color: "var(--db-violet)",
-                            borderRadius: "999px",
-                            padding: "0.14rem 0.55rem",
-                            fontSize: "0.64rem",
+                            background: "var(--db-black)",
+                            color: "var(--db-cyan)",
+                            padding: "0.15rem 0.5rem",
+                            fontSize: "14px",
                             fontFamily: "var(--font-mono)",
+                            textTransform: "none",
                           }}
                         >
                           Cited by {paper.citedByCount}
@@ -526,25 +523,29 @@ export default function LiteraturePage() {
                     {abstract && (
                       <p
                         style={{
+                          order: 3,
                           fontFamily: "var(--font-sans)",
-                          fontSize: "0.82rem",
+                          fontSize: "15px",
                           color: "var(--db-stone)",
                           lineHeight: 1.65,
-                          margin: "0 0 0.75rem",
+                          margin: "0 0 1rem",
                         }}
                       >
                         {displayAbstract}
                         {needsToggle && (
                           <button
                             onClick={() => toggleAbstract(cardKey)}
+                            className="focus-ring"
                             style={{
-                              marginLeft: "0.4rem",
+                              marginLeft: "0.5rem",
                               background: "none",
                               border: "none",
-                              color: "var(--db-violet)",
-                              fontFamily: "var(--font-mono)",
-                              fontSize: "0.64rem",
-                              letterSpacing: "0.04em",
+                              color: "var(--db-cyan)",
+                              fontFamily: "var(--font-pixel)",
+                              fontSize: "0.55rem",
+                              textTransform: "uppercase",
+                              textDecoration: "underline",
+                              textUnderlineOffset: "3px",
                               cursor: "pointer",
                               padding: 0,
                             }}
@@ -560,17 +561,14 @@ export default function LiteraturePage() {
                       href={pmcUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      className="arcade-btn arcade-btn--small pixel-glyphs"
                       style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "0.64rem",
-                        color: "var(--db-violet)",
-                        textDecoration: "none",
-                        letterSpacing: "0.05em",
-                        opacity: 0.8,
-                        transition: "opacity 0.15s",
+                        order: 4,
+                        alignSelf: "flex-start",
+                        opacity: 1,
                       }}
                       onMouseEnter={(e) => (e.currentTarget.style.opacity = "1")}
-                      onMouseLeave={(e) => (e.currentTarget.style.opacity = "0.8")}
+                      onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
                     >
                       View on Europe PMC →
                     </a>
@@ -586,9 +584,9 @@ export default function LiteraturePage() {
                 <p
                   style={{
                     fontFamily: "var(--font-mono)",
-                    fontSize: "0.64rem",
-                    color: "#94a3b8",
-                    letterSpacing: "0.08em",
+                    fontSize: "14px",
+                    color: "var(--db-stone)",
+                    letterSpacing: "0.04em",
                     textTransform: "uppercase",
                     textAlign: "center",
                     marginBottom: "1rem",
@@ -607,7 +605,7 @@ export default function LiteraturePage() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: "0.35rem",
+                    gap: "0.5rem",
                     flexWrap: "wrap",
                   }}
                 >
@@ -618,14 +616,14 @@ export default function LiteraturePage() {
                     style={pageButtonStyle(false, currentPage === 1)}
                     onMouseEnter={(e) => {
                       if (currentPage !== 1) {
-                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)";
-                        e.currentTarget.style.color = "#f1f5f9";
+                        e.currentTarget.style.borderColor = "var(--db-cyan)";
+                        e.currentTarget.style.color = "var(--db-cyan)";
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (currentPage !== 1) {
-                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)";
-                        e.currentTarget.style.color = "#94a3b8";
+                        e.currentTarget.style.borderColor = "var(--db-cream)";
+                        e.currentTarget.style.color = "var(--db-cream)";
                       }
                     }}
                   >
@@ -638,9 +636,9 @@ export default function LiteraturePage() {
                       <span
                         key={`ellipsis-${i}`}
                         style={{
-                          color: "#475569",
+                          color: "var(--db-stone)",
                           fontFamily: "var(--font-mono)",
-                          fontSize: "13px",
+                          fontSize: "14px",
                           padding: "0 4px",
                           userSelect: "none",
                         }}
@@ -654,14 +652,14 @@ export default function LiteraturePage() {
                         style={pageButtonStyle(p === currentPage, false)}
                         onMouseEnter={(e) => {
                           if (p !== currentPage) {
-                            e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)";
-                            e.currentTarget.style.color = "#f1f5f9";
+                            e.currentTarget.style.borderColor = "var(--db-cyan)";
+                            e.currentTarget.style.color = "var(--db-cyan)";
                           }
                         }}
                         onMouseLeave={(e) => {
                           if (p !== currentPage) {
-                            e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)";
-                            e.currentTarget.style.color = "#94a3b8";
+                            e.currentTarget.style.borderColor = "var(--db-cream)";
+                            e.currentTarget.style.color = "var(--db-cream)";
                           }
                         }}
                       >
@@ -677,14 +675,14 @@ export default function LiteraturePage() {
                     style={pageButtonStyle(false, currentPage === totalPages)}
                     onMouseEnter={(e) => {
                       if (currentPage !== totalPages) {
-                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.5)";
-                        e.currentTarget.style.color = "#f1f5f9";
+                        e.currentTarget.style.borderColor = "var(--db-cyan)";
+                        e.currentTarget.style.color = "var(--db-cyan)";
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (currentPage !== totalPages) {
-                        e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)";
-                        e.currentTarget.style.color = "#94a3b8";
+                        e.currentTarget.style.borderColor = "var(--db-cream)";
+                        e.currentTarget.style.color = "var(--db-cream)";
                       }
                     }}
                   >
@@ -702,9 +700,8 @@ export default function LiteraturePage() {
             marginTop: "4rem",
             textAlign: "center",
             fontFamily: "var(--font-sans)",
-            fontSize: "0.72rem",
-            color: "var(--db-muted)",
-            opacity: 0.55,
+            fontSize: "14px",
+            color: "var(--db-stone)",
           }}
         >
           Literature data provided by Europe PMC (europepmc.org) · Updated in real time
