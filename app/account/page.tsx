@@ -65,6 +65,18 @@ export default async function AccountPage() {
       .limit(3),
   ]);
 
+  // Saved genome views summary: this user's rows only.
+  const sv = schema.savedViews;
+  const [[{ viewCount }], recentViews] = await Promise.all([
+    db.select({ viewCount: count() }).from(sv).where(eq(sv.userId, user.id)),
+    db
+      .select({ id: sv.id, label: sv.label, kind: sv.kind, speciesId: sv.speciesId, locus: sv.locus })
+      .from(sv)
+      .where(eq(sv.userId, user.id))
+      .orderBy(desc(sv.createdAt))
+      .limit(3),
+  ]);
+
   return (
     <PageShell>
       <div style={{ maxWidth: "980px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
@@ -136,7 +148,36 @@ export default async function AccountPage() {
           </Panel>
 
           <Panel title="Bookmarks & saved sessions">
-            <p style={comingSoon}>Coming soon.</p>
+            {viewCount === 0 ? (
+              <p style={comingSoon}>
+                No saved views yet. Use “Save view” in the{" "}
+                <Link href="/genome-browser/otaurus" className="auth-inline-link">
+                  genome browser
+                </Link>{" "}
+                to keep a location or a set of open tracks.
+              </p>
+            ) : (
+              <div style={{ display: "grid", gap: "0.9rem" }}>
+                <p style={comingSoon}>
+                  {viewCount} saved {viewCount === 1 ? "view" : "views"}. Most recent:
+                </p>
+                <ul style={{ margin: 0, paddingLeft: "1.2rem", display: "grid", gap: "0.45rem" }}>
+                  {recentViews.map((v) => (
+                    <li key={v.id} style={{ fontFamily: "var(--font-sans)", fontSize: "0.92rem", color: "var(--db-stone)", overflowWrap: "anywhere" }}>
+                      <Link href={`/genome-browser/${v.speciesId}?view=${v.id}`} className="auth-inline-link">
+                        {v.label}
+                      </Link>{" "}
+                      · {v.kind} · <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.82rem" }}>{v.locus}</span>
+                    </li>
+                  ))}
+                </ul>
+                <p style={{ margin: 0 }}>
+                  <Link href="/account/saved-views" className="auth-inline-link" style={{ fontFamily: "var(--font-sans)", fontSize: "0.9rem" }}>
+                    View all saved views →
+                  </Link>
+                </p>
+              </div>
+            )}
           </Panel>
 
           <Panel title="Delete my account">

@@ -133,3 +133,41 @@ export const savedBlastJobs = pgTable(
 );
 
 export type SavedBlastJob = typeof savedBlastJobs.$inferSelect;
+
+/*
+ * Genome browser bookmarks and saved views.
+ *   bookmark = species + locus (+ note)
+ *   session  = species + locus + which tracks were open
+ * Only these fields are stored, never a JBrowse session snapshot; they are
+ * restored through the view API (navToLocString / showTrack).
+ */
+export const SAVED_VIEW_KINDS = ["bookmark", "session"] as const;
+export type SavedViewKind = (typeof SAVED_VIEW_KINDS)[number];
+
+export const savedViews = pgTable(
+  "saved_views",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    kind: text("kind").$type<SavedViewKind>().notNull(),
+    label: text("label").notNull(),
+    note: text("note"),
+    speciesId: text("species_id").notNull(),
+    assemblyName: text("assembly_name").notNull(),
+    locus: text("locus").notNull(),
+    trackIds: jsonb("track_ids").$type<string[]>().notNull().default(sql`'[]'::jsonb`),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("saved_views_user_created_idx").on(t.userId, t.createdAt),
+    check("saved_views_kind_check", sql`${t.kind} in ('bookmark', 'session')`),
+    check("saved_views_label_len", sql`char_length(${t.label}) between 1 and 120`),
+    check("saved_views_note_len", sql`${t.note} is null or char_length(${t.note}) <= 500`),
+    check("saved_views_locus_len", sql`char_length(${t.locus}) between 1 and 200`),
+  ],
+);
+
+export type SavedView = typeof savedViews.$inferSelect;

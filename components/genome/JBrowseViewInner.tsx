@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createViewState, JBrowseLinearGenomeView } from "@jbrowse/react-linear-genome-view";
+
+export type JBrowseViewState = ReturnType<typeof createViewState>;
 
 interface Props {
   assembly: object;
   tracks: object[];
   speciesKey: string;
+  /** Called once the view state exists, so the parent can read/drive the view via its API. */
+  onReady?: (state: JBrowseViewState) => void;
 }
 
-export default function JBrowseViewInner({ assembly, tracks, speciesKey }: Props) {
+export default function JBrowseViewInner({ assembly, tracks, speciesKey, onReady }: Props) {
   const [state] = useState(() =>
     createViewState({
       assembly,
@@ -23,6 +27,12 @@ export default function JBrowseViewInner({ assembly, tracks, speciesKey }: Props
       },
     })
   );
+
+  useEffect(() => {
+    onReady?.(state);
+    // Run once per created state; onReady identity changes must not re-fire it.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   return (
     <div

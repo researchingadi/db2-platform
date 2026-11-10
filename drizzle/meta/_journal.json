@@ -15,6 +15,13 @@
       "when": 1794290419149,
       "tag": "0001_whole_selene",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1794292009262,
+      "tag": "0002_wooden_maginty",
+      "breakpoints": true
     }
   ]
 }
