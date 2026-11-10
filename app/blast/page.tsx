@@ -131,31 +131,37 @@ function databaseForProgram(program: Program): "nt" | "nr" {
   return program === "blastp" || program === "tblastn" ? "nr" : "nt";
 }
 
-const inputStyle: React.CSSProperties = {
-  background: "#06081a",
-  border: "1px solid rgba(99,102,241,0.2)",
-  borderRadius: "8px",
-  padding: "9px 12px",
-  color: "#f1f5f9",
-  fontFamily: "var(--font-mono)",
-  fontSize: "12px",
-  outline: "none",
+// Arcade theme: inputs and toggles use shared classes from globals.css.
+const inputStyle: React.CSSProperties = {};
+
+function pillClass(active: boolean): string {
+  return active ? "arcade-toggle arcade-toggle--active" : "arcade-toggle";
+}
+
+// Title bar spanning the full width of a 20px-padded panel.
+const panelBar: React.CSSProperties = { margin: "-20px -20px 18px" };
+
+const subHeading: React.CSSProperties = {
+  fontFamily: "var(--font-pixel)",
+  fontSize: "0.6rem",
+  lineHeight: 1.5,
+  textTransform: "uppercase",
+  color: "var(--db-cream)",
+  marginBottom: "12px",
 };
 
-function pillStyle(active: boolean): React.CSSProperties {
-  return {
-    background: active ? "#6366f1" : "rgba(99,102,241,0.08)",
-    color: active ? "#ffffff" : "#94a3b8",
-    border: `1px solid ${active ? "#6366f1" : "rgba(99,102,241,0.2)"}`,
-    padding: "6px 12px",
-    borderRadius: "6px",
-    fontSize: "12px",
-    fontFamily: "var(--font-sans)",
-    fontWeight: 600,
-    cursor: "pointer",
-    whiteSpace: "nowrap",
-  };
-}
+const helpText: React.CSSProperties = {
+  fontFamily: "var(--font-sans)",
+  fontSize: "14px",
+  lineHeight: 1.55,
+  color: "var(--db-stone)",
+};
+
+const monoMeta: React.CSSProperties = {
+  fontFamily: "var(--font-mono)",
+  fontSize: "14px",
+  color: "var(--db-stone)",
+};
 
 export default function BlastPage() {
   const [sequence, setSequence] = useState("");
@@ -355,47 +361,29 @@ export default function BlastPage() {
 
   return (
     <PageShell>
-      <style>{`
-        @keyframes blastPulse {
-          0% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.3; transform: scale(1.1); }
-          100% { opacity: 1; transform: scale(1); }
-        }
-      `}</style>
-      <div style={{ background: "#06081a", minHeight: "100vh" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "24px" }}>
+      <div style={{ background: "var(--db-black)", minHeight: "100vh" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 20px 64px" }}>
           {/* Header */}
-          <div style={{ marginBottom: "24px" }}>
-            <p
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "11px",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: "#6366f1",
-                margin: 0,
-              }}
-            >
+          <div style={{ marginBottom: "32px" }}>
+            <p className="db-eyebrow" style={{ margin: 0 }}>
               DB² · SEQUENCE SEARCH
             </p>
             <h1
+              className="arcade-title"
               style={{
-                fontFamily: "Syne, var(--font-sans)",
-                fontSize: "28px",
-                fontWeight: 800,
-                color: "#f1f5f9",
-                margin: "6px 0 0",
+                fontSize: "clamp(1.4rem, 3.2vw, 2rem)",
+                margin: "14px 0 0",
               }}
             >
               BLAST Search
             </h1>
             <p
               style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "14px",
-                color: "#94a3b8",
-                maxWidth: "600px",
-                marginTop: "8px",
+                ...helpText,
+                fontSize: "15px",
+                lineHeight: 1.65,
+                maxWidth: "640px",
+                marginTop: "14px",
               }}
             >
               Search nucleotide or protein sequences against the Onthophagus
@@ -508,22 +496,12 @@ function InputPhase({
       >
         {/* Sequence input */}
         <div style={cardStyle}>
-          <div
-            style={{
-              fontFamily: "Syne, var(--font-sans)",
-              fontWeight: 700,
-              fontSize: "14px",
-              color: "#f1f5f9",
-              marginBottom: "8px",
-            }}
-          >
+          <div className="arcade-panel__bar" style={panelBar}>
             Query Sequence
           </div>
           <div
             style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "12px",
-              color: "#475569",
+              ...helpText,
               marginBottom: "12px",
             }}
           >
@@ -534,23 +512,16 @@ function InputPhase({
             value={sequence}
             onChange={(e) => setSequence(e.target.value)}
             placeholder={">example_sequence\nATGCATGCATGCATGC..."}
+            className="arcade-input"
             style={{
               width: "100%",
-              height: "200px",
-              background: "#06081a",
-              border: "1px solid rgba(99,102,241,0.2)",
-              borderRadius: "8px",
-              padding: "12px",
-              color: "#f1f5f9",
-              fontFamily: "var(--font-mono)",
-              fontSize: "12px",
+              height: "220px",
               resize: "vertical",
               lineHeight: 1.6,
-              outline: "none",
             }}
-            onFocus={(e) => (e.currentTarget.style.borderColor = "#6366f1")}
+            onFocus={(e) => (e.currentTarget.style.borderColor = "var(--db-cyan)")}
             onBlur={(e) =>
-              (e.currentTarget.style.borderColor = "rgba(99,102,241,0.2)")
+              (e.currentTarget.style.borderColor = "var(--db-cream)")
             }
           />
           <div
@@ -558,29 +529,17 @@ function InputPhase({
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
-              marginTop: "8px",
+              gap: "12px",
+              flexWrap: "wrap",
+              marginTop: "12px",
             }}
           >
-            <span
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "11px",
-                color: "#475569",
-              }}
-            >
+            <span style={monoMeta}>
               {sequence.length} characters
             </span>
             <button
               onClick={() => setSequence(EXAMPLE_SEQUENCE)}
-              style={{
-                background: "none",
-                border: "none",
-                color: "#6366f1",
-                fontSize: "12px",
-                fontFamily: "var(--font-sans)",
-                cursor: "pointer",
-                padding: 0,
-              }}
+              className="arcade-btn arcade-btn--small"
             >
               Load example
             </button>
@@ -590,16 +549,8 @@ function InputPhase({
         {/* Parameters */}
         <div style={cardStyle}>
           {/* Program */}
-          <div style={{ marginBottom: "20px" }}>
-            <div
-              style={{
-                fontFamily: "Syne, var(--font-sans)",
-                fontWeight: 700,
-                fontSize: "13px",
-                color: "#f1f5f9",
-                marginBottom: "10px",
-              }}
-            >
+          <div style={{ marginBottom: "22px" }}>
+            <div className="arcade-panel__bar" style={panelBar}>
               Program
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -607,7 +558,7 @@ function InputPhase({
                 <button
                   key={p.value}
                   onClick={() => setProgram(p.value)}
-                  style={pillStyle(program === p.value)}
+                  className={pillClass(program === p.value)}
                 >
                   {p.label} ({p.sub})
                 </button>
@@ -615,10 +566,8 @@ function InputPhase({
             </div>
             <div
               style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "11px",
-                color: "#475569",
-                marginTop: "8px",
+                ...helpText,
+                marginTop: "10px",
               }}
             >
               {activeProgram.description}
@@ -626,16 +575,8 @@ function InputPhase({
           </div>
 
           {/* Search scope */}
-          <div style={{ marginBottom: "20px" }}>
-            <div
-              style={{
-                fontFamily: "Syne, var(--font-sans)",
-                fontWeight: 700,
-                fontSize: "13px",
-                color: "#f1f5f9",
-                marginBottom: "10px",
-              }}
-            >
+          <div style={{ marginBottom: "22px" }}>
+            <div style={subHeading}>
               Search against
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
@@ -643,7 +584,7 @@ function InputPhase({
                 <button
                   key={opt.label}
                   onClick={() => setEntrezQuery(opt.value)}
-                  style={pillStyle(entrezQuery === opt.value)}
+                  className={pillClass(entrezQuery === opt.value)}
                 >
                   {opt.label}
                 </button>
@@ -651,10 +592,8 @@ function InputPhase({
             </div>
             <div
               style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "11px",
-                color: "#475569",
-                marginTop: "8px",
+                ...monoMeta,
+                marginTop: "10px",
               }}
             >
               {entrezQuery || "(no restriction)"}
@@ -665,15 +604,7 @@ function InputPhase({
           <div>
             <button
               onClick={() => setAdvancedOpen(!advancedOpen)}
-              style={{
-                background: "none",
-                border: "none",
-                color: "#6366f1",
-                fontSize: "12px",
-                fontFamily: "var(--font-sans)",
-                cursor: "pointer",
-                padding: 0,
-              }}
+              className={pillClass(advancedOpen)}
             >
               Advanced options {advancedOpen ? "▴" : "▾"}
             </button>
@@ -682,17 +613,16 @@ function InputPhase({
                 style={{
                   display: "flex",
                   gap: "12px",
-                  marginTop: "12px",
+                  marginTop: "14px",
                   flexWrap: "wrap",
                 }}
               >
                 <label style={{ flex: 1, minWidth: "120px" }}>
                   <div
                     style={{
-                      fontFamily: "var(--font-sans)",
-                      fontSize: "11px",
-                      color: "#94a3b8",
-                      marginBottom: "4px",
+                      ...subHeading,
+                      fontSize: "0.55rem",
+                      marginBottom: "8px",
                     }}
                   >
                     E-value
@@ -701,16 +631,16 @@ function InputPhase({
                     type="number"
                     value={evalue}
                     onChange={(e) => setEvalue(e.target.value)}
+                    className="arcade-input"
                     style={{ ...inputStyle, width: "100%" }}
                   />
                 </label>
                 <label style={{ flex: 1, minWidth: "120px" }}>
                   <div
                     style={{
-                      fontFamily: "var(--font-sans)",
-                      fontSize: "11px",
-                      color: "#94a3b8",
-                      marginBottom: "4px",
+                      ...subHeading,
+                      fontSize: "0.55rem",
+                      marginBottom: "8px",
                     }}
                   >
                     Max hits
@@ -721,6 +651,7 @@ function InputPhase({
                     onChange={(e) =>
                       setHitlistSize(parseInt(e.target.value) || 50)
                     }
+                    className="arcade-input"
                     style={{ ...inputStyle, width: "100%" }}
                   />
                 </label>
@@ -733,20 +664,12 @@ function InputPhase({
       <button
         onClick={onSubmit}
         disabled={sequence.trim().length === 0}
+        className="arcade-btn arcade-btn--cta pixel-glyphs"
         style={{
           width: "100%",
-          background: "#6366f1",
-          color: "#ffffff",
-          border: "none",
-          borderRadius: "9px",
-          padding: "13px",
-          fontFamily: "var(--font-sans)",
-          fontWeight: 600,
-          fontSize: "14px",
-          letterSpacing: "0.04em",
-          cursor: sequence.trim().length === 0 ? "not-allowed" : "pointer",
-          opacity: sequence.trim().length === 0 ? 0.5 : 1,
-          marginTop: "20px",
+          padding: "1rem",
+          fontSize: "0.7rem",
+          marginTop: "28px",
         }}
       >
         Run BLAST Search →
@@ -774,42 +697,48 @@ function StatusPhase({
 }) {
   const pct = Math.min(100, (elapsedSeconds / Math.max(1, estimatedSeconds)) * 100);
   return (
-    <div style={{ ...cardStyle, maxWidth: "600px", margin: "40px auto", textAlign: "center" }}>
+    <div
+      style={{
+        ...cardStyle,
+        position: "relative",
+        maxWidth: "640px",
+        margin: "40px auto",
+        padding: "0 24px 28px",
+        textAlign: "center",
+      }}
+    >
       <div
+        aria-hidden="true"
+        className="blink"
         style={{
-          width: "16px",
-          height: "16px",
-          borderRadius: "50%",
-          background: "#6366f1",
-          margin: "0 auto 20px",
-          animation: "blastPulse 2s infinite",
+          position: "absolute",
+          top: "14px",
+          right: "16px",
+          width: "12px",
+          height: "12px",
+          background: "var(--db-cyan)",
+          boxShadow: "2px 2px 0 var(--db-black)",
         }}
       />
       <div
-        style={{
-          fontFamily: "Syne, var(--font-sans)",
-          fontWeight: 700,
-          fontSize: "18px",
-          color: "#f1f5f9",
-        }}
+        className="arcade-panel__bar"
+        style={{ margin: "0 -24px 22px", padding: "0.75rem 2.5rem 0.75rem 0.9rem" }}
       >
         BLAST job submitted
       </div>
       <div
         style={{
           fontFamily: "var(--font-mono)",
-          fontSize: "12px",
-          color: "#475569",
-          marginTop: "6px",
+          fontSize: "15px",
+          color: "var(--db-cream)",
         }}
       >
         Request ID: {rid || "…"}
       </div>
       <div
         style={{
-          fontFamily: "var(--font-sans)",
-          fontSize: "13px",
-          color: "#94a3b8",
+          ...helpText,
+          fontSize: "15px",
           marginTop: "10px",
         }}
       >
@@ -819,47 +748,40 @@ function StatusPhase({
       <div
         style={{
           display: "flex",
-          gap: "24px",
+          gap: "12px 28px",
+          flexWrap: "wrap",
           justifyContent: "center",
-          marginTop: "20px",
+          marginTop: "22px",
         }}
       >
-        <span style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "#475569" }}>
+        <span style={{ ...subHeading, marginBottom: 0, fontSize: "0.58rem" }}>
           Elapsed: {elapsedSeconds}s
         </span>
-        <span style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "#475569" }}>
+        <span style={{ ...subHeading, marginBottom: 0, fontSize: "0.58rem" }}>
           Estimated wait: ~{estimatedSeconds}s
         </span>
       </div>
 
       <div
+        className="arcade-progress"
         style={{
-          background: "rgba(99,102,241,0.12)",
-          borderRadius: "999px",
-          height: "4px",
-          width: "100%",
-          maxWidth: "400px",
+          maxWidth: "440px",
           margin: "16px auto 0",
         }}
       >
         <div
+          className="arcade-progress__fill"
           style={{
-            background: "#6366f1",
-            borderRadius: "999px",
-            height: "100%",
             width: `${pct}%`,
-            transition: "width 1s linear",
           }}
         />
       </div>
 
       <div
         style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: "11px",
-          color: "#475569",
+          ...helpText,
           textAlign: "center",
-          marginTop: "18px",
+          marginTop: "22px",
         }}
       >
         NCBI BLAST searches typically take 1–5 minutes depending on query
@@ -867,11 +789,9 @@ function StatusPhase({
       </div>
       <div
         style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: "11px",
-          color: "#475569",
+          ...helpText,
           textAlign: "center",
-          marginTop: "6px",
+          marginTop: "8px",
         }}
       >
         NCBI is asked for results about once a minute, so this can take up to a minute longer than the estimate.
@@ -879,14 +799,9 @@ function StatusPhase({
 
       <button
         onClick={onCancel}
+        className="arcade-btn arcade-btn--small"
         style={{
-          background: "none",
-          border: "none",
-          color: "#ef4444",
-          fontSize: "12px",
-          fontFamily: "var(--font-sans)",
-          cursor: "pointer",
-          marginTop: "18px",
+          marginTop: "24px",
         }}
       >
         Cancel and start over
@@ -905,23 +820,35 @@ function ErrorPhase({
   rid?: string | null;
 }) {
   return (
-    <div style={{ ...cardStyle, maxWidth: "600px", margin: "40px auto", textAlign: "center" }}>
+    <div
+      style={{
+        ...cardStyle,
+        maxWidth: "640px",
+        margin: "40px auto",
+        padding: "0 24px 28px",
+        textAlign: "center",
+        borderColor: "var(--arcade-pink)",
+      }}
+    >
       <div
+        className="arcade-panel__bar pixel-glyphs"
         style={{
-          fontFamily: "Syne, var(--font-sans)",
-          fontWeight: 700,
-          fontSize: "18px",
-          color: "#ef4444",
+          margin: "0 -24px 22px",
+          justifyContent: "center",
+          background: "var(--arcade-pink)",
+          borderBottomColor: "var(--arcade-pink)",
+          color: "var(--db-black)",
         }}
       >
         ⚠ BLAST search failed
       </div>
       <div
         style={{
-          fontFamily: "var(--font-sans)",
-          fontSize: "13px",
-          color: "#94a3b8",
-          marginTop: "10px",
+          ...helpText,
+          fontSize: "15px",
+          lineHeight: 1.65,
+          color: "var(--db-cream)",
+          overflowWrap: "anywhere",
         }}
       >
         {errorMessage ||
@@ -931,23 +858,14 @@ function ErrorPhase({
         style={{
           display: "flex",
           gap: "16px",
+          flexWrap: "wrap",
           justifyContent: "center",
-          marginTop: "20px",
+          marginTop: "24px",
         }}
       >
         <button
           onClick={onRetry}
-          style={{
-            background: "#6366f1",
-            color: "#ffffff",
-            border: "none",
-            borderRadius: "9px",
-            padding: "9px 20px",
-            fontFamily: "var(--font-sans)",
-            fontWeight: 600,
-            fontSize: "13px",
-            cursor: "pointer",
-          }}
+          className="arcade-btn"
         >
           Try again
         </button>
@@ -959,12 +877,11 @@ function ErrorPhase({
           }
           target="_blank"
           rel="noreferrer"
+          className="auth-inline-link"
           style={{
-            color: "#6366f1",
-            fontSize: "13px",
+            fontSize: "15px",
             fontFamily: "var(--font-sans)",
             alignSelf: "center",
-            textDecoration: "none",
           }}
         >
           {rid ? `View ${rid} on NCBI →` : "Check NCBI BLAST status"}

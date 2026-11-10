@@ -27,10 +27,12 @@ type Hit = {
   hsps: Hsp[];
 };
 
+/* Arcade panel look shared by the BLAST page's cards. */
 export const cardStyle: React.CSSProperties = {
-  background: "#0c1028",
-  border: "1px solid rgba(99,102,241,0.15)",
-  borderRadius: "12px",
+  background: "var(--db-charcoal)",
+  border: "var(--arcade-border) solid var(--db-cream)",
+  borderRadius: 0,
+  boxShadow: "var(--arcade-shadow)",
   padding: "20px",
 };
 
@@ -81,9 +83,10 @@ function SeqLine({ line, midline }: { line: string; midline: string }) {
   return (
     <>
       {line.split("").map((ch, i) => {
-        let color = "#ef4444";
-        if (ch === "-") color = "#f59e0b";
-        else if (midline[i] === "|") color = "#10b981";
+        // mismatch = pink, gap = violet, identical = green
+        let color = "var(--arcade-pink)";
+        if (ch === "-") color = "var(--db-violet)";
+        else if (midline[i] === "|") color = "var(--db-green)";
         return (
           <span key={i} style={{ color }}>
             {ch}
@@ -93,6 +96,12 @@ function SeqLine({ line, midline }: { line: string; midline: string }) {
     </>
   );
 }
+
+const monoCell: React.CSSProperties = {
+  fontFamily: "var(--font-mono)",
+  fontSize: "14px",
+  whiteSpace: "nowrap",
+};
 
 export default function BlastResults({
   results,
@@ -123,17 +132,15 @@ export default function BlastResults({
           justifyContent: "space-between",
           alignItems: "flex-start",
           flexWrap: "wrap",
-          gap: "12px",
-          marginBottom: "16px",
+          gap: "16px",
+          marginBottom: "20px",
         }}
       >
-        <div>
+        <div style={{ minWidth: 0 }}>
           <div
+            className="arcade-title"
             style={{
-              fontFamily: "Syne, var(--font-sans)",
-              fontWeight: 800,
-              fontSize: "22px",
-              color: "#f1f5f9",
+              fontSize: "clamp(1rem, 2.2vw, 1.3rem)",
             }}
           >
             {hits.length} hits found
@@ -141,43 +148,30 @@ export default function BlastResults({
           <div
             style={{
               fontFamily: "var(--font-mono)",
-              fontSize: "11px",
-              color: "#475569",
-              marginTop: "4px",
+              fontSize: "14px",
+              lineHeight: 1.6,
+              color: "var(--db-stone)",
+              marginTop: "10px",
+              overflowWrap: "anywhere",
             }}
           >
             Program: {program} · Database: {database} · RID: {rid} · Query
             length: {queryLength} bp
           </div>
         </div>
-        <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
           <a
             href={`https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Get&RID=${rid}`}
             target="_blank"
             rel="noreferrer"
-            style={{
-              color: "#6366f1",
-              fontSize: "12px",
-              fontFamily: "var(--font-sans)",
-              textDecoration: "none",
-            }}
+            className="arcade-btn arcade-btn--small pixel-glyphs"
           >
             View on NCBI →
           </a>
           {onNewSearch && (
             <button
               onClick={onNewSearch}
-              style={{
-                background: "transparent",
-                color: "#6366f1",
-                border: "1px solid rgba(99,102,241,0.3)",
-                borderRadius: "7px",
-                padding: "7px 16px",
-                fontSize: "12px",
-                fontFamily: "var(--font-sans)",
-                fontWeight: 600,
-                cursor: "pointer",
-              }}
+              className="arcade-btn arcade-btn--small"
             >
               New search
             </button>
@@ -186,13 +180,12 @@ export default function BlastResults({
       </div>
 
       {hits.length === 0 ? (
-        <div style={{ ...cardStyle, textAlign: "center", padding: "48px" }}>
+        <div style={{ ...cardStyle, textAlign: "center", padding: "0 24px 32px" }}>
           <div
+            className="arcade-panel__bar"
             style={{
-              fontFamily: "Syne, var(--font-sans)",
-              fontWeight: 700,
-              fontSize: "18px",
-              color: "#f1f5f9",
+              margin: "0 -24px 24px",
+              justifyContent: "center",
             }}
           >
             No significant hits found.
@@ -200,9 +193,9 @@ export default function BlastResults({
           <div
             style={{
               fontFamily: "var(--font-sans)",
-              fontSize: "13px",
-              color: "#94a3b8",
-              marginTop: "8px",
+              fontSize: "15px",
+              lineHeight: 1.6,
+              color: "var(--db-stone)",
             }}
           >
             Try relaxing your E-value threshold or broadening the search
@@ -212,16 +205,9 @@ export default function BlastResults({
       ) : (
         <div style={{ ...cardStyle, padding: 0, overflow: "hidden" }}>
           <div style={{ overflowX: "auto" }}>
-            <table
-              style={{
-                width: "100%",
-                borderCollapse: "collapse",
-                fontSize: "13px",
-                fontFamily: "var(--font-sans)",
-              }}
-            >
+            <table className="blast-table">
               <thead>
-                <tr style={{ background: "rgba(99,102,241,0.07)" }}>
+                <tr>
                   {[
                     "#",
                     "Description",
@@ -232,21 +218,7 @@ export default function BlastResults({
                     "Coverage",
                     "Accession",
                   ].map((col) => (
-                    <th
-                      key={col}
-                      style={{
-                        padding: "10px 14px",
-                        textAlign: "left",
-                        fontSize: "10.5px",
-                        fontWeight: 700,
-                        textTransform: "uppercase",
-                        letterSpacing: "1px",
-                        color: "#475569",
-                        borderBottom: "1px solid rgba(99,102,241,0.12)",
-                      }}
-                    >
-                      {col}
-                    </th>
+                    <th key={col}>{col}</th>
                   ))}
                 </tr>
               </thead>
@@ -271,30 +243,29 @@ export default function BlastResults({
                           setExpandedHit(isExpanded ? null : i)
                         }
                         style={{
-                          borderBottom: "1px solid rgba(255,255,255,0.04)",
                           cursor: "pointer",
                           background: isExpanded
-                            ? "rgba(99,102,241,0.06)"
+                            ? "var(--db-panel-2)"
                             : "transparent",
+                          boxShadow: isExpanded ? "inset 4px 0 0 var(--db-cyan)" : "none",
                         }}
                         onMouseEnter={(e) => {
                           if (!isExpanded)
                             e.currentTarget.style.background =
-                              "rgba(99,102,241,0.04)";
+                              "var(--db-panel-2)";
                         }}
                         onMouseLeave={(e) => {
                           if (!isExpanded)
                             e.currentTarget.style.background = "transparent";
                         }}
                       >
-                        <td style={{ padding: "9px 14px", color: "#475569" }}>
+                        <td style={{ ...monoCell, color: "var(--db-stone)" }}>
                           {i + 1}
                         </td>
                         <td
                           style={{
-                            padding: "9px 14px",
-                            color: "#f1f5f9",
-                            maxWidth: "260px",
+                            color: "var(--db-cream)",
+                            maxWidth: "320px",
                             overflow: "hidden",
                             textOverflow: "ellipsis",
                             whiteSpace: "nowrap",
@@ -304,61 +275,26 @@ export default function BlastResults({
                         </td>
                         <td
                           style={{
-                            padding: "9px 14px",
-                            color: "#94a3b8",
+                            color: "var(--db-stone)",
                             fontStyle: "italic",
+                            whiteSpace: "nowrap",
                           }}
                         >
                           {desc?.sciname || "—"}
                         </td>
-                        <td
-                          style={{
-                            padding: "9px 14px",
-                            color: "#94a3b8",
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "12px",
-                          }}
-                        >
+                        <td style={{ ...monoCell, color: "var(--db-cream)" }}>
                           {hsp.score}
                         </td>
-                        <td
-                          style={{
-                            padding: "9px 14px",
-                            color: "#94a3b8",
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "12px",
-                          }}
-                        >
+                        <td style={{ ...monoCell, color: "var(--db-cream)" }}>
                           {hsp.evalue}
                         </td>
-                        <td
-                          style={{
-                            padding: "9px 14px",
-                            color: "#10b981",
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "12px",
-                          }}
-                        >
+                        <td style={{ ...monoCell, color: "var(--db-green)" }}>
                           {identityPct}%
                         </td>
-                        <td
-                          style={{
-                            padding: "9px 14px",
-                            color: "#06b6d4",
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "12px",
-                          }}
-                        >
+                        <td style={{ ...monoCell, color: "var(--db-cyan)" }}>
                           {coveragePct}%
                         </td>
-                        <td
-                          style={{
-                            padding: "9px 14px",
-                            color: "#6366f1",
-                            fontFamily: "var(--font-mono)",
-                            fontSize: "11.5px",
-                          }}
-                        >
+                        <td style={{ ...monoCell, color: "var(--db-cyan)" }}>
                           {desc?.accession}
                         </td>
                       </tr>
@@ -395,21 +331,23 @@ function AlignmentView({ hsp }: { hsp: Hsp }) {
   return (
     <div
       style={{
-        background: "#06081a",
-        padding: "16px",
+        background: "var(--db-black)",
+        padding: "18px 20px",
         fontFamily: "var(--font-mono)",
-        fontSize: "11px",
-        color: "#94a3b8",
-        borderTop: "1px solid rgba(99,102,241,0.1)",
+        fontSize: "14px",
+        lineHeight: 1.55,
+        color: "var(--db-cream)",
+        borderTop: "2px dashed var(--db-line-strong)",
+        borderBottom: "2px dashed var(--db-line-strong)",
       }}
     >
       {blocks.map((b, i) => (
-        <div key={i} style={{ marginBottom: "10px", whiteSpace: "pre" }}>
+        <div key={i} style={{ marginBottom: "12px", whiteSpace: "pre" }}>
           <div>
             Query {String(b.qStart).padEnd(8)}
             <SeqLine line={b.qLine} midline={b.mLine} /> {b.qEnd}
           </div>
-          <div style={{ color: "#475569" }}>{"       ".padEnd(9)}{b.mLine}</div>
+          <div style={{ color: "var(--db-stone)" }}>{"       ".padEnd(9)}{b.mLine}</div>
           <div>
             Sbjct {String(b.hStart).padEnd(8)}
             <SeqLine line={b.hLine} midline={b.mLine} /> {b.hEnd}

@@ -10,21 +10,30 @@ function defaultLabel(program: string, query: string) {
   return `${program} · ${query.replace(/\s+/g, " ").trim().slice(0, 30)}`.slice(0, MAX_LABEL);
 }
 
+// Arcade panel (4px cream border, hard shadow, no radius).
 const wrap: React.CSSProperties = {
   display: "flex",
   flexWrap: "wrap",
   alignItems: "center",
   gap: "0.75rem 1rem",
-  marginBottom: "16px",
-  padding: "14px 16px",
-  border: "2px solid var(--db-line-strong)",
+  marginBottom: "24px",
+  padding: "16px 18px",
+  border: "var(--arcade-border) solid var(--db-cream)",
+  borderRadius: 0,
+  boxShadow: "var(--arcade-shadow)",
   background: "var(--db-charcoal)",
   fontFamily: "var(--font-sans)",
-  fontSize: "0.9rem",
+  fontSize: "15px",
   color: "var(--db-stone)",
 };
 
 const link: React.CSSProperties = { color: "var(--db-cyan)", textDecoration: "underline", textUnderlineOffset: "3px" };
+
+// The form's existing label, styled as the panel's title bar.
+const barLabel: React.CSSProperties = {
+  flexBasis: "calc(100% + 36px)",
+  margin: "-16px -18px 4px",
+};
 
 type Props = {
   rid: string | null;
@@ -103,12 +112,12 @@ export default function SaveSearch(props: Props) {
 
   return (
     <form style={wrap} onSubmit={save} data-save-search aria-label="Save this search">
-      <label htmlFor="save-label" style={{ fontWeight: 600, color: "var(--db-cream)" }}>
+      <label htmlFor="save-label" className="arcade-panel__bar" style={barLabel}>
         Save this search
       </label>
       <input
         id="save-label"
-        className="auth-input"
+        className="arcade-input"
         value={label}
         onChange={(e) => {
           setLabel(e.target.value);
@@ -116,9 +125,9 @@ export default function SaveSearch(props: Props) {
         }}
         maxLength={MAX_LABEL}
         aria-describedby="save-status"
-        style={{ flex: "1 1 260px", width: "auto", minWidth: 0 }}
+        style={{ flex: "1 1 260px", width: "auto", minWidth: 0, fontFamily: "var(--font-sans)" }}
       />
-      <button type="submit" className="arcade-btn arcade-btn--small" disabled={state === "saving"}>
+      <button type="submit" className="arcade-btn" disabled={state === "saving"}>
         {state === "saving" ? "Saving…" : "Save"}
       </button>
       <span id="save-status" role="status" style={{ flexBasis: "100%", minHeight: "1.2em" }}>
