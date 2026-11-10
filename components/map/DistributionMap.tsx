@@ -255,7 +255,7 @@ export default function DistributionMap() {
   }, []);
 
   return (
-    <div style={{ position: "relative", height: "550px", width: "100%" }}>
+    <div className="distribution-map-frame" style={{ position: "relative", width: "100%" }}>
       <div
         ref={containerRef}
         style={{ height: "100%", width: "100%" }}

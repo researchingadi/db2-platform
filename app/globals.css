@@ -676,6 +676,93 @@ select {
   filter: invert(100%) hue-rotate(180deg) brightness(0.85) contrast(0.9);
 }
 
+/* Distribution page map: one shared height for the map and its loading placeholder.
+   184px = page padding + title + subtitle + helper line + frame border + credit line, so at
+   desktop sizes the whole page fits in one screen. Leaflet re-measures on window resize. */
+.distribution-map-frame {
+  height: calc(100vh - var(--nav-height) - 184px);
+  height: calc(100dvh - var(--nav-height) - 184px);
+  min-height: 480px;
+}
+
+@media (max-width: 640px) {
+  .distribution-map-frame {
+    height: 70vh;
+    height: 70dvh;
+    min-height: 420px;
+  }
+}
+
+/* Zoom buttons: 44×44 arcade buttons in the same top-left corner. */
+.distribution-map-frame .leaflet-bar {
+  border: var(--arcade-border) solid var(--db-cream);
+  border-radius: 0;
+  box-shadow: 4px 4px 0 var(--db-black);
+  background-clip: border-box;
+}
+
+.distribution-map-frame .leaflet-bar a,
+.distribution-map-frame .leaflet-bar a:first-child,
+.distribution-map-frame .leaflet-bar a:last-child {
+  width: 44px;
+  height: 44px;
+  line-height: 42px;
+  border-radius: 0;
+  background: var(--db-black);
+  color: var(--db-cream);
+  font: 400 28px/42px var(--font-mono);
+  text-indent: 0;
+  transition: color 120ms steps(2, end), background-color 120ms steps(2, end);
+}
+
+.distribution-map-frame .leaflet-bar a:first-child {
+  border-bottom: 2px solid var(--db-cream);
+}
+
+.distribution-map-frame .leaflet-bar a:hover {
+  background: var(--db-black);
+  color: var(--db-cyan);
+}
+
+.distribution-map-frame .leaflet-bar a:focus-visible {
+  outline: 2px dashed var(--db-cyan);
+  outline-offset: -6px;
+  color: var(--db-cyan);
+}
+
+.distribution-map-frame .leaflet-bar a.leaflet-disabled {
+  background: var(--db-black);
+  color: var(--db-stone);
+  opacity: 0.55;
+}
+
+/* Attribution: readable on its own dark strip, with visible keyboard focus. */
+.distribution-map-frame .leaflet-control-attribution {
+  background: var(--db-black);
+  color: var(--db-stone);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 2px 8px;
+}
+
+.distribution-map-frame .leaflet-control-attribution a {
+  color: var(--db-cyan);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.distribution-map-frame .leaflet-control-attribution a:focus-visible {
+  outline: 2px dashed var(--db-cyan);
+  outline-offset: 2px;
+}
+
+/* Keyboard focus on the map itself (arrow keys pan); drawn inside the frame. */
+.distribution-map-frame .leaflet-container:focus-visible {
+  outline: 3px dashed var(--db-cyan);
+  outline-offset: -3px;
+}
+
 /* ============================================================
    Arcade components
    ============================================================ */
