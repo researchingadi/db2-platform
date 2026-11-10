@@ -68,6 +68,11 @@ GCAGGAATACCTCGACGATACTCAGACTATCCAGATGCATATACAACATGAAATGTAATT`;
  * per-tab and may be blocked or full, so every call is guarded; on any failure
  * the page simply behaves as before (nothing restored).
  */
+// NCBI polling policy (see the polling effect in BlastPage).
+const MIN_FIRST_POLL_S = 15; // first status check after max(RTOE, 15 s)
+const POLL_INTERVAL_MS = 60_000; // then at most once a minute
+const POLL_GIVE_UP_MS = 20 * 60_000; // stop checking after ~20 minutes
+
 const LOGIN_STASH_KEY = "db2:blast:before-login";
 const LOGIN_STASH_MAX_AGE_MS = 2 * 60 * 60 * 1000;
 
@@ -163,6 +168,8 @@ export default function BlastPage() {
   const [phase, setPhase] = useState<Phase>("input");
   const [rid, setRid] = useState<string | null>(null);
   const [estimatedSeconds, setEstimatedSeconds] = useState(60);
+  const estimatedRef = useRef(60);
+  const [errorRid, setErrorRid] = useState<string | null>(null);
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
   const [results, setResults] = useState<any>(null);
   const [errorMessage, setErrorMessage] = useState("");
@@ -228,46 +235,77 @@ export default function BlastPage() {
     };
   }, []);
 
+  /*
+   * NCBI usage policy: wait the estimated time (RTOE, at least 15 s) before the
+   * first status check, then check at most once a minute. Exactly one polling
+   * loop exists per search: it is a chain of timeouts (the next check is only
+   * scheduled after the previous one finishes) and is torn down when the phase
+   * changes or the page unmounts. The elapsed counter is a separate 1 s timer
+   * that makes no network calls.
+   */
   useEffect(() => {
     if (phase !== "polling" || !rid) return;
-
+    const pollRid = rid;
+    const startedAt = Date.now();
     let stopped = false;
-    const interval = setInterval(async () => {
-      setElapsedSeconds((s) => s + 5);
+    let pollTimer: ReturnType<typeof setTimeout> | undefined;
+
+    const tick = setInterval(() => {
+      setElapsedSeconds(Math.floor((Date.now() - startedAt) / 1000));
+    }, 1000);
+
+    function stop() {
+      stopped = true;
+      clearInterval(tick);
+      if (pollTimer) clearTimeout(pollTimer);
+    }
+
+    function fail(message: string, withRid = false) {
+      stop();
+      setErrorMessage(message);
+      setErrorRid(withRid ? pollRid : null);
+      setPhase("error");
+    }
+
+    async function poll() {
+      if (stopped) return;
+      if (Date.now() - startedAt > POLL_GIVE_UP_MS) {
+        fail(
+          `NCBI hasn't finished this search after 20 minutes, so this page stopped checking. ` +
+            `NCBI keeps results for about a day; you can check on them there using Request ID ${pollRid}.`,
+          true
+        );
+        return;
+      }
       try {
-        const statusRes = await fetch(`/api/blast/status?rid=${ridRef.current}`);
+        const statusRes = await fetch(`/api/blast/status?rid=${pollRid}`);
         const statusData = await statusRes.json();
         if (stopped) return;
 
         if (statusData.status === "READY") {
-          stopped = true;
-          clearInterval(interval);
-          const resultsRes = await fetch(`/api/blast/results?rid=${ridRef.current}`);
+          stop();
+          const resultsRes = await fetch(`/api/blast/results?rid=${pollRid}`);
           const resultsData = await resultsRes.json();
           setResults(resultsData);
           setPhase("results");
-        } else if (statusData.status === "FAILED" || statusData.status === "UNKNOWN") {
-          stopped = true;
-          clearInterval(interval);
-          setErrorMessage(
+          return;
+        }
+        if (statusData.status === "FAILED" || statusData.status === "UNKNOWN") {
+          fail(
             "NCBI BLAST returned an error. This may be due to server load or an invalid sequence."
           );
-          setPhase("error");
+          return;
         }
+        pollTimer = setTimeout(poll, POLL_INTERVAL_MS);
       } catch {
-        if (!stopped) {
-          stopped = true;
-          clearInterval(interval);
-          setErrorMessage("Lost connection while polling NCBI for results.");
-          setPhase("error");
-        }
+        if (!stopped) fail("Lost connection while polling NCBI for results.");
       }
-    }, 5000);
+    }
 
-    return () => {
-      stopped = true;
-      clearInterval(interval);
-    };
+    const firstCheckMs = Math.max(MIN_FIRST_POLL_S, estimatedRef.current) * 1000;
+    pollTimer = setTimeout(poll, firstCheckMs);
+
+    return stop;
   }, [phase, rid]);
 
   function resetToInput() {
@@ -275,12 +313,14 @@ export default function BlastPage() {
     setRid(null);
     setResults(null);
     setErrorMessage("");
+    setErrorRid(null);
     setElapsedSeconds(0);
   }
 
   async function handleSubmit() {
     setPhase("submitted");
     setErrorMessage("");
+    setErrorRid(null);
     try {
       const res = await fetch("/api/blast/submit", {
         method: "POST",
@@ -301,6 +341,7 @@ export default function BlastPage() {
         return;
       }
       setRid(data.rid);
+      estimatedRef.current = data.estimatedSeconds || 60;
       setEstimatedSeconds(data.estimatedSeconds || 60);
       setElapsedSeconds(0);
       setPhase("polling");
@@ -416,7 +457,7 @@ export default function BlastPage() {
           )}
 
           {phase === "error" && (
-            <ErrorPhase errorMessage={errorMessage} onRetry={resetToInput} />
+            <ErrorPhase errorMessage={errorMessage} onRetry={resetToInput} rid={errorRid} />
           )}
         </div>
       </div>
@@ -824,6 +865,17 @@ function StatusPhase({
         NCBI BLAST searches typically take 1–5 minutes depending on query
         length and server load.
       </div>
+      <div
+        style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: "11px",
+          color: "#475569",
+          textAlign: "center",
+          marginTop: "6px",
+        }}
+      >
+        NCBI is asked for results about once a minute, so this can take up to a minute longer than the estimate.
+      </div>
 
       <button
         onClick={onCancel}
@@ -846,9 +898,11 @@ function StatusPhase({
 function ErrorPhase({
   errorMessage,
   onRetry,
+  rid,
 }: {
   errorMessage: string;
   onRetry: () => void;
+  rid?: string | null;
 }) {
   return (
     <div style={{ ...cardStyle, maxWidth: "600px", margin: "40px auto", textAlign: "center" }}>
@@ -898,7 +952,11 @@ function ErrorPhase({
           Try again
         </button>
         <a
-          href="https://blast.ncbi.nlm.nih.gov"
+          href={
+            rid
+              ? `https://blast.ncbi.nlm.nih.gov/Blast.cgi?CMD=Get&RID=${encodeURIComponent(rid)}`
+              : "https://blast.ncbi.nlm.nih.gov"
+          }
           target="_blank"
           rel="noreferrer"
           style={{
@@ -909,7 +967,7 @@ function ErrorPhase({
             textDecoration: "none",
           }}
         >
-          Check NCBI BLAST status
+          {rid ? `View ${rid} on NCBI →` : "Check NCBI BLAST status"}
         </a>
       </div>
     </div>
