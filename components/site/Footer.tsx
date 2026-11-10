@@ -3,13 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const footerLinks = [
-  { href: "/contact", label: "Contact Us" },
-  { href: "/genome-browser/otaurus", label: "Genome Browser" },
-  { href: "/downloads", label: "Downloads" },
-  { href: "/literature", label: "Literature" },
-  { href: "/people", label: "People" },
-];
+// Other destinations live in the top navbar; the footer only adds Contact Us.
+const footerLinks = [{ href: "/contact", label: "Contact Us" }];
 
 export default function Footer() {
   const pathname = usePathname();
