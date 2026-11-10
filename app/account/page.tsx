@@ -1,10 +1,15 @@
+import { count, desc, eq } from "drizzle-orm";
+import Link from "next/link";
 import PageShell from "@/components/site/PageShell";
 import { MIN_PASSWORD_LENGTH } from "@/lib/auth-config";
+import { db, schema } from "@/lib/db";
 import { requireApprovedUser } from "@/lib/session";
 import ChangePasswordForm from "./ChangePasswordForm";
 import DeleteAccount from "./DeleteAccount";
 
 export const metadata = { title: "Your account — DB²" };
+
+const recentFmt = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "short", day: "numeric" });
 
 const STATUS_COLOR = {
   approved: "var(--db-green)",
@@ -48,6 +53,18 @@ export default async function AccountPage() {
   // Server-side gate: redirects to /login if logged out, or if not approved.
   const user = await requireApprovedUser("/account");
 
+  // Saved BLAST jobs summary: this user's rows only, no result JSON.
+  const sb = schema.savedBlastJobs;
+  const [[{ savedCount }], recentJobs] = await Promise.all([
+    db.select({ savedCount: count() }).from(sb).where(eq(sb.userId, user.id)),
+    db
+      .select({ id: sb.id, label: sb.label, numHits: sb.numHits, createdAt: sb.createdAt })
+      .from(sb)
+      .where(eq(sb.userId, user.id))
+      .orderBy(desc(sb.createdAt))
+      .limit(3),
+  ]);
+
   return (
     <PageShell>
       <div style={{ maxWidth: "980px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
@@ -86,7 +103,36 @@ export default async function AccountPage() {
           </Panel>
 
           <Panel title="Saved BLAST jobs">
-            <p style={comingSoon}>Coming soon.</p>
+            {savedCount === 0 ? (
+              <p style={comingSoon}>
+                No saved searches yet. Use “Save this search” on{" "}
+                <Link href="/blast" className="auth-inline-link">
+                  BLAST results
+                </Link>{" "}
+                to keep them here.
+              </p>
+            ) : (
+              <div style={{ display: "grid", gap: "0.9rem" }}>
+                <p style={comingSoon}>
+                  {savedCount} saved {savedCount === 1 ? "search" : "searches"}. Most recent:
+                </p>
+                <ul style={{ margin: 0, paddingLeft: "1.2rem", display: "grid", gap: "0.45rem" }}>
+                  {recentJobs.map((j) => (
+                    <li key={j.id} style={{ fontFamily: "var(--font-sans)", fontSize: "0.92rem", color: "var(--db-stone)" }}>
+                      <Link href={`/account/blast-jobs/${j.id}`} className="auth-inline-link" style={{ overflowWrap: "anywhere" }}>
+                        {j.label}
+                      </Link>{" "}
+                      · {j.numHits} {j.numHits === 1 ? "hit" : "hits"} · {recentFmt.format(j.createdAt)}
+                    </li>
+                  ))}
+                </ul>
+                <p style={{ margin: 0 }}>
+                  <Link href="/account/blast-jobs" className="auth-inline-link" style={{ fontFamily: "var(--font-sans)", fontSize: "0.9rem" }}>
+                    View all saved searches →
+                  </Link>
+                </p>
+              </div>
+            )}
           </Panel>
 
           <Panel title="Bookmarks & saved sessions">

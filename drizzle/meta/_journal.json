@@ -8,6 +8,13 @@
       "when": 1794286835475,
       "tag": "0000_loose_thunderbird",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1794290419149,
+      "tag": "0001_whole_selene",
+      "breakpoints": true
     }
   ]
 }

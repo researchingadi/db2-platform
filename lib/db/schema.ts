@@ -1,5 +1,16 @@
 import { sql } from "drizzle-orm";
-import { boolean, check, index, pgTable, text, timestamp } from "drizzle-orm/pg-core";
+import {
+  boolean,
+  check,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uniqueIndex,
+  uuid,
+} from "drizzle-orm/pg-core";
 
 /*
  * Better Auth core tables (user, session, account, verification) plus the
@@ -85,3 +96,40 @@ export const verification = pgTable(
   },
   (t) => [index("verification_identifier_idx").on(t.identifier)],
 );
+
+/*
+ * Saved BLAST jobs. NCBI deletes results after about a day, so the full
+ * result JSON is stored here. One row per (user, RID): saving again updates it.
+ */
+export const savedBlastJobs = pgTable(
+  "saved_blast_jobs",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    label: text("label").notNull(),
+    // 'ncbi' today; leaves room for a self-hosted BLAST engine later.
+    engine: text("engine").notNull().default("ncbi"),
+    rid: text("rid").notNull(),
+    program: text("program").notNull(),
+    database: text("database").notNull(),
+    entrezQuery: text("entrez_query").notNull().default(""),
+    evalue: text("evalue").notNull(),
+    hitlistSize: integer("hitlist_size").notNull(),
+    querySequence: text("query_sequence").notNull(),
+    resultJson: jsonb("result_json").notNull(),
+    numHits: integer("num_hits").notNull().default(0),
+    bestHitTitle: text("best_hit_title"),
+    bestEvalue: text("best_evalue"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("saved_blast_jobs_user_rid_uq").on(t.userId, t.rid),
+    index("saved_blast_jobs_user_created_idx").on(t.userId, t.createdAt),
+    check("saved_blast_jobs_label_len", sql`char_length(${t.label}) between 1 and 120`),
+  ],
+);
+
+export type SavedBlastJob = typeof savedBlastJobs.$inferSelect;
