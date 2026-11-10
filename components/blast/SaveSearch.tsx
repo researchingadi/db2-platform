@@ -35,6 +35,8 @@ type Props = {
   hitlistSize: number;
   querySequence: string;
   results: unknown;
+  /** Called just before the logged-out "Log in" link navigates away (the page stashes its state). */
+  onLoginClick?: () => void;
 };
 
 /* "Save this search" panel shown above BLAST results. */
@@ -50,7 +52,7 @@ export default function SaveSearch(props: Props) {
   if (!user) {
     return (
       <div style={wrap} data-save-search>
-        <Link href="/login?next=%2Fblast" style={link}>
+        <Link href="/login?next=%2Fblast" style={link} onClick={() => props.onLoginClick?.()}>
           Log in to save this search
         </Link>
       </div>

@@ -41,16 +41,86 @@ const PROGRAMS: {
   },
 ];
 
+// Taxon IDs verified against NCBI Taxonomy (esummary): 166361 = Onthophagus taurus (species),
+// 41142 = Scarabaeinae (subfamily), 50557 = Insecta (class).
 const ENTREZ_OPTIONS = [
   { label: "O. taurus genome", value: "txid166361[Organism]" },
-  { label: "All Scarabaeinae", value: "txid92840[Organism]" },
+  { label: "All Scarabaeinae", value: "txid41142[Organism]" },
   { label: "All insects", value: "txid50557[Organism]" },
   { label: "All NCBI", value: "" },
 ];
 
-const EXAMPLE_SEQUENCE = `>Otau_doublesex_example
-ATGCAGCAGCAACAACAGCAGCAGCAGCAGCAGCAGCAGCAACAGCAGCAGCAGCAGCAG
-CAGCAGCCGCAGCAGCAGCAGCCTCAGCAGCAGCAACAGCAGCAGCAGCAGCAGCAGCAG`;
+// Real O. taurus COI fragment (NCBI MH020533.1, bases 1-600, fetched with efetch).
+const EXAMPLE_SEQUENCE = `>MH020533.1:1-600 Onthophagus taurus clone W93b-C1J-2183 cytochrome oxidase subunit I (COI) gene, partial cds; mitochondrial
+ATTTCTCATATTATTAGTCAAGAAAGAAGAAAAAAAGAAACTTTTGGCACATTAGGCATA
+ATCTATGCAATAATGGCTATTGGATTACTTGGATTTATTGTATGAGCTCATCATATATTT
+ACTGTAGGTATAGACGTAGATACTCGAGCTTACTTTACATCAGCAACAATAATTATTGCA
+GTACCAACTGGTATTAAAATTTTTAGCTGACTTGCTACTCTTCATGGAACTCAACTAAAT
+TATTCACCATCAATAATTTGAGCATTAGGATTTGTATTCCTATTTACTGTAGGAGGATTA
+ACAGGAGTAATTTTAGCTAATTCATCCTTAGATATTGTATTACATGACACATATAATGTT
+GTTGCTCACTTCCATTATGTTTTATCAATAGGAGCAGTATTTGCTATTATAGCAGGATTT
+GTTCATTGATTCCCATTATTTACAGGACTTACAATAAATAGAAAATTTCTAAAAATCCAA
+TTTTTAATTATATTCATTGGAGTTAATATAACCTTTTTCCCTCAACACTTTCTAGGTTTA
+GCAGGAATACCTCGACGATACTCAGACTATCCAGATGCATATACAACATGAAATGTAATT`;
+
+/*
+ * Keeps a logged-out user's search across the login redirect. sessionStorage is
+ * per-tab and may be blocked or full, so every call is guarded; on any failure
+ * the page simply behaves as before (nothing restored).
+ */
+const LOGIN_STASH_KEY = "db2:blast:before-login";
+const LOGIN_STASH_MAX_AGE_MS = 2 * 60 * 60 * 1000;
+
+type LoginStash = {
+  v: 1;
+  at: number;
+  form: {
+    sequence: string;
+    program: string;
+    entrezQuery: string;
+    evalue: string;
+    hitlistSize: number;
+    advancedOpen: boolean;
+  };
+  rid: string | null;
+  results: any;
+};
+
+function saveLoginStash(data: Omit<LoginStash, "v" | "at">) {
+  const full: LoginStash = { v: 1, at: Date.now(), ...data };
+  try {
+    sessionStorage.setItem(LOGIN_STASH_KEY, JSON.stringify(full));
+    return;
+  } catch {
+    // Probably over the storage quota (very large results): keep the form only.
+  }
+  try {
+    sessionStorage.setItem(LOGIN_STASH_KEY, JSON.stringify({ ...full, rid: null, results: null }));
+  } catch {
+    // Storage blocked: nothing to keep.
+  }
+}
+
+function takeLoginStash(): LoginStash | null {
+  let raw: string | null = null;
+  try {
+    raw = sessionStorage.getItem(LOGIN_STASH_KEY);
+    sessionStorage.removeItem(LOGIN_STASH_KEY);
+  } catch {
+    return null;
+  }
+  if (!raw) return null;
+  try {
+    const s = JSON.parse(raw) as LoginStash;
+    if (s?.v !== 1 || typeof s.at !== "number" || Date.now() - s.at > LOGIN_STASH_MAX_AGE_MS) return null;
+    if (!s.form || typeof s.form !== "object") return null;
+    const resultsOk = Array.isArray(s.results?.BlastOutput2);
+    const ridOk = typeof s.rid === "string" && /^[A-Za-z0-9_-]{1,64}$/.test(s.rid);
+    return { ...s, rid: resultsOk && ridOk ? s.rid : null, results: resultsOk && ridOk ? s.results : null };
+  } catch {
+    return null;
+  }
+}
 
 function databaseForProgram(program: Program): "nt" | "nr" {
   return program === "blastp" || program === "tblastn" ? "nr" : "nt";
@@ -103,6 +173,34 @@ export default function BlastPage() {
   useEffect(() => {
     ridRef.current = rid;
   }, [rid]);
+
+  // Back from "Log in to save this search": restore the stashed form and results
+  // (no NCBI calls), then clear the stash. Skipped when ?from= is pre-filling.
+  useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("from")) return;
+    const stash = takeLoginStash();
+    if (!stash) return;
+    const f = stash.form;
+    if (typeof f.sequence === "string") setSequence(f.sequence);
+    if (PROGRAMS.some((p) => p.value === f.program)) setProgram(f.program as Program);
+    if (ENTREZ_OPTIONS.some((o) => o.value === f.entrezQuery)) setEntrezQuery(f.entrezQuery);
+    if (typeof f.evalue === "string" && f.evalue) setEvalue(f.evalue);
+    if (Number.isInteger(f.hitlistSize) && f.hitlistSize > 0) setHitlistSize(f.hitlistSize);
+    if (f.advancedOpen === true) setAdvancedOpen(true);
+    if (stash.rid && stash.results) {
+      setRid(stash.rid);
+      setResults(stash.results);
+      setPhase("results");
+    }
+  }, []);
+
+  function stashBeforeLogin() {
+    saveLoginStash({
+      form: { sequence, program, entrezQuery, evalue, hitlistSize, advancedOpen },
+      rid,
+      results,
+    });
+  }
 
   // "Run again" from a saved search: /blast?from=<id> pre-fills the form (never
   // auto-submits). The API only returns the job to its owner, so anyone else's
@@ -304,6 +402,7 @@ export default function BlastPage() {
                 hitlistSize={hitlistSize}
                 querySequence={sequence}
                 results={results}
+                onLoginClick={stashBeforeLogin}
               />
               <BlastResults
                 results={results}
