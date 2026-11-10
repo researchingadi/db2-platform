@@ -6,7 +6,7 @@ import Navbar from "../../components/site/Navbar";
 
 const DistributionMap = dynamic(
   () => import("../../components/map/DistributionMap"),
-  { ssr: false, loading: () => <div style={{ height: "550px", background: "#0c1028", borderRadius: "12px" }} /> }
+  { ssr: false, loading: () => <div style={{ height: "550px", background: "var(--db-charcoal)" }} /> }
 );
 
 interface Stats {
@@ -51,7 +51,7 @@ export default function DistributionPage() {
       <Navbar />
       <div
         style={{
-          background: "#06081a",
+          background: "var(--db-black)",
           minHeight: "100vh",
           padding: "24px",
           paddingTop: "calc(var(--nav-height) + 24px)",
@@ -60,20 +60,21 @@ export default function DistributionPage() {
       >
         <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
           <h1
+            className="arcade-title"
             style={{
-              fontFamily: "var(--font-serif, serif)",
-              fontSize: "clamp(2rem, 5vw, 3.2rem)",
-              fontWeight: 700,
-              color: "#f4f1e8",
+              fontSize: "clamp(1rem, 4vw, 2rem)",
               margin: "0 0 8px 0",
-              lineHeight: 1.1,
+              /* Same line box as the old 1.1 × clamp(2rem, 5vw, 3.2rem) heading, so the map below
+                 keeps its exact position (minus half a 1/64px layout unit to match the old rounding). */
+              lineHeight: "calc(1.1 * clamp(2rem, 5vw, 3.2rem) - 0.0078px)",
+              whiteSpace: "nowrap",
             }}
           >
             Global Distribution
           </h1>
           <p
             style={{
-              color: "#64748b",
+              color: "var(--db-stone)",
               fontSize: "0.95rem",
               margin: "0 0 28px 0",
               fontFamily: "var(--font-mono, monospace)",
@@ -85,10 +86,10 @@ export default function DistributionPage() {
 
           <div
             style={{
-              borderRadius: "12px",
               overflow: "hidden",
-              border: "1px solid rgba(99,102,241,0.2)",
-              marginBottom: "28px",
+              border: "var(--arcade-border) solid var(--db-cream)",
+              boxShadow: "var(--arcade-shadow)",
+              margin: "-3px -3px 28px",
             }}
           >
             <DistributionMap />
@@ -97,40 +98,39 @@ export default function DistributionPage() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
-              gap: "16px",
+              gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 200px), 1fr))",
+              gap: "20px",
               marginBottom: "24px",
             }}
           >
             {statCards.map(({ key, label }) => (
               <div
                 key={key}
+                className="arcade-panel"
                 style={{
-                  background: "#0c1028",
-                  border: "1px solid rgba(99,102,241,0.35)",
-                  borderRadius: "10px",
-                  padding: "20px 24px",
+                  padding: "0 20px 20px",
+                  display: "flex",
+                  flexDirection: "column",
                 }}
               >
                 <div
                   style={{
+                    order: 1,
                     fontSize: "clamp(1.8rem, 3vw, 2.4rem)",
                     fontWeight: 700,
-                    color: "#f4f1e8",
-                    fontFamily: "var(--font-mono, monospace)",
+                    color: "var(--db-cyan)",
+                    fontFamily: "var(--font-mono)",
                     lineHeight: 1,
-                    marginBottom: "6px",
                   }}
                 >
                   {formatNum(stats[key])}
                 </div>
                 <div
+                  className="arcade-panel__bar"
                   style={{
-                    fontSize: "0.75rem",
-                    color: "#64748b",
-                    fontFamily: "var(--font-mono, monospace)",
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
+                    order: 0,
+                    margin: "0 -20px 18px",
+                    justifyContent: "flex-start",
                   }}
                 >
                   {label}
@@ -141,10 +141,10 @@ export default function DistributionPage() {
 
           <p
             style={{
-              color: "#475569",
-              fontSize: "0.78rem",
-              fontFamily: "var(--font-mono, monospace)",
-              letterSpacing: "0.06em",
+              color: "var(--db-stone)",
+              fontSize: "14px",
+              lineHeight: 1.6,
+              fontFamily: "var(--font-sans)",
             }}
           >
             Observation data provided by iNaturalist ·{" "}
@@ -152,7 +152,8 @@ export default function DistributionPage() {
               href="https://www.inaturalist.org/taxa/125819-Scarabaeinae"
               target="_blank"
               rel="noreferrer"
-              style={{ color: "#6366f1", textDecoration: "none" }}
+              className="focus-ring"
+              style={{ color: "var(--db-cyan)", textDecoration: "underline", textUnderlineOffset: "3px", fontWeight: 600 }}
             >
               View full dataset →
             </a>

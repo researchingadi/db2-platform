@@ -69,23 +69,23 @@ export default function JBrowseLoader() {
         height: "calc(100vh - 130px)",
         minHeight: "600px",
         background: "var(--db-charcoal)",
-        borderRadius: "12px",
-        border: "1px solid rgba(0,240,255,0.15)",
+        border: "var(--arcade-border) solid var(--db-cream)",
       }}
     >
       <canvas
         ref={canvasRef}
-        style={{ width: "200px", height: "200px", display: "block" }}
+        style={{ width: "200px", height: "200px", display: "block", border: "4px solid var(--db-cream)", boxShadow: "var(--arcade-shadow)", boxSizing: "content-box" }}
       />
       <p
         style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: "11px",
-          letterSpacing: "0.15em",
+          fontFamily: "var(--font-pixel)",
+          fontSize: "0.65rem",
+          lineHeight: 1.6,
           textTransform: "uppercase",
           color: "var(--db-cyan)",
           textAlign: "center",
-          marginTop: "16px",
+          marginTop: "22px",
+          padding: "0 16px",
         }}
       >
         Loading Otau_3.2 Assembly
@@ -94,10 +94,11 @@ export default function JBrowseLoader() {
       <p
         style={{
           fontFamily: "var(--font-sans)",
-          fontSize: "11px",
-          color: "var(--db-muted)",
+          fontSize: "14px",
+          lineHeight: 1.5,
+          color: "var(--db-stone)",
           textAlign: "center",
-          marginTop: "6px",
+          marginTop: "10px",
         }}
       >
         Connecting to Cloudflare R2...
@@ -106,14 +107,17 @@ export default function JBrowseLoader() {
       <style>{`
         .jbrowse-loader-ellipsis {
           display: inline-block;
-          width: 1.2em;
+          width: 4em;
           overflow: hidden;
           vertical-align: bottom;
           animation: jbrowse-loader-ellipsis-cycle 1.4s steps(4) infinite;
         }
         @keyframes jbrowse-loader-ellipsis-cycle {
           0% { width: 0; }
-          100% { width: 1.2em; }
+          100% { width: 4em; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .jbrowse-loader-ellipsis { animation: none; }
         }
       `}</style>
     </div>

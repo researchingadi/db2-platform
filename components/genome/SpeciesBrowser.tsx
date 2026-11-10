@@ -117,9 +117,9 @@ export default function SpeciesBrowser({ speciesId }: { speciesId: string }) {
     <>
       <div
         style={{
-          background: "#0c1028",
-          borderBottom: "1px solid rgba(99,102,241,0.15)",
-          padding: "10px 20px",
+          background: "var(--db-charcoal)",
+          borderBottom: "var(--arcade-border) solid var(--db-cream)",
+          padding: "10px 20px 7px",
           display: "flex",
           alignItems: "center",
           gap: "16px",
@@ -130,7 +130,8 @@ export default function SpeciesBrowser({ speciesId }: { speciesId: string }) {
           style={{
             fontFamily: "var(--font-mono)",
             fontSize: "12px",
-            color: "#475569",
+            color: "var(--db-stone)",
+            textTransform: "uppercase",
           }}
         >
           Species:
@@ -141,15 +142,17 @@ export default function SpeciesBrowser({ speciesId }: { speciesId: string }) {
             <Link
               key={s.id}
               href={`/genome-browser/${s.id}`}
+              className="focus-ring"
               style={{
-                padding: "6px 14px",
-                borderRadius: "999px",
-                border: active ? "none" : "1px solid rgba(99,102,241,0.2)",
-                background: active ? "#6366f1" : "rgba(99,102,241,0.08)",
-                color: active ? "#ffffff" : "#94a3b8",
+                padding: active ? "4px 12px" : "5px 13px",
+                border: `2px solid ${active ? "var(--db-cyan)" : "var(--db-cream)"}`,
+                background: active ? "var(--db-cyan)" : "var(--db-black)",
+                color: active ? "var(--db-black)" : "var(--db-cream)",
+                boxShadow: "3px 3px 0 var(--db-black)",
                 fontFamily: "var(--font-sans)",
                 fontSize: "13px",
                 fontStyle: "italic",
+                fontWeight: active ? 700 : 500,
                 textDecoration: "none",
                 lineHeight: 1.4,
               }}
@@ -158,21 +161,21 @@ export default function SpeciesBrowser({ speciesId }: { speciesId: string }) {
             </Link>
           );
         })}
-        <span style={{ color: "#475569" }}> · </span>
+        <span style={{ color: "var(--db-stone)" }}> · </span>
         <span
           style={{
             fontFamily: "var(--font-sans)",
             fontStyle: "italic",
             fontSize: "12px",
-            color: "#64748b",
+            color: "var(--db-stone)",
           }}
         >
           {species.scientificName}
         </span>
-        <span style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "#64748b" }}>
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--db-stone)" }}>
           {species.assemblyName}
         </span>
-        <span style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "#64748b" }}>
+        <span style={{ fontFamily: "var(--font-mono)", fontSize: "12px", color: "var(--db-stone)" }}>
           {species.genomeSize}
         </span>
         <SaveViewControl speciesId={speciesId} speciesName={species.scientificName} readView={readView} />

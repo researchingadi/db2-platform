@@ -18,32 +18,32 @@ function makeObsPopupHtml(obs: any): string {
     : "Unknown date";
   const badge =
     obs.quality_grade === "research"
-      ? `<span style="background:#d1fae5;color:#065f46;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;margin-right:4px">Research Grade</span>`
+      ? `<span style="background:var(--db-green);color:var(--db-black);padding:2px 7px;font-size:10px;font-weight:600;margin-right:4px">Research Grade</span>`
       : obs.quality_grade === "needs_id"
-      ? `<span style="background:#fef3c7;color:#92400e;padding:2px 7px;border-radius:4px;font-size:10px;font-weight:600;margin-right:4px">Needs ID</span>`
+      ? `<span style="background:var(--db-cream);color:var(--db-black);padding:2px 7px;font-size:10px;font-weight:600;margin-right:4px">Needs ID</span>`
       : "";
   const photoHtml = photo
-    ? `<img src="${photo}" style="width:80px;height:80px;object-fit:cover;border-radius:6px;flex-shrink:0"/>`
+    ? `<img src="${photo}" style="width:80px;height:80px;object-fit:cover;flex-shrink:0"/>`
     : "";
 
   return `
     <div style="font-family:sans-serif;font-size:13px;min-width:220px;max-width:280px;padding:4px">
       <div style="display:flex;gap:10px;align-items:flex-start">
         <div style="flex:1">
-          <div style="font-weight:700;font-size:14px;color:#111;margin-bottom:3px">🪲 ${name}</div>
-          <div style="color:#555;margin-bottom:3px;font-size:12px">
-            Observer: <a href="https://www.inaturalist.org/people/${obs.user?.login}" target="_blank" style="color:#6366f1">${obs.user?.login}</a>
+          <div style="font-weight:700;font-size:14px;color:var(--db-black);margin-bottom:3px">🪲 ${name}</div>
+          <div style="color:var(--db-charcoal);margin-bottom:3px;font-size:12px">
+            Observer: <a href="https://www.inaturalist.org/people/${obs.user?.login}" target="_blank" style="color:var(--db-black);text-decoration:underline">${obs.user?.login}</a>
           </div>
-          <div style="color:#555;font-size:12px;margin-bottom:6px">Date: ${date}</div>
+          <div style="color:var(--db-charcoal);font-size:12px;margin-bottom:6px">Date: ${date}</div>
           <div style="display:flex;align-items:center;gap:4px;margin-bottom:8px">
             ${badge}
-            <span style="color:#888;font-size:10px">${obs.num_identification_agreements} IDs</span>
+            <span style="color:var(--db-charcoal);font-size:10px">${obs.num_identification_agreements} IDs</span>
           </div>
         </div>
         ${photoHtml}
       </div>
-      <div style="border-top:1px solid #eee;padding-top:8px">
-        <a href="${obs.uri}" target="_blank" style="color:#6366f1;text-decoration:none;font-size:12px">View observation →</a>
+      <div style="border-top:1px solid var(--db-black);padding-top:8px">
+        <a href="${obs.uri}" target="_blank" style="color:var(--db-black);text-decoration:underline;font-size:12px">View observation →</a>
       </div>
     </div>
   `;
@@ -179,7 +179,7 @@ export default function DistributionMap() {
         const loadingPopup = L.popup()
           .setLatLng([lat, lng])
           .setContent(
-            `<div style="font-family:sans-serif;font-size:13px;padding:8px;color:#555">Finding nearby observations...</div>`
+            `<div style="font-family:sans-serif;font-size:13px;padding:8px;color:var(--db-charcoal)">Finding nearby observations...</div>`
           )
           .openOn(map);
 
@@ -191,7 +191,7 @@ export default function DistributionMap() {
 
           if (!data.results || data.results.length === 0) {
             loadingPopup.setContent(
-              `<div style="font-family:sans-serif;font-size:13px;padding:8px;color:#555">No observations recorded in this area</div>`
+              `<div style="font-family:sans-serif;font-size:13px;padding:8px;color:var(--db-charcoal)">No observations recorded in this area</div>`
             );
             return;
           }
@@ -207,21 +207,21 @@ export default function DistributionMap() {
               : "Unknown date";
             const badge =
               obs.quality_grade === "research"
-                ? `<span style="background:#d1fae5;color:#065f46;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;margin-right:4px">Research Grade</span>`
+                ? `<span style="background:var(--db-green);color:var(--db-black);padding:1px 6px;font-size:10px;font-weight:600;margin-right:4px">Research Grade</span>`
                 : obs.quality_grade === "needs_id"
-                ? `<span style="background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:600;margin-right:4px">Needs ID</span>`
+                ? `<span style="background:var(--db-cream);color:var(--db-black);padding:1px 6px;font-size:10px;font-weight:600;margin-right:4px">Needs ID</span>`
                 : "";
             const photoHtml = photo
-              ? `<img src="${photo}" style="width:60px;height:60px;object-fit:cover;border-radius:6px;flex-shrink:0"/>`
+              ? `<img src="${photo}" style="width:60px;height:60px;object-fit:cover;flex-shrink:0"/>`
               : "";
             return `
-              <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px solid #eee">
+              <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--db-charcoal)">
                 <div style="flex:1">
-                  <div style="font-weight:700;font-size:13px;color:#111;margin-bottom:2px">🪲 ${name}</div>
-                  <div style="color:#555;font-size:11px;margin-bottom:2px">Observer: <a href="https://www.inaturalist.org/people/${obs.user?.login}" target="_blank" style="color:#6366f1">${obs.user?.login}</a></div>
-                  <div style="color:#555;font-size:11px;margin-bottom:4px">Date: ${date}</div>
-                  <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">${badge}<span style="color:#888;font-size:10px">${obs.num_identification_agreements} IDs</span></div>
-                  <a href="${obs.uri}" target="_blank" style="color:#6366f1;font-size:11px;text-decoration:none">View observation →</a>
+                  <div style="font-weight:700;font-size:13px;color:var(--db-black);margin-bottom:2px">🪲 ${name}</div>
+                  <div style="color:var(--db-charcoal);font-size:11px;margin-bottom:2px">Observer: <a href="https://www.inaturalist.org/people/${obs.user?.login}" target="_blank" style="color:var(--db-black);text-decoration:underline">${obs.user?.login}</a></div>
+                  <div style="color:var(--db-charcoal);font-size:11px;margin-bottom:4px">Date: ${date}</div>
+                  <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px">${badge}<span style="color:var(--db-charcoal);font-size:10px">${obs.num_identification_agreements} IDs</span></div>
+                  <a href="${obs.uri}" target="_blank" style="color:var(--db-black);font-size:11px;text-decoration:underline">View observation →</a>
                 </div>
                 ${photoHtml}
               </div>`;
@@ -230,14 +230,14 @@ export default function DistributionMap() {
           const areaUrl = `https://www.inaturalist.org/observations?taxon_id=125819&lat=${lat.toFixed(4)}&lng=${lng.toFixed(4)}&radius=${radius}`;
           loadingPopup.setContent(`
             <div style="font-family:sans-serif;min-width:240px;max-width:300px;max-height:400px;overflow-y:auto;padding:4px">
-              <div style="font-weight:700;font-size:12px;color:#888;margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">${total} observation${total > 1 ? "s" : ""} in this area</div>
+              <div style="font-weight:700;font-size:12px;color:var(--db-charcoal);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.5px">${total} observation${total > 1 ? "s" : ""} in this area</div>
               ${obsCards}
-              <div style="padding-top:8px"><a href="${areaUrl}" target="_blank" style="color:#6366f1;font-size:11px;text-decoration:none">View all ${total} on iNaturalist →</a></div>
+              <div style="padding-top:8px"><a href="${areaUrl}" target="_blank" style="color:var(--db-black);font-size:11px;text-decoration:underline">View all ${total} on iNaturalist →</a></div>
             </div>
           `);
         } catch {
           loadingPopup.setContent(
-            `<div style="font-family:sans-serif;font-size:13px;padding:8px;color:#555">Error loading observations. Try again.</div>`
+            `<div style="font-family:sans-serif;font-size:13px;padding:8px;color:var(--db-charcoal)">Error loading observations. Try again.</div>`
           );
         }
       });
@@ -258,7 +258,7 @@ export default function DistributionMap() {
     <div style={{ position: "relative", height: "550px", width: "100%" }}>
       <div
         ref={containerRef}
-        style={{ height: "100%", width: "100%", borderRadius: "10px" }}
+        style={{ height: "100%", width: "100%" }}
       />
       <div
         ref={loadingRef}
@@ -268,13 +268,13 @@ export default function DistributionMap() {
           top: "10px",
           right: "10px",
           zIndex: 1000,
-          background: "rgba(6,8,26,0.88)",
-          color: "#a5b4fc",
-          fontSize: "12px",
-          fontFamily: "monospace",
+          background: "var(--db-black)",
+          color: "var(--db-cyan)",
+          fontSize: "14px",
+          fontFamily: "var(--font-mono)",
           padding: "6px 12px",
-          borderRadius: "6px",
-          border: "1px solid rgba(99,102,241,0.4)",
+          border: "2px solid var(--db-cream)",
+          boxShadow: "4px 4px 0 var(--db-black)",
           pointerEvents: "none",
         }}
       >
