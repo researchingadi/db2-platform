@@ -123,7 +123,7 @@ export default function BlastResults({
     results?.BlastOutput2?.[0]?.report?.results?.search?.hits || [];
   const queryLength =
     results?.BlastOutput2?.[0]?.report?.results?.search?.query_len ??
-    querySequence.replace(/^>.*$/m, "").replace(/s/g, "").length;
+    querySequence.replace(/^>.*$/m, "").replace(/\s/g, "").length;
   return (
     <div>
       <div
