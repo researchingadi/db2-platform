@@ -72,16 +72,13 @@ export default function CinematicHero() {
   <BeetleHeroBackground />
 </motion.div>
 
-        <div className="db-grid" style={{ position: "absolute", inset: 0, opacity: 0.18 }} />
-        <div className="db-grain" style={{ position: "absolute", inset: 0, opacity: 0.45 }} />
-        <div className="db-scanlines" style={{ position: "absolute", inset: 0 }} />
 
         <div
           style={{
             position: "absolute",
             inset: 0,
             background:
-              "linear-gradient(90deg, rgba(3,3,3,0.92) 0%, rgba(3,3,3,0.55) 42%, rgba(3,3,3,0.16) 100%), linear-gradient(to bottom, rgba(3,3,3,0.22), rgba(3,3,3,0.78))",
+              "linear-gradient(90deg, rgba(3,3,3,0.7) 0%, rgba(3,3,3,0.4) 42%, rgba(3,3,3,0.1) 100%), linear-gradient(to bottom, rgba(3,3,3,0.15), rgba(3,3,3,0.7))",
           }}
         />
 

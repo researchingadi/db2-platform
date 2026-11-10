@@ -221,7 +221,7 @@ export default function LiteraturePage() {
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(to bottom, rgba(3,3,3,0.5), rgba(3,3,3,0.95))",
+            background: "linear-gradient(to bottom, rgba(3,3,3,0.15), rgba(3,3,3,0.7))",
           }}
         />
         <div style={{ position: "relative", zIndex: 1, padding: "6rem 1.25rem 4rem" }}>

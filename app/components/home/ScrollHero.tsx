@@ -117,7 +117,6 @@ export default function ScrollHero() {
           style={{ display: "block", width: "100%", height: "100%", opacity: ready ? 1 : 0, transition: "opacity 0.4s ease" }}
         />
 
-        <div className="db-grain" style={{ position: "absolute", inset: 0, opacity: 0.2, pointerEvents: "none" }} />
 
         {/* Scroll indicator */}
         <div

@@ -199,7 +199,7 @@ export default function DirectoryPage() {
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(to bottom, rgba(3,3,3,0.3), rgba(3,3,3,0.92))",
+            background: "linear-gradient(to bottom, rgba(3,3,3,0.15), rgba(3,3,3,0.7))",
           }}
         />
         <div

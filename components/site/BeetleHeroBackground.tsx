@@ -116,9 +116,6 @@ export default function BeetleHeroBackground() {
         ))}
       </motion.div>
 
-      <div className="beetle-vignette" />
-      <div className="db-grain beetle-grain" />
-      <div className="db-scanlines beetle-scanlines" />
     </div>
   );
 }

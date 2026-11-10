@@ -22,7 +22,6 @@ export default function PageShell({ children, padTop = true }: PageShellProps) {
         {children}
       </main>
       <Footer />
-      <div className="crt-overlay" aria-hidden="true" />
     </div>
   );
 }
