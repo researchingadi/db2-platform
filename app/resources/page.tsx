@@ -1,5 +1,6 @@
 import AnimatedSection from "@/components/site/AnimatedSection";
 import PageShell from "@/components/site/PageShell";
+import ReducedMotion from "@/components/site/ReducedMotion";
 
 export const metadata = {
   title: "Resources — DB²",
@@ -14,8 +15,7 @@ const RESOURCES = [
       "Chromosome-level genome assembly for Onthophagus taurus (Otau_3.2 / IU_Otau_3.0). NCBI accession GCF_036711975.1. 12 chromosomes, ~295 Mb.",
     tags: ["FASTA", "GFF3", "NCBI RefSeq"],
     href: "/downloads",
-    accent: "#00f0ff",
-    accentRgb: "0,240,255",
+    accent: "var(--db-cyan)",
     status: "available",
   },
   {
@@ -25,8 +25,7 @@ const RESOURCES = [
       "Official NCBI annotation track with 28,456 predicted gene models mapped to the Otau_3.2 assembly. GFF3 format with tabix index.",
     tags: ["GFF3", "Tabix", "28,456 genes"],
     href: "/downloads",
-    accent: "#8d7cff",
-    accentRgb: "141,124,255",
+    accent: "var(--db-violet)",
     status: "available",
   },
   {
@@ -36,8 +35,7 @@ const RESOURCES = [
       "GTF-format annotation file sorted and indexed for use with genome browsers and bioinformatics pipelines.",
     tags: ["GTF", "Tabix", "JBrowse 2"],
     href: "/downloads",
-    accent: "#49ffb6",
-    accentRgb: "73,255,182",
+    accent: "var(--db-green)",
     status: "available",
   },
   {
@@ -47,8 +45,7 @@ const RESOURCES = [
       "Transcriptomics data across developmental stages and tissues. Includes raw reads, alignments, and expression matrices.",
     tags: ["FASTQ", "BAM", "TPM matrix"],
     href: "#",
-    accent: "#00f0ff",
-    accentRgb: "0,240,255",
+    accent: "var(--db-cyan)",
     status: "coming-soon",
   },
   {
@@ -58,8 +55,7 @@ const RESOURCES = [
       "Guides for using the genome browser, downloading data files, and interpreting annotation tracks.",
     tags: ["User guide", "API", "Tutorials"],
     href: "#",
-    accent: "#8d7cff",
-    accentRgb: "141,124,255",
+    accent: "var(--db-violet)",
     status: "coming-soon",
   },
   {
@@ -69,8 +65,7 @@ const RESOURCES = [
       "Align sequences against the Otau_3.2 assembly and predicted proteome. Local BLAST with genome-browser integration.",
     tags: ["BLAST+", "Nucleotide", "Protein"],
     href: "#",
-    accent: "#49ffb6",
-    accentRgb: "73,255,182",
+    accent: "var(--db-green)",
     status: "coming-soon",
   },
 ];
@@ -78,29 +73,38 @@ const RESOURCES = [
 export default function ResourcesPage() {
   return (
     <PageShell>
+      <ReducedMotion>
       {/* ── Page hero ── */}
       <div
         style={{
-          padding: "6rem 1.25rem 4rem",
-          borderBottom: "1px solid var(--db-line)",
+          padding: "5rem 1.25rem 3.5rem",
+          borderBottom: "var(--arcade-border) solid var(--db-cream)",
           position: "relative",
           overflow: "hidden",
-          background:
-            "radial-gradient(circle at 65% 30%, rgba(0,240,255,0.07), transparent 38%), var(--db-black)",
+          background: "var(--db-black)",
         }}
       >
         <div style={{ maxWidth: "1540px", margin: "0 auto", position: "relative" }}>
           <AnimatedSection>
             <p className="db-eyebrow">DB² · Resources</p>
             <h1
-              className="db-section-title"
-              style={{ fontSize: "clamp(2.8rem, 5vw, 5.5rem)" }}
+              className="arcade-title"
+              style={{ fontSize: "clamp(1.4rem, 3.4vw, 2.2rem)", lineHeight: 1.3, marginTop: "14px", overflowWrap: "anywhere" }}
             >
               Genomic Resources
             </h1>
-            <p className="db-section-copy" style={{ marginTop: "1.25rem" }}>
+            <p
+              style={{
+                marginTop: "1.25rem",
+                maxWidth: "62ch",
+                fontFamily: "var(--font-sans)",
+                fontSize: "15px",
+                lineHeight: 1.7,
+                color: "var(--db-stone)",
+              }}
+            >
               All data, annotations, and tools available for{" "}
-              <em style={{ color: "var(--db-stone)", fontStyle: "italic" }}>
+              <em style={{ color: "var(--db-cream)", fontStyle: "italic" }}>
                 Onthophagus taurus
               </em>{" "}
               genomics research. Files hosted on Cloudflare R2 for global
@@ -115,70 +119,70 @@ export default function ResourcesPage() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))",
-            gap: "0.9rem",
+            gridTemplateColumns: "repeat(auto-fill, minmax(min(340px, 100%), 1fr))",
+            gap: "24px",
           }}
         >
           {RESOURCES.map((r, i) => (
             <AnimatedSection key={r.title} delay={i * 0.07}>
               <div
-                className="db-glass db-noise-card"
+                className="arcade-panel"
                 style={{
-                  borderRadius: "22px",
-                  padding: "1.6rem",
+                  padding: "0 22px 22px",
                   minHeight: "280px",
+                  height: "100%",
                   display: "flex",
                   flexDirection: "column",
                   gap: "1rem",
-                  opacity: r.status === "coming-soon" ? 0.7 : 1,
                   ...(r.status === "available"
-                    ? { borderColor: `rgba(${r.accentRgb}, 0.28)` }
-                    : {}),
+                    ? { borderColor: r.accent }
+                    : { borderStyle: "dashed", borderColor: "var(--db-stone)" }),
                 }}
               >
-                {/* Header */}
+                {/* Header = title bar: abbreviation tile + status */}
                 <div
+                  className="arcade-panel__bar"
                   style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
+                    margin: "0 -22px",
+                    padding: "0.55rem 0.75rem",
+                    alignItems: "center",
+                    ...(r.status === "available"
+                      ? { background: r.accent, borderBottomColor: r.accent }
+                      : { background: "var(--db-stone)", borderBottomColor: "var(--db-stone)" }),
                   }}
                 >
                   <div
                     style={{
-                      width: "48px",
-                      height: "48px",
-                      borderRadius: "12px",
-                      background: `rgba(${r.accentRgb}, 0.1)`,
-                      border: `1px solid rgba(${r.accentRgb}, 0.25)`,
+                      width: "44px",
+                      height: "44px",
+                      background: "var(--db-black)",
+                      border: "2px solid var(--db-black)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "0.68rem",
-                      color: r.accent,
-                      letterSpacing: "0.1em",
-                      fontWeight: 500,
+                      fontFamily: "var(--font-pixel)",
+                      fontSize: "0.6rem",
+                      color: r.status === "available" ? r.accent : "var(--db-cream)",
                     }}
                   >
                     {r.abbr}
                   </div>
                   {r.status === "coming-soon" ? (
-                    <div className="db-pill">
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", color: "var(--db-black)" }}>
                       <span
+                        className="blink"
                         style={{
-                          width: "0.42rem",
-                          height: "0.42rem",
-                          borderRadius: "999px",
-                          background: "var(--db-muted)",
+                          width: "0.55rem",
+                          height: "0.55rem",
+                          background: "var(--db-black)",
                           display: "inline-block",
                         }}
                       />
                       Soon
                     </div>
                   ) : (
-                    <div className="db-pill">
-                      <span className="db-dot" />
+                    <div style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", color: "var(--db-black)" }}>
+                      <span className="arcade-dot" style={{ background: "var(--db-black)" }} />
                       Live
                     </div>
                   )}
@@ -187,13 +191,11 @@ export default function ResourcesPage() {
                 {/* Content */}
                 <div style={{ flex: 1 }}>
                   <h3
+                    className="arcade-title"
                     style={{
-                      margin: "0 0 0.55rem",
-                      fontSize: "1.05rem",
-                      letterSpacing: "-0.03em",
-                      color: "var(--db-cream)",
-                      fontWeight: 600,
-                      lineHeight: 1.2,
+                      margin: "0 0 0.85rem",
+                      fontSize: "0.8rem",
+                      lineHeight: 1.5,
                     }}
                   >
                     {r.title}
@@ -203,7 +205,8 @@ export default function ResourcesPage() {
                       margin: 0,
                       color: "var(--db-stone)",
                       lineHeight: 1.7,
-                      fontSize: "0.84rem",
+                      fontSize: "15px",
+                      fontFamily: "var(--font-sans)",
                     }}
                   >
                     {r.description}
@@ -211,12 +214,11 @@ export default function ResourcesPage() {
                 </div>
 
                 {/* Tags */}
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
                   {r.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="db-pill"
-                      style={{ fontSize: "0.62rem", padding: "0.28rem 0.6rem" }}
+                      className="arcade-chip"
                     >
                       {tag}
                     </span>
@@ -227,8 +229,8 @@ export default function ResourcesPage() {
                 {r.status === "available" && (
                   <a
                     href={r.href}
-                    className="db-magnetic-link"
-                    style={{ color: r.accent, fontSize: "0.7rem" }}
+                    className="arcade-btn arcade-btn--small"
+                    style={{ alignSelf: "flex-start" }}
                   >
                     View downloads
                   </a>
@@ -238,6 +240,7 @@ export default function ResourcesPage() {
           ))}
         </div>
       </div>
+      </ReducedMotion>
     </PageShell>
   );
 }

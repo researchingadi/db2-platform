@@ -1,5 +1,6 @@
 import AnimatedSection from "@/components/site/AnimatedSection";
 import PageShell from "@/components/site/PageShell";
+import ReducedMotion from "@/components/site/ReducedMotion";
 import { PI, COLLABORATORS, DEVS } from "@/lib/people";
 
 export const metadata = {
@@ -7,7 +8,11 @@ export const metadata = {
   description: "Davidson Lab team members and contributors to the DB² platform",
 };
 
-
+/*
+ * Arcade styling note: lib/people.ts still carries hex `accent` values for the
+ * old design (shared data, also used by /contact). Cards here ignore them and
+ * use the section's token colour instead.
+ */
 function PersonCard({
   name,
   title,
@@ -19,9 +24,8 @@ function PersonCard({
   website,
   image,
   description,
-  accent,
-  accentRgb,
   large = false,
+  tone = "var(--db-cyan)",
 }: {
   name: string;
   title?: string;
@@ -36,44 +40,35 @@ function PersonCard({
   accent: string;
   accentRgb: string;
   large?: boolean;
+  tone?: string;
 }) {
-  const avatarSize = large ? "72px" : "54px";
+  const avatarSize = large ? "88px" : "64px";
+  const pad = large ? 24 : 20;
   return (
     <div
-      className="db-glass"
+      className="arcade-panel"
       style={{
-        padding: large ? "1.8rem" : "1.4rem",
-        borderRadius: "20px",
-        borderColor: `rgba(${accentRgb}, 0.22)`,
+        padding: `0 ${pad}px ${pad}px`,
         position: "relative",
         overflow: "hidden",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      {/* top accent bar */}
+      {/* Avatar: square block (shown below the name bar via flex order; DOM order unchanged) */}
       <div
         style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          height: "2px",
-          background: `linear-gradient(90deg, ${accent}, transparent 70%)`,
-          opacity: 0.65,
-        }}
-      />
-
-      {/* Avatar */}
-      <div
-        style={{
+          order: 1,
           width: avatarSize,
           height: avatarSize,
-          borderRadius: "50%",
-          background: `rgba(${accentRgb}, 0.12)`,
-          border: `2px solid rgba(${accentRgb}, 0.35)`,
+          background: "var(--db-black)",
+          border: `var(--arcade-border) solid ${tone}`,
+          boxShadow: "4px 4px 0 var(--db-black)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          fontSize: large ? "1.5rem" : "1.1rem",
+          fontSize: large ? "1.6rem" : "1.2rem",
           marginBottom: "1rem",
           overflow: "hidden",
           flexShrink: 0,
@@ -96,136 +91,139 @@ function PersonCard({
         )}
       </div>
 
+      {/* Name = title bar */}
       <h3
+        className="arcade-panel__bar"
         style={{
-          fontFamily: "var(--font-sans)",
-          fontWeight: 700,
-          fontSize: large ? "1.1rem" : "0.95rem",
-          color: "var(--db-cream)",
-          margin: "0 0 0.1rem",
-          letterSpacing: "-0.025em",
+          order: 0,
+          margin: `0 -${pad}px 18px`,
+          fontSize: large ? "0.68rem" : "0.6rem",
+          lineHeight: 1.5,
         }}
       >
         {name}
       </h3>
-      {title && (
+      <div style={{ order: 2, display: "flex", flexDirection: "column" }}>
+        {title && (
+          <div
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: "15px",
+              fontWeight: 600,
+              color: "var(--db-cream)",
+              marginBottom: "0.35rem",
+            }}
+          >
+            {title}
+          </div>
+        )}
         <div
           style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "0.78rem",
-            color: "var(--db-stone)",
-            marginBottom: "0.25rem",
+            fontFamily: "var(--font-pixel)",
+            fontSize: "0.55rem",
+            lineHeight: 1.6,
+            color: tone,
+            textTransform: "uppercase",
+            marginBottom: "0.7rem",
           }}
         >
-          {title}
+          {role}
         </div>
-      )}
-      <div
-        style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: "0.68rem",
-          color: accent,
-          letterSpacing: "0.06em",
-          textTransform: "uppercase",
-          marginBottom: "0.5rem",
-        }}
-      >
-        {role}
+        {department && (
+          <div
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: "14px",
+              lineHeight: 1.5,
+              color: "var(--db-stone)",
+              marginBottom: "0.15rem",
+            }}
+          >
+            {department}
+          </div>
+        )}
+        {institution && (
+          <div
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: "14px",
+              lineHeight: 1.5,
+              color: "var(--db-stone)",
+              marginBottom: "0.15rem",
+            }}
+          >
+            {institution}
+          </div>
+        )}
+        {location && (
+          <div
+            style={{
+              fontFamily: "var(--font-mono)",
+              fontSize: "14px",
+              color: "var(--db-stone)",
+              marginBottom: "0.85rem",
+            }}
+          >
+            {location}
+          </div>
+        )}
+        {(email || website) && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "0.4rem",
+              marginBottom: description ? "1rem" : 0,
+            }}
+          >
+            {email && (
+              <a
+                href={`mailto:${email}`}
+                className="auth-inline-link focus-ring"
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "14px",
+                  color: tone,
+                  overflowWrap: "anywhere",
+                  width: "fit-content",
+                }}
+              >
+                {email}
+              </a>
+            )}
+            {website && (
+              <a
+                href={website.startsWith("http") ? website : `https://${website}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="auth-inline-link focus-ring"
+                style={{
+                  fontFamily: "var(--font-mono)",
+                  fontSize: "14px",
+                  color: "var(--db-cream)",
+                  overflowWrap: "anywhere",
+                  width: "fit-content",
+                }}
+              >
+                {website}
+              </a>
+            )}
+          </div>
+        )}
+        {description && (
+          <p
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: "15px",
+              color: "var(--db-stone)",
+              lineHeight: 1.65,
+              margin: 0,
+            }}
+          >
+            {description}
+          </p>
+        )}
       </div>
-      {department && (
-        <div
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "0.78rem",
-            color: "var(--db-muted)",
-            marginBottom: "0.15rem",
-          }}
-        >
-          {department}
-        </div>
-      )}
-      {institution && (
-        <div
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "0.78rem",
-            color: "var(--db-muted)",
-            marginBottom: "0.15rem",
-          }}
-        >
-          {institution}
-        </div>
-      )}
-      {location && (
-        <div
-          style={{
-            fontFamily: "var(--font-mono)",
-            fontSize: "0.65rem",
-            color: "var(--db-muted)",
-            letterSpacing: "0.04em",
-            opacity: 0.7,
-            marginBottom: "0.75rem",
-          }}
-        >
-          {location}
-        </div>
-      )}
-      {(email || website) && (
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "0.25rem",
-            marginBottom: description ? "0.8rem" : 0,
-          }}
-        >
-          {email && (
-            <a
-              href={`mailto:${email}`}
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.65rem",
-                color: accent,
-                letterSpacing: "0.03em",
-                textDecoration: "none",
-                opacity: 0.85,
-              }}
-            >
-              {email}
-            </a>
-          )}
-          {website && (
-            <a
-              href={website.startsWith("http") ? website : `https://${website}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.65rem",
-                color: "var(--db-muted)",
-                letterSpacing: "0.03em",
-                textDecoration: "none",
-                opacity: 0.75,
-              }}
-            >
-              {website}
-            </a>
-          )}
-        </div>
-      )}
-      {description && (
-        <p
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "0.85rem",
-            color: "var(--db-stone)",
-            lineHeight: 1.68,
-            margin: 0,
-          }}
-        >
-          {description}
-        </p>
-      )}
     </div>
   );
 }
@@ -237,26 +235,23 @@ function SectionLabel({ label, accent }: { label: string; accent: string }) {
         display: "flex",
         alignItems: "center",
         gap: "0.75rem",
-        marginBottom: "1.25rem",
+        marginBottom: "1.5rem",
       }}
     >
       <div
         style={{
-          width: "3px",
-          height: "18px",
-          borderRadius: "2px",
+          width: "14px",
+          height: "14px",
           background: accent,
-          boxShadow: `0 0 12px ${accent}`,
+          boxShadow: "3px 3px 0 var(--db-black)",
+          flexShrink: 0,
         }}
       />
       <h2
+        className="arcade-title"
         style={{
-          fontFamily: "var(--font-mono)",
-          fontWeight: 500,
-          fontSize: "0.68rem",
-          color: "var(--db-muted)",
-          letterSpacing: "0.14em",
-          textTransform: "uppercase",
+          fontSize: "clamp(0.8rem, 1.6vw, 1rem)",
+          lineHeight: 1.4,
           margin: 0,
         }}
       >
@@ -269,126 +264,123 @@ function SectionLabel({ label, accent }: { label: string; accent: string }) {
 export default function PeoplePage() {
   return (
     <PageShell>
-      {/* ── Cinematic header ── */}
-      <section
-        style={{
-          position: "relative",
-          height: "280px",
-          overflow: "hidden",
-          borderBottom: "1px solid rgba(0,240,255,0.12)",
-        }}
-      >
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: 0.7,
-          }}
-        >
-          <source src="/directory-bg.mp4" type="video/mp4" />
-        </video>
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(to bottom, rgba(3,3,3,0.15), rgba(3,3,3,0.7))",
-          }}
-        />
-        <div
+      <ReducedMotion>
+        {/* ── Cinematic header ── */}
+        <section
           style={{
             position: "relative",
-            zIndex: 1,
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            padding: "0 1.25rem 2rem",
-            maxWidth: "1540px",
-            margin: "0 auto",
+            minHeight: "280px",
+            overflow: "hidden",
+            borderBottom: "var(--arcade-border) solid var(--db-cream)",
           }}
         >
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              opacity: 0.7,
+            }}
+          >
+            <source src="/directory-bg.mp4" type="video/mp4" />
+          </video>
+          <div
+            style={{
+              position: "relative",
+              zIndex: 1,
+              minHeight: "280px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              padding: "2rem 1.25rem",
+              maxWidth: "1540px",
+              margin: "0 auto",
+            }}
+          >
+            <AnimatedSection>
+              {/* Solid panel keeps the header text readable over any video frame */}
+              <div className="arcade-panel" style={{ padding: "20px 22px", maxWidth: "620px" }}>
+                <p className="db-eyebrow">DB² · Team</p>
+                <h1
+                  className="arcade-title"
+                  style={{
+                    fontSize: "clamp(1.4rem, 3.2vw, 2rem)",
+                    margin: 0,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  People
+                </h1>
+                <p
+                  style={{
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "15px",
+                    lineHeight: 1.6,
+                    color: "var(--db-cream)",
+                    marginTop: "14px",
+                    marginBottom: 0,
+                    maxWidth: "540px",
+                  }}
+                >
+                  The researchers, students, and developers building the DB²
+                  platform and advancing{" "}
+                  <em style={{ fontStyle: "italic" }}>Onthophagus taurus</em>{" "}
+                  genomics.
+                </p>
+              </div>
+            </AnimatedSection>
+          </div>
+        </section>
+
+        {/* ── Content ── */}
+        <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
+          {/* PI */}
+          <AnimatedSection style={{ marginBottom: "3.5rem" }}>
+            <SectionLabel label="Principal Investigator" accent="var(--db-cyan)" />
+            <div style={{ maxWidth: "600px" }}>
+              <PersonCard {...PI} large tone="var(--db-cyan)" />
+            </div>
+          </AnimatedSection>
+
+          {/* Collaborators */}
+          <AnimatedSection style={{ marginBottom: "3.5rem" }}>
+            <SectionLabel label="Collaborators" accent="var(--db-violet)" />
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(min(280px, 100%), 1fr))",
+                gap: "24px",
+              }}
+            >
+              {COLLABORATORS.map((c) => (
+                <PersonCard key={c.name} {...c} tone="var(--db-violet)" />
+              ))}
+            </div>
+          </AnimatedSection>
+
+          {/* Developers */}
           <AnimatedSection>
-            <p className="db-eyebrow">DB² · Team</p>
-            <h1
+            <SectionLabel label="Platform Development" accent="var(--db-green)" />
+            <div
               style={{
-                fontFamily: "var(--font-sans)",
-                fontWeight: 700,
-                fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-                color: "var(--db-cream)",
-                letterSpacing: "-0.03em",
-                margin: 0,
-                lineHeight: 1.1,
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(min(260px, 100%), 1fr))",
+                gap: "24px",
               }}
             >
-              People
-            </h1>
-            <p
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "14px",
-                color: "var(--db-stone)",
-                marginTop: "10px",
-                maxWidth: "520px",
-              }}
-            >
-              The researchers, students, and developers building the DB²
-              platform and advancing{" "}
-              <em style={{ fontStyle: "italic" }}>Onthophagus taurus</em>{" "}
-              genomics.
-            </p>
+              {DEVS.map((d) => (
+                <PersonCard key={d.name} {...d} tone="var(--db-green)" />
+              ))}
+            </div>
           </AnimatedSection>
         </div>
-      </section>
-
-      {/* ── Content ── */}
-      <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
-        {/* PI */}
-        <AnimatedSection style={{ marginBottom: "3.5rem" }}>
-          <SectionLabel label="Principal Investigator" accent="var(--db-cyan)" />
-          <div style={{ maxWidth: "560px" }}>
-            <PersonCard {...PI} large />
-          </div>
-        </AnimatedSection>
-
-        {/* Collaborators */}
-        <AnimatedSection style={{ marginBottom: "3.5rem" }}>
-          <SectionLabel label="Collaborators" accent="var(--db-violet)" />
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-              gap: "0.75rem",
-            }}
-          >
-            {COLLABORATORS.map((c) => (
-              <PersonCard key={c.name} {...c} />
-            ))}
-          </div>
-        </AnimatedSection>
-
-        {/* Developers */}
-        <AnimatedSection>
-          <SectionLabel label="Platform Development" accent="var(--db-violet)" />
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-              gap: "0.75rem",
-            }}
-          >
-            {DEVS.map((d) => (
-              <PersonCard key={d.name} {...d} />
-            ))}
-          </div>
-        </AnimatedSection>
-      </div>
+      </ReducedMotion>
     </PageShell>
   );
 }

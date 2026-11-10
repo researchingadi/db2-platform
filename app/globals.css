@@ -901,6 +901,29 @@ select {
   vertical-align: middle;
 }
 
+/* Square tag chip (file formats, topics, status) */
+.arcade-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.2rem 0.55rem;
+  border: 2px solid var(--db-stone);
+  background: var(--db-black);
+  color: var(--db-cream);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Square status marker (replaces the round glowing .db-dot) */
+.arcade-dot {
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  background: var(--db-green);
+  flex-shrink: 0;
+}
+
 /* Clickable arcade panels (home page cards): hover = cyan border + deeper shadow.
    No transform, so it never fights framer-motion's entrance animation. */
 .arcade-hover {

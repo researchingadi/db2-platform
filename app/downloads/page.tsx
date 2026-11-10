@@ -1,5 +1,6 @@
 import AnimatedSection from "@/components/site/AnimatedSection";
 import PageShell from "@/components/site/PageShell";
+import ReducedMotion from "@/components/site/ReducedMotion";
 
 export const metadata = {
   title: "Downloads — DB²",
@@ -22,7 +23,6 @@ type Species = {
   label: string;
   scientific: string;
   assembly: string;
-  accentRgb: string;
   accent: string;
   files: FileRow[];
   note?: string;
@@ -34,8 +34,7 @@ const SPECIES: Species[] = [
     label: "O. taurus",
     scientific: "Onthophagus taurus",
     assembly: "Otau_3.2",
-    accent: "#00f0ff",
-    accentRgb: "0,240,255",
+    accent: "var(--db-cyan)",
     note: "Masked genome, protein, and nucleotide sequences coming soon",
     files: [
       {
@@ -66,8 +65,7 @@ const SPECIES: Species[] = [
     label: "O. sagittarius",
     scientific: "Onthophagus sagittarius",
     assembly: "Osag_1.3",
-    accent: "#8d7cff",
-    accentRgb: "141,124,255",
+    accent: "var(--db-violet)",
     files: [
       {
         filename: "Osag1.3.fasta.gz",
@@ -111,8 +109,7 @@ const SPECIES: Species[] = [
     label: "D. gazella",
     scientific: "Digitonthophagus gazella",
     assembly: "Dgaz_1.3",
-    accent: "#49ffb6",
-    accentRgb: "73,255,182",
+    accent: "var(--db-green)",
     files: [
       {
         filename: "Dgaz1.3.fasta.gz",
@@ -156,8 +153,7 @@ const SPECIES: Species[] = [
     label: "O. binodis",
     scientific: "Onthophagus binodis",
     assembly: "Obin_1.0",
-    accent: "#f59e0b",
-    accentRgb: "245,158,11",
+    accent: "var(--db-cyan)",
     files: [
       {
         filename: "Obin1.0.fasta.gz",
@@ -210,322 +206,271 @@ export default function DownloadsPage() {
   return (
     <PageShell>
       <style>{`
-        .dl-btn { transition: opacity 0.15s; }
-        .dl-btn:hover { opacity: 0.75; }
-        .dl-row:hover { background: rgba(255,255,255,0.025); }
+        .dl-btn { white-space: nowrap; }
+        .dl-row:hover { background: var(--db-panel-2); }
       `}</style>
-
-      {/* ── Cinematic header ── */}
-      <section
-        style={{
-          position: "relative",
-          height: "300px",
-          overflow: "hidden",
-          borderBottom: "1px solid rgba(0,240,255,0.12)",
-        }}
-      >
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: 0.65,
-          }}
-        >
-          <source src="/downloads-bg.mp4" type="video/mp4" />
-        </video>
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(to bottom, rgba(3,3,3,0.15), rgba(3,3,3,0.7))",
-          }}
-        />
-        <div
+      <ReducedMotion>
+        {/* ── Cinematic header ── */}
+        <section
           style={{
             position: "relative",
-            zIndex: 1,
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            padding: "0 1.25rem 2rem",
-            maxWidth: "1540px",
-            margin: "0 auto",
+            minHeight: "300px",
+            overflow: "hidden",
+            borderBottom: "var(--arcade-border) solid var(--db-cream)",
           }}
         >
-          <AnimatedSection>
-            <p className="db-eyebrow">Genomic Data Repository · CC BY 4.0</p>
-            <h1
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontWeight: 700,
-                fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-                color: "var(--db-cream)",
-                letterSpacing: "-0.03em",
-                margin: 0,
-                lineHeight: 1.1,
-              }}
-            >
-              Downloads
-            </h1>
-            <p
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "14px",
-                color: "var(--db-stone)",
-                marginTop: "10px",
-                maxWidth: "520px",
-              }}
-            >
-              Genome assemblies, annotations, masked genomes, protein and
-              nucleotide sequences for all four dung beetle species. Hosted on
-              Cloudflare R2.
-            </p>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-                marginTop: "14px",
-                flexWrap: "wrap",
-              }}
-            >
-              {[
-                `${SPECIES.length} Species`,
-                `${TOTAL_FILES} Files`,
-                `~${TOTAL_SIZE_GB} GB Total`,
-              ].map((stat, i) => (
-                <span key={stat} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  {i > 0 && <span style={{ color: "var(--db-muted)", fontSize: "11px" }}>·</span>}
-                  <span
-                    style={{
-                      fontFamily: "var(--font-mono)",
-                      fontSize: "11px",
-                      color: "var(--db-cyan)",
-                    }}
-                  >
-                    {stat}
-                  </span>
-                </span>
-              ))}
-            </div>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ── Species sections ── */}
-      <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
-        <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
-          {SPECIES.map((sp, si) => (
-            <AnimatedSection key={sp.id} delay={si * 0.08}>
-              {/* Section header */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  gap: "1rem",
-                  marginBottom: "1rem",
-                  flexWrap: "wrap",
-                }}
-              >
-                <h2
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              opacity: 0.65,
+            }}
+          >
+            <source src="/downloads-bg.mp4" type="video/mp4" />
+          </video>
+          <div
+            style={{
+              position: "relative",
+              zIndex: 1,
+              minHeight: "300px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              padding: "2rem 1.25rem",
+              maxWidth: "1540px",
+              margin: "0 auto",
+            }}
+          >
+            <AnimatedSection>
+              {/* Solid panel keeps the header text readable over any video frame */}
+              <div className="arcade-panel" style={{ padding: "20px 22px", maxWidth: "640px" }}>
+                <p className="db-eyebrow">Genomic Data Repository · CC BY 4.0</p>
+                <h1
+                  className="arcade-title"
+                  style={{
+                    fontSize: "clamp(1.4rem, 3.2vw, 2rem)",
+                    margin: 0,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  Downloads
+                </h1>
+                <p
                   style={{
                     fontFamily: "var(--font-sans)",
-                    fontWeight: 700,
-                    fontSize: "1.05rem",
+                    fontSize: "15px",
+                    lineHeight: 1.6,
                     color: "var(--db-cream)",
-                    margin: 0,
-                    letterSpacing: "-0.02em",
+                    marginTop: "14px",
+                    marginBottom: 0,
+                    maxWidth: "560px",
                   }}
                 >
-                  <em style={{ fontStyle: "italic", color: sp.accent }}>{sp.scientific}</em>
-                </h2>
-                <span
-                  className="db-pill"
-                  style={{
-                    fontSize: "0.6rem",
-                    padding: "0.22rem 0.55rem",
-                    borderColor: `rgba(${sp.accentRgb}, 0.3)`,
-                    color: sp.accent,
-                  }}
-                >
-                  {sp.assembly}
-                </span>
-              </div>
-
-              {/* Table */}
-              <div
-                className="db-glass"
-                style={{ borderRadius: "16px", overflow: "hidden", borderColor: `rgba(${sp.accentRgb}, 0.18)` }}
-              >
-                {/* Table head */}
+                  Genome assemblies, annotations, masked genomes, protein and
+                  nucleotide sequences for all four dung beetle species. Hosted on
+                  Cloudflare R2.
+                </p>
                 <div
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "2fr 2fr 80px 72px 110px",
-                    gap: "0",
-                    padding: "0.6rem 1.25rem",
-                    borderBottom: `1px solid rgba(${sp.accentRgb}, 0.14)`,
-                    background: `rgba(${sp.accentRgb}, 0.04)`,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    marginTop: "14px",
+                    flexWrap: "wrap",
                   }}
                 >
-                  {["File", "Description", "Format", "Size", "Download"].map((col) => (
-                    <span
-                      key={col}
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "0.62rem",
-                        letterSpacing: "0.1em",
-                        textTransform: "uppercase",
-                        color: "var(--db-muted)",
-                      }}
-                    >
-                      {col}
+                  {[
+                    `${SPECIES.length} Species`,
+                    `${TOTAL_FILES} Files`,
+                    `~${TOTAL_SIZE_GB} GB Total`,
+                  ].map((stat, i) => (
+                    <span key={stat} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                      {i > 0 && <span style={{ color: "var(--db-stone)", fontSize: "14px" }}>·</span>}
+                      <span
+                        style={{
+                          fontFamily: "var(--font-mono)",
+                          fontSize: "14px",
+                          color: "var(--db-cyan)",
+                        }}
+                      >
+                        {stat}
+                      </span>
                     </span>
                   ))}
                 </div>
+              </div>
+            </AnimatedSection>
+          </div>
+        </section>
 
-                {/* Rows */}
-                {sp.files.map((f, fi) => (
+        {/* ── Species sections ── */}
+        <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "3rem" }}>
+            {SPECIES.map((sp, si) => (
+              <AnimatedSection key={sp.id} delay={si * 0.08}>
+                {/* Table panel; the species heading is its title bar */}
+                <div
+                  className="arcade-panel"
+                  style={{ padding: 0, overflow: "hidden", borderColor: sp.accent }}
+                >
                   <div
-                    key={f.filename}
-                    className="dl-row"
+                    className="arcade-panel__bar"
                     style={{
-                      display: "grid",
-                      gridTemplateColumns: "2fr 2fr 80px 72px 110px",
-                      gap: "0",
-                      padding: "0.8rem 1.25rem",
-                      alignItems: "center",
-                      borderBottom:
-                        fi < sp.files.length - 1
-                          ? "1px solid rgba(244,241,232,0.06)"
-                          : "none",
-                      transition: "background 0.15s",
+                      justifyContent: "flex-start",
+                      flexWrap: "wrap",
+                      gap: "0.75rem 1rem",
+                      background: sp.accent,
+                      borderBottomColor: sp.accent,
                     }}
                   >
-                    {/* Filename */}
-                    <span
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "0.72rem",
-                        color: "var(--db-stone)",
-                        letterSpacing: "0.02em",
-                        wordBreak: "break-all",
-                        paddingRight: "1rem",
-                      }}
-                    >
-                      {f.filename}
-                    </span>
-
-                    {/* Description */}
-                    <span
+                    <h2
                       style={{
                         fontFamily: "var(--font-sans)",
-                        fontSize: "0.82rem",
-                        color: "var(--db-stone)",
-                        paddingRight: "1rem",
+                        fontWeight: 700,
+                        fontSize: "16px",
+                        textTransform: "none",
+                        color: "var(--db-black)",
+                        margin: 0,
                       }}
                     >
-                      {f.description}
-                    </span>
-
-                    {/* Format */}
+                      <em style={{ fontStyle: "italic", color: "var(--db-black)" }}>{sp.scientific}</em>
+                    </h2>
                     <span
+                      className="arcade-chip"
                       style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "0.68rem",
+                        borderColor: "var(--db-black)",
                         color: sp.accent,
-                        letterSpacing: "0.05em",
+                        textTransform: "none",
                       }}
                     >
-                      {f.format}
+                      {sp.assembly}
                     </span>
-
-                    {/* Size */}
-                    <span
-                      style={{
-                        fontFamily: "var(--font-mono)",
-                        fontSize: "0.7rem",
-                        color: "var(--db-muted)",
-                      }}
-                    >
-                      {f.size}
-                    </span>
-
-                    {/* Download */}
-                    <a
-                      href={f.url}
-                      download
-                      target="_blank"
-                      rel="noreferrer"
-                      className="dl-btn"
-                      style={{
-                        display: "inline-flex",
-                        alignItems: "center",
-                        gap: "5px",
-                        padding: "4px 12px",
-                        borderRadius: "6px",
-                        background: "rgba(99,102,241,0.12)",
-                        border: "1px solid rgba(99,102,241,0.25)",
-                        color: "#818cf8",
-                        fontSize: "11.5px",
-                        fontFamily: "var(--font-mono)",
-                        textDecoration: "none",
-                        whiteSpace: "nowrap",
-                      }}
-                    >
-                      ↓ Download
-                    </a>
                   </div>
-                ))}
-              </div>
 
-              {/* Per-species note */}
-              {sp.note && (
-                <p
-                  style={{
-                    marginTop: "0.65rem",
-                    fontFamily: "var(--font-mono)",
-                    fontSize: "0.66rem",
-                    color: "var(--db-muted)",
-                    letterSpacing: "0.06em",
-                  }}
-                >
-                  ◌ {sp.note}
-                </p>
-              )}
-            </AnimatedSection>
-          ))}
-        </div>
+                  {/* Table (scrolls inside the panel on narrow screens) */}
+                  <div style={{ overflowX: "auto" }}>
+                    <table className="blast-table" style={{ minWidth: "720px" }}>
+                      <thead>
+                        <tr>
+                          {["File", "Description", "Format", "Size", "Download"].map((col) => (
+                            <th key={col}>{col}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {sp.files.map((f) => (
+                          <tr key={f.filename} className="dl-row">
+                            {/* Filename */}
+                            <td
+                              style={{
+                                fontFamily: "var(--font-mono)",
+                                fontSize: "14px",
+                                color: "var(--db-cream)",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {f.filename}
+                            </td>
 
-        {/* Usage note */}
-        <AnimatedSection style={{ marginTop: "3rem" }}>
-          <div
-            className="db-glass"
-            style={{
-              borderRadius: "16px",
-              padding: "1.35rem 1.5rem",
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.76rem",
-              color: "var(--db-muted)",
-              lineHeight: 1.8,
-            }}
-          >
-            <span style={{ color: "var(--db-cyan)" }}>Usage note · </span>
-            All files are freely available for research purposes. If you use DB²
-            data, please cite the relevant assembly and annotation papers (see
-            Publications). For large-scale downloads, use the direct R2 URLs for
-            best performance.
+                            {/* Description */}
+                            <td
+                              style={{
+                                fontFamily: "var(--font-sans)",
+                                fontSize: "14px",
+                                color: "var(--db-stone)",
+                              }}
+                            >
+                              {f.description}
+                            </td>
+
+                            {/* Format */}
+                            <td
+                              style={{
+                                fontFamily: "var(--font-mono)",
+                                fontSize: "14px",
+                                color: sp.accent,
+                              }}
+                            >
+                              {f.format}
+                            </td>
+
+                            {/* Size */}
+                            <td
+                              style={{
+                                fontFamily: "var(--font-mono)",
+                                fontSize: "14px",
+                                color: "var(--db-cream)",
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {f.size}
+                            </td>
+
+                            {/* Download */}
+                            <td>
+                              <a
+                                href={f.url}
+                                download
+                                target="_blank"
+                                rel="noreferrer"
+                                className="dl-btn arcade-btn arcade-btn--small pixel-glyphs"
+                              >
+                                ↓ Download
+                              </a>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Per-species note */}
+                {sp.note && (
+                  <p
+                    style={{
+                      marginTop: "0.85rem",
+                      fontFamily: "var(--font-sans)",
+                      fontSize: "14px",
+                      color: "var(--db-stone)",
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    ◌ {sp.note}
+                  </p>
+                )}
+              </AnimatedSection>
+            ))}
           </div>
-        </AnimatedSection>
-      </div>
+
+          {/* Usage note */}
+          <AnimatedSection style={{ marginTop: "3rem" }}>
+            <div
+              className="arcade-panel"
+              style={{
+                padding: "1.35rem 1.5rem",
+                fontFamily: "var(--font-sans)",
+                fontSize: "15px",
+                color: "var(--db-stone)",
+                lineHeight: 1.7,
+              }}
+            >
+              <span style={{ color: "var(--db-cyan)", fontWeight: 600 }}>Usage note · </span>
+              All files are freely available for research purposes. If you use DB²
+              data, please cite the relevant assembly and annotation papers (see
+              Publications). For large-scale downloads, use the direct R2 URLs for
+              best performance.
+            </div>
+          </AnimatedSection>
+        </div>
+      </ReducedMotion>
     </PageShell>
   );
 }

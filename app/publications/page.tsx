@@ -1,5 +1,6 @@
 import AnimatedSection from "@/components/site/AnimatedSection";
 import PageShell from "@/components/site/PageShell";
+import ReducedMotion from "@/components/site/ReducedMotion";
 
 export const metadata = {
   title: "Publications — DB²",
@@ -11,8 +12,7 @@ export const metadata = {
 const SECTIONS = [
   {
     heading: "Genome Assembly & Annotation",
-    accent: "#00f0ff",
-    accentRgb: "0,240,255",
+    accent: "var(--db-cyan)",
     papers: [
       {
         title:
@@ -34,8 +34,7 @@ const SECTIONS = [
   },
   {
     heading: "Davidson Lab Publications",
-    accent: "#8d7cff",
-    accentRgb: "141,124,255",
+    accent: "var(--db-violet)",
     papers: [
       {
         title:
@@ -57,8 +56,7 @@ const SECTIONS = [
   },
   {
     heading: "Dung Beetle Biology",
-    accent: "#49ffb6",
-    accentRgb: "73,255,182",
+    accent: "var(--db-green)",
     papers: [
       {
         title:
@@ -75,195 +73,189 @@ const SECTIONS = [
 export default function PublicationsPage() {
   return (
     <PageShell>
-      {/* ── Cinematic header ── */}
-      <section
-        style={{
-          position: "relative",
-          height: "280px",
-          overflow: "hidden",
-          borderBottom: "1px solid rgba(0,240,255,0.12)",
-        }}
-      >
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: 0.7,
-          }}
-        >
-          <source src="/publications-bg.mp4" type="video/mp4" />
-        </video>
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "linear-gradient(to bottom, rgba(3,3,3,0.28), rgba(3,3,3,0.78))",
-          }}
-        />
-        <div
+      <ReducedMotion>
+        {/* ── Cinematic header ── */}
+        <section
           style={{
             position: "relative",
-            zIndex: 1,
-            height: "100%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "flex-end",
-            padding: "0 1.25rem 2rem",
-            maxWidth: "1540px",
-            margin: "0 auto",
+            minHeight: "280px",
+            overflow: "hidden",
+            borderBottom: "var(--arcade-border) solid var(--db-cream)",
           }}
         >
-          <AnimatedSection>
-            <p className="db-eyebrow">DB² · Literature</p>
-            <h1
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontWeight: 700,
-                fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
-                color: "var(--db-cream)",
-                letterSpacing: "-0.03em",
-                margin: 0,
-                lineHeight: 1.1,
-              }}
-            >
-              Publications
-            </h1>
-            <p
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "14px",
-                color: "var(--db-stone)",
-                marginTop: "10px",
-                maxWidth: "520px",
-              }}
-            >
-              Research papers associated with the DB² platform, Davidson Lab, and
-              the broader dung beetle genomics community.
-            </p>
-            <span
-              className="db-pill"
-              style={{ marginTop: "12px" }}
-            >
-              <span className="db-dot" />
-              All entries below are placeholders — not real publications
-            </span>
-          </AnimatedSection>
-        </div>
-      </section>
-
-      {/* ── Sections ── */}
-      <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
-        {SECTIONS.map((sec, si) => (
-          <AnimatedSection
-            key={sec.heading}
-            delay={si * 0.1}
-            style={{ marginBottom: "3.5rem" }}
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            style={{
+              position: "absolute",
+              inset: 0,
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              opacity: 0.7,
+            }}
           >
-            {/* Section header */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.75rem",
-                marginBottom: "1.25rem",
-              }}
+            <source src="/publications-bg.mp4" type="video/mp4" />
+          </video>
+          <div
+            style={{
+              position: "relative",
+              zIndex: 1,
+              minHeight: "280px",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "flex-end",
+              padding: "2rem 1.25rem",
+              maxWidth: "1540px",
+              margin: "0 auto",
+            }}
+          >
+            <AnimatedSection>
+              {/* Solid panel keeps the header text readable over any video frame */}
+              <div className="arcade-panel" style={{ padding: "20px 22px", maxWidth: "640px" }}>
+                <p className="db-eyebrow">DB² · Literature</p>
+                <h1
+                  className="arcade-title"
+                  style={{
+                    fontSize: "clamp(1.4rem, 3.2vw, 2rem)",
+                    margin: 0,
+                    lineHeight: 1.3,
+                  }}
+                >
+                  Publications
+                </h1>
+                <p
+                  style={{
+                    fontFamily: "var(--font-sans)",
+                    fontSize: "15px",
+                    lineHeight: 1.6,
+                    color: "var(--db-cream)",
+                    marginTop: "14px",
+                    marginBottom: 0,
+                    maxWidth: "560px",
+                  }}
+                >
+                  Research papers associated with the DB² platform, Davidson Lab, and
+                  the broader dung beetle genomics community.
+                </p>
+                <span
+                  className="arcade-chip"
+                  style={{ marginTop: "14px", borderColor: "var(--arcade-pink)", fontFamily: "var(--font-sans)", fontWeight: 600 }}
+                >
+                  <span className="arcade-dot" style={{ background: "var(--arcade-pink)" }} />
+                  All entries below are placeholders — not real publications
+                </span>
+              </div>
+            </AnimatedSection>
+          </div>
+        </section>
+
+        {/* ── Sections ── */}
+        <div style={{ maxWidth: "1540px", margin: "0 auto", padding: "4rem 1.25rem 6rem" }}>
+          {SECTIONS.map((sec, si) => (
+            <AnimatedSection
+              key={sec.heading}
+              delay={si * 0.1}
+              className="arcade-panel"
+              style={{ marginBottom: "3rem", padding: "0 22px 8px", borderColor: sec.accent }}
             >
+              {/* Section header = title bar */}
               <div
+                className="arcade-panel__bar"
                 style={{
-                  width: "3px",
-                  height: "22px",
-                  borderRadius: "2px",
+                  margin: "0 -22px 4px",
+                  justifyContent: "flex-start",
+                  gap: "0.75rem",
                   background: sec.accent,
-                  boxShadow: `0 0 12px rgba(${sec.accentRgb}, 0.65)`,
-                }}
-              />
-              <h2
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontWeight: 500,
-                  fontSize: "0.68rem",
-                  color: "var(--db-muted)",
-                  letterSpacing: "0.14em",
-                  textTransform: "uppercase",
-                  margin: 0,
+                  borderBottomColor: sec.accent,
                 }}
               >
-                {sec.heading}
-              </h2>
-            </div>
+                <div
+                  style={{
+                    width: "12px",
+                    height: "12px",
+                    background: "var(--db-black)",
+                    flexShrink: 0,
+                  }}
+                />
+                <h2
+                  style={{
+                    fontFamily: "var(--font-pixel)",
+                    fontWeight: 400,
+                    fontSize: "0.62rem",
+                    lineHeight: 1.5,
+                    color: "var(--db-black)",
+                    textTransform: "uppercase",
+                    margin: 0,
+                  }}
+                >
+                  {sec.heading}
+                </h2>
+              </div>
 
-            {/* Paper cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              {sec.papers.map((p, pi) => (
-                <AnimatedSection key={p.title} delay={si * 0.1 + pi * 0.07}>
-                  <div
-                    className="db-glass"
-                    style={{
-                      padding: "1.5rem",
-                      borderRadius: "18px",
-                      borderLeft: `3px solid rgba(${sec.accentRgb}, 0.45)`,
-                    }}
-                  >
-                    <h3
-                      style={{
-                        fontFamily: "var(--font-sans)",
-                        fontWeight: 600,
-                        fontSize: "0.98rem",
-                        color: "var(--db-cream)",
-                        margin: "0 0 0.55rem",
-                        lineHeight: 1.5,
-                        letterSpacing: "-0.02em",
-                      }}
-                    >
-                      {p.title}
-                    </h3>
+              {/* Paper cards */}
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                {sec.papers.map((p, pi) => (
+                  <AnimatedSection key={p.title} delay={si * 0.1 + pi * 0.07}>
                     <div
                       style={{
-                        fontFamily: "var(--font-sans)",
-                        fontSize: "0.82rem",
-                        color: "var(--db-muted)",
-                        marginBottom: "0.75rem",
-                        lineHeight: 1.5,
+                        padding: "1.25rem 0",
+                        borderTop: pi === 0 ? "none" : "2px dashed var(--db-line-strong)",
                       }}
                     >
-                      {p.authors} ·{" "}
-                      <em style={{ color: "var(--db-muted)", fontStyle: "italic" }}>
-                        {p.journal}
-                      </em>{" "}
-                      · {p.year}
+                      <h3
+                        style={{
+                          fontFamily: "var(--font-sans)",
+                          fontWeight: 700,
+                          fontSize: "17px",
+                          color: "var(--db-cream)",
+                          margin: "0 0 0.55rem",
+                          lineHeight: 1.45,
+                        }}
+                      >
+                        {p.title}
+                      </h3>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-sans)",
+                          fontSize: "15px",
+                          color: "var(--db-stone)",
+                          marginBottom: "0.85rem",
+                          lineHeight: 1.55,
+                        }}
+                      >
+                        {p.authors} ·{" "}
+                        <em style={{ color: "var(--db-stone)", fontStyle: "italic" }}>
+                          {p.journal}
+                        </em>{" "}
+                        · {p.year}
+                      </div>
+                      <div
+                        style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}
+                      >
+                        {p.tags.map((t) => (
+                          <span
+                            key={t}
+                            className="arcade-chip"
+                            style={{
+                              borderColor: sec.accent,
+                              color: sec.accent,
+                            }}
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <div
-                      style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}
-                    >
-                      {p.tags.map((t) => (
-                        <span
-                          key={t}
-                          className="db-pill"
-                          style={{
-                            fontSize: "0.6rem",
-                            padding: "0.24rem 0.55rem",
-                            borderColor: `rgba(${sec.accentRgb}, 0.28)`,
-                            color: sec.accent,
-                          }}
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </AnimatedSection>
-              ))}
-            </div>
-          </AnimatedSection>
-        ))}
-      </div>
+                  </AnimatedSection>
+                ))}
+              </div>
+            </AnimatedSection>
+          ))}
+        </div>
+      </ReducedMotion>
     </PageShell>
   );
 }
