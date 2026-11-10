@@ -18,36 +18,28 @@ const links = [
   { href: "/people", label: "People" },
 ];
 
-function RollText({ label }: { label: string }) {
+function NavLabel({ label, active }: { label: string; active: boolean }) {
   return (
     <span
       style={{
-        position: "relative",
-        display: "inline-block",
-        height: "1.15em",
-        overflow: "hidden",
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "0.4em",
+        color: active ? "var(--db-cyan)" : "var(--db-stone)",
       }}
     >
-      <motion.span
-        variants={{ rest: { y: "0%" }, hover: { y: "-110%" } }}
-        transition={{ duration: 0.35, ease: [0.22, 0.61, 0.36, 1] }}
-        style={{ display: "block" }}
-      >
-        {label}
-      </motion.span>
-      <motion.span
-        variants={{ rest: { y: "110%" }, hover: { y: "0%" } }}
-        transition={{ duration: 0.35, ease: [0.22, 0.61, 0.36, 1] }}
+      <span
+        aria-hidden="true"
+        className={active ? "blink" : undefined}
         style={{
-          display: "block",
-          position: "absolute",
-          left: 0,
-          top: 0,
-          color: "var(--db-cyan)",
+          display: "inline-block",
+          width: "0.9em",
+          visibility: active ? "visible" : "hidden",
         }}
       >
-        {label}
-      </motion.span>
+        ▶
+      </span>
+      {label}
     </span>
   );
 }
@@ -71,18 +63,17 @@ export default function Navbar() {
       <motion.header
         initial={{ y: -80 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.8, ease: [0.22, 0.61, 0.36, 1] }}
+        transition={{ duration: 0.4, ease: "linear" }}
         style={{
           position: "fixed",
           inset: "0 0 auto 0",
           height: "72px",
           zIndex: 80,
           borderBottom: scrolled
-            ? "1px solid rgba(244,241,232,0.13)"
-            : "1px solid transparent",
-          background: scrolled ? "rgba(3,3,3,0.76)" : "rgba(3,3,3,0.18)",
-          backdropFilter: "blur(26px)",
-          WebkitBackdropFilter: "blur(26px)",
+            ? "var(--arcade-border) solid var(--db-cream)"
+            : "var(--arcade-border) solid transparent",
+          boxShadow: scrolled ? "0 6px 0 #000" : "none",
+          background: scrolled ? "var(--db-black)" : "rgba(3,3,3,0.35)",
         }}
       >
         <div
@@ -98,16 +89,9 @@ export default function Navbar() {
           }}
         >
           <Link href="/" style={{ textDecoration: "none" }}>
-            <motion.div
-              whileHover={{ scale: 1.03 }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.7rem",
-              }}
-            >
+            <div style={{ display: "flex", alignItems: "center", gap: "0.7rem" }}>
               <Image src="/media/Logo.png" alt="DB² Logo" width={52} height={52} />
-            </motion.div>
+            </div>
           </Link>
 
           <nav
@@ -115,58 +99,48 @@ export default function Navbar() {
             style={{
               justifyContent: "center",
               alignItems: "center",
-              gap: "1.15rem",
-              fontFamily: "var(--font-mono)",
-              fontSize: "0.68rem",
-              letterSpacing: "0.1em",
+              gap: "1.1rem",
+              fontFamily: "var(--font-pixel)",
+              fontSize: "0.55rem",
+              lineHeight: 1,
               textTransform: "uppercase",
             }}
           >
             {links.map((link) => {
               const active = pathname === link.href;
               return (
-                <Link key={link.href} href={link.href} style={{ textDecoration: "none" }}>
-                  <motion.span
-                    initial="rest"
-                    animate="rest"
-                    whileHover="hover"
-                    style={{
-                      color: active ? "var(--db-cyan)" : "var(--db-stone)",
-                      opacity: active ? 1 : 0.78,
-                    }}
-                  >
-                    <RollText label={link.label} />
-                  </motion.span>
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  style={{ textDecoration: "none" }}
+                >
+                  <NavLabel label={link.label} active={active} />
                 </Link>
               );
             })}
           </nav>
 
           <div className="hidden lg:flex" style={{ justifyContent: "flex-end" }}>
-            <Link href="/genome-browser/otaurus" className="db-magnetic-link">
+            <Link href="/genome-browser/otaurus" className="arcade-btn arcade-btn--cta">
               Launch
             </Link>
           </div>
 
           <button
-            className="lg:hidden"
+            className="lg:hidden arcade-btn"
             onClick={() => setOpen((v) => !v)}
             aria-label="Toggle navigation"
+            aria-expanded={open}
             style={{
               justifySelf: "end",
-              border: "1px solid rgba(244,241,232,0.14)",
-              background: "rgba(255,255,255,0.035)",
-              color: "var(--db-cream)",
-              borderRadius: "999px",
-              width: "42px",
-              height: "42px",
-              display: "grid",
-              placeItems: "center",
+              width: "44px",
+              height: "44px",
+              padding: 0,
+              fontSize: "0.8rem",
             }}
           >
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.7rem" }}>
-              {open ? "×" : "≡"}
-            </span>
+            {open ? "×" : "≡"}
           </button>
         </div>
       </motion.header>
@@ -177,38 +151,41 @@ export default function Navbar() {
             initial={{ opacity: 0, y: -14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -14 }}
-            transition={{ duration: 0.25 }}
+            transition={{ duration: 0.2, ease: "linear" }}
             style={{
               position: "fixed",
               top: "72px",
               left: 0,
               right: 0,
               zIndex: 70,
-              background: "rgba(3,3,3,0.94)",
-              backdropFilter: "blur(28px)",
-              borderBottom: "1px solid rgba(244,241,232,0.13)",
+              background: "var(--db-black)",
+              borderBottom: "var(--arcade-border) solid var(--db-cream)",
+              boxShadow: "0 6px 0 #000",
               padding: "1.2rem",
             }}
           >
-            {links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                style={{
-                  display: "block",
-                  padding: "1rem 0",
-                  color: pathname === link.href ? "var(--db-cyan)" : "var(--db-cream)",
-                  textDecoration: "none",
-                  fontFamily: "var(--font-mono)",
-                  fontSize: "0.78rem",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase",
-                  borderBottom: "1px solid rgba(244,241,232,0.1)",
-                }}
-              >
-                {link.label}
-              </Link>
-            ))}
+            {links.map((link) => {
+              const active = pathname === link.href;
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  style={{
+                    display: "block",
+                    padding: "1rem 0",
+                    textDecoration: "none",
+                    fontFamily: "var(--font-pixel)",
+                    fontSize: "0.65rem",
+                    lineHeight: 1.4,
+                    textTransform: "uppercase",
+                    borderBottom: "2px dashed rgba(244,241,232,0.18)",
+                  }}
+                >
+                  <NavLabel label={link.label} active={active} />
+                </Link>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>

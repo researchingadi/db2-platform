@@ -7,6 +7,8 @@
 @import "@fontsource/playfair-display/700.css";
 @import "@fontsource/jetbrains-mono/400.css";
 @import "@fontsource/jetbrains-mono/500.css";
+@import "@fontsource/press-start-2p/400.css";
+@import "@fontsource/vt323/400.css";
 
 @import "tailwindcss";
 
@@ -26,6 +28,13 @@
   --font-sans: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Playfair Display", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Arcade tokens */
+  --arcade-border: 4px;
+  --arcade-shadow: 6px 6px 0 #000;
+  --arcade-pink: #ff2e93; /* CTA accent only */
+  --font-pixel: "Press Start 2P", ui-monospace, monospace;
+  --font-pixel-sm: "VT323", ui-monospace, monospace;
 }
 
 *,
@@ -483,4 +492,164 @@ select {
 
 .leaflet-tile-pane {
   filter: invert(100%) hue-rotate(180deg) brightness(0.85) contrast(0.9);
+}
+
+/* ============================================================
+   Arcade components
+   ============================================================ */
+
+.arcade-panel {
+  position: relative;
+  border: var(--arcade-border) solid var(--db-cream);
+  border-radius: 0;
+  background: var(--db-charcoal);
+  box-shadow: var(--arcade-shadow);
+}
+
+.arcade-panel__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  border-bottom: var(--arcade-border) solid var(--db-cream);
+  background: var(--db-cream);
+  color: var(--db-black);
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.arcade-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border: var(--arcade-border) solid var(--db-cream);
+  border-radius: 0;
+  background: var(--db-black);
+  color: var(--db-cream);
+  font-family: var(--font-pixel);
+  font-size: 0.62rem;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 #000;
+  transition:
+    transform 120ms steps(2, end),
+    box-shadow 120ms steps(2, end),
+    background-color 120ms steps(2, end),
+    color 120ms steps(2, end);
+}
+
+.arcade-btn:hover {
+  background: var(--db-cream);
+  color: var(--db-black);
+}
+
+.arcade-btn:active {
+  transform: translate(4px, 4px);
+  box-shadow: 0 0 0 #000;
+}
+
+.arcade-btn:focus-visible {
+  outline: 2px dashed var(--db-cyan);
+  outline-offset: 4px;
+}
+
+/* Pink is reserved for the primary call to action */
+.arcade-btn--cta {
+  border-color: var(--arcade-pink);
+  background: var(--arcade-pink);
+  color: var(--db-black);
+}
+
+.arcade-btn--cta:hover {
+  background: var(--db-black);
+  color: var(--arcade-pink);
+}
+
+.arcade-card-link > .arcade-panel {
+  transition:
+    transform 120ms steps(2, end),
+    box-shadow 120ms steps(2, end);
+}
+
+.arcade-card-link:hover > .arcade-panel {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 #000;
+}
+
+.arcade-card-link:active > .arcade-panel {
+  transform: translate(4px, 4px);
+  box-shadow: 2px 2px 0 #000;
+}
+
+.arcade-card-link:focus-visible {
+  outline: 2px dashed var(--db-cyan);
+  outline-offset: 6px;
+}
+
+.arcade-title {
+  margin: 0;
+  font-family: var(--font-pixel);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0.02em;
+  color: var(--db-cream);
+  text-shadow: 3px 3px 0 #000;
+}
+
+.arcade-label {
+  font-family: var(--font-pixel-sm);
+  font-size: 1.15rem;
+  line-height: 1.1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.crt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.18) 0,
+      rgba(0, 0, 0, 0.18) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(ellipse at center, transparent 62%, rgba(0, 0, 0, 0.38) 100%);
+}
+
+@keyframes arcade-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+.blink {
+  animation: arcade-blink 1s steps(1, end) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-overlay {
+    display: none;
+  }
+
+  .blink {
+    animation: none;
+    opacity: 1;
+  }
+
+  .arcade-btn:active {
+    transform: none;
+  }
 }
