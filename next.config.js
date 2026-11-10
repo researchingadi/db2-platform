@@ -29,5 +29,11 @@ const nextConfig = {
     "@jbrowse/plugin-annotations",
     "rxjs",
   ],
+  experimental: {
+    // Server-only DB driver: load it from node_modules at runtime instead of
+    // bundling it (webpack can't minify postgres-js's ESM entry). Next 14 name;
+    // Next 15+ calls this top-level `serverExternalPackages`.
+    serverComponentsExternalPackages: ["postgres"],
+  },
 };
 module.exports = nextConfig;

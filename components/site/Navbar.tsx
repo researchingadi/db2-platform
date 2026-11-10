@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import AccountMenu, { useAccount } from "./AccountMenu";
 
 const links = [
   { href: "/", label: "Home" },
@@ -45,10 +46,22 @@ function NavLabel({ label, active }: { label: string; active: boolean }) {
   );
 }
 
+const mobileItem: React.CSSProperties = {
+  display: "block",
+  padding: "1rem 0",
+  textDecoration: "none",
+  fontFamily: "var(--font-pixel)",
+  fontSize: "0.65rem",
+  lineHeight: 1.4,
+  textTransform: "uppercase",
+  borderBottom: "2px dashed rgba(244,241,232,0.18)",
+};
+
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const account = useAccount();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 16);
@@ -120,32 +133,36 @@ export default function Navbar() {
             })}
           </nav>
 
-          {/* Visibility classes sit on wrappers: .arcade-btn sets its own display */}
-          <div className="nav-cta">
-            <Link
-              href="/genome-browser/otaurus"
-              className="arcade-btn arcade-btn--cta"
-              style={{ height: "44px", whiteSpace: "nowrap" }}
-            >
-              Launch
-            </Link>
-          </div>
+          {/* Right cluster. Visibility classes sit on wrappers: .arcade-btn sets its own display */}
+          <div className="nav-right">
+            <div className="nav-cta">
+              <Link
+                href="/genome-browser/otaurus"
+                className="arcade-btn arcade-btn--cta"
+                style={{ height: "44px", whiteSpace: "nowrap" }}
+              >
+                Launch
+              </Link>
+            </div>
 
-          <div className="nav-burger">
-            <button
-              className="arcade-btn"
-              onClick={() => setOpen((v) => !v)}
-              aria-label="Toggle navigation"
-              aria-expanded={open}
-              style={{
-                width: "44px",
-                height: "44px",
-                padding: 0,
-                fontSize: "0.8rem",
-              }}
-            >
-              {open ? "×" : "≡"}
-            </button>
+            <AccountMenu />
+
+            <div className="nav-burger">
+              <button
+                className="arcade-btn"
+                onClick={() => setOpen((v) => !v)}
+                aria-label="Toggle navigation"
+                aria-expanded={open}
+                style={{
+                  width: "44px",
+                  height: "44px",
+                  padding: 0,
+                  fontSize: "0.8rem",
+                }}
+              >
+                {open ? "×" : "≡"}
+              </button>
+            </div>
           </div>
         </div>
       </motion.header>
@@ -193,6 +210,39 @@ export default function Navbar() {
                 </Link>
               );
             })}
+
+            {/* Account entries at the bottom of the mobile menu */}
+            {account.ready && (
+              <div style={{ marginTop: "1.25rem", borderTop: "var(--arcade-border) solid var(--db-cream)" }}>
+                {account.user ? (
+                  <>
+                    <Link href="/account" style={mobileItem} aria-current={pathname === "/account" ? "page" : undefined}>
+                      <NavLabel label={account.first} active={pathname === "/account"} />
+                    </Link>
+                    {account.isAdmin && (
+                      <Link
+                        href="/admin/users"
+                        style={mobileItem}
+                        aria-current={pathname === "/admin/users" ? "page" : undefined}
+                      >
+                        <NavLabel label="Admin" active={pathname === "/admin/users"} />
+                      </Link>
+                    )}
+                    <button
+                      type="button"
+                      onClick={account.logOut}
+                      style={{ ...mobileItem, width: "100%", background: "none", border: 0, borderBottom: mobileItem.borderBottom, textAlign: "left", cursor: "pointer" }}
+                    >
+                      <NavLabel label="Log out" active={false} />
+                    </button>
+                  </>
+                ) : (
+                  <Link href="/login" style={mobileItem} aria-current={pathname === "/login" ? "page" : undefined}>
+                    <NavLabel label="Log in" active={pathname === "/login"} />
+                  </Link>
+                )}
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
