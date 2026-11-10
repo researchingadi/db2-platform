@@ -25,6 +25,7 @@ function NavLabel({ label, active }: { label: string; active: boolean }) {
         display: "inline-flex",
         alignItems: "center",
         gap: "0.4em",
+        whiteSpace: "nowrap",
         color: active ? "var(--db-cyan)" : "var(--db-stone)",
       }}
     >
@@ -85,7 +86,7 @@ export default function Navbar() {
             display: "grid",
             gridTemplateColumns: "auto 1fr auto",
             alignItems: "center",
-            gap: "1rem",
+            gap: 0,
           }}
         >
           <Link href="/" style={{ textDecoration: "none" }}>
@@ -97,25 +98,14 @@ export default function Navbar() {
                 src="/media/header.jpg"
                 alt="DungBase DB²"
                 width={2400}
-                height={732}
+                height={821}
                 priority
                 className="nav-logo"
               />
             </motion.div>
           </Link>
 
-          <nav
-            className="hidden lg:flex"
-            style={{
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "1.1rem",
-              fontFamily: "var(--font-pixel)",
-              fontSize: "0.55rem",
-              lineHeight: 1,
-              textTransform: "uppercase",
-            }}
-          >
+          <nav className="nav-links">
             {links.map((link) => {
               const active = pathname === link.href;
               return (
@@ -123,7 +113,6 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   aria-current={active ? "page" : undefined}
-                  style={{ textDecoration: "none" }}
                 >
                   <NavLabel label={link.label} active={active} />
                 </Link>
@@ -131,14 +120,18 @@ export default function Navbar() {
             })}
           </nav>
 
-          <div className="hidden lg:flex" style={{ justifyContent: "flex-end" }}>
-            <Link href="/genome-browser/otaurus" className="arcade-btn arcade-btn--cta">
+          {/* Visibility classes sit on wrappers: .arcade-btn sets its own display */}
+          <div className="nav-cta">
+            <Link
+              href="/genome-browser/otaurus"
+              className="arcade-btn arcade-btn--cta"
+              style={{ height: "44px", whiteSpace: "nowrap" }}
+            >
               Launch
             </Link>
           </div>
 
-          {/* Wrapper carries lg:hidden; .arcade-btn's display would otherwise override it */}
-          <div className="lg:hidden" style={{ justifySelf: "end" }}>
+          <div className="nav-burger">
             <button
               className="arcade-btn"
               onClick={() => setOpen((v) => !v)}

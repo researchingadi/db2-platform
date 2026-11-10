@@ -36,28 +36,75 @@
   --font-pixel: "Press Start 2P", ui-monospace, monospace;
   --font-pixel-sm: "VT323", ui-monospace, monospace;
 
-  /* Header height: 48px logo + 2×12px breathing room + 4px border (mobile) */
-  --nav-height: 76px;
+  /* Header height: 44px logo + 2×12px breathing room + 4px border (mobile) */
+  --nav-height: 72px;
 }
 
-@media (min-width: 1024px) {
-  :root {
-    /* 60px logo + 2×12px breathing room + 4px border (lg+) */
-    --nav-height: 88px;
-  }
-}
+/* ---- Navbar: one breakpoint (1280px) for links/logo/height; CTA at 1366px ---- */
 
 .nav-logo {
   display: block;
   flex-shrink: 0;
-  height: 48px;
+  height: 44px;
   width: auto;
   max-width: none;
+  mix-blend-mode: screen;
 }
 
-@media (min-width: 1024px) {
+.nav-links {
+  display: none;
+  align-items: center;
+  justify-content: flex-start;
+  gap: clamp(0.9rem, 1.3vw, 1.5rem);
+  margin-left: 2rem;
+  min-width: max-content;
+  height: 44px;
+  font-family: var(--font-pixel);
+  font-size: 0.6rem;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.nav-links > a {
+  flex-shrink: 0;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.nav-cta {
+  display: none;
+  align-items: center;
+  justify-content: flex-end;
+  margin-left: 1rem;
+}
+
+.nav-burger {
+  display: grid;
+  justify-self: end;
+}
+
+@media (min-width: 1280px) {
+  :root {
+    /* 56px logo + 2×12px breathing room + 4px border (desktop) */
+    --nav-height: 84px;
+  }
+
   .nav-logo {
-    height: 60px;
+    height: 56px;
+  }
+
+  .nav-links {
+    display: flex;
+  }
+
+  .nav-burger {
+    display: none;
+  }
+}
+
+@media (min-width: 1366px) {
+  .nav-cta {
+    display: flex;
   }
 }
 
